@@ -1,0 +1,14 @@
+site:
+  title: "Neotica"
+
+server:
+  files:
+    dev:
+      contentRoot: "build/processedResources/js/main/public"
+      script: "build/kotlin-webpack/js/developmentExecutable/neotica.js"
+      api: "build/libs/neotica.jar"
+    prod:
+      script: "build/kotlin-webpack/js/productionExecutable/neotica.js"
+      siteRoot: ".kobweb/site"
+
+  port: 8080
