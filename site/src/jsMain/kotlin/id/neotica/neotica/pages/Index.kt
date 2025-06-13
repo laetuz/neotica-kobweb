@@ -66,9 +66,15 @@ fun HomePage() {
             modifier = Modifier
                 .fillMaxWidth()
         ) {
-            SpanText(" Home")
+            SpanText("Home")
             Link("/alexandria") {
                 SpanText("Alexandria")
+            }
+            Link("/legal/terms-of-service") {
+                SpanText("Terms of Service")
+            }
+            Link("/legal/privacy-policy") {
+                SpanText("Privacy Policy")
             }
         }
     }

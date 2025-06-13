@@ -3,9 +3,9 @@ package id.neotica.neotica.components.sections.header
 import androidx.compose.runtime.*
 import com.varabyte.kobweb.compose.css.FontStyle
 import com.varabyte.kobweb.compose.css.FontWeight
+import com.varabyte.kobweb.compose.css.OverflowWrap
 import com.varabyte.kobweb.compose.foundation.layout.Arrangement
 import com.varabyte.kobweb.compose.foundation.layout.Row
-import com.varabyte.kobweb.compose.foundation.layout.Spacer
 import com.varabyte.kobweb.compose.ui.Alignment
 import com.varabyte.kobweb.compose.ui.Modifier
 import com.varabyte.kobweb.compose.ui.modifiers.*
@@ -24,6 +24,7 @@ import id.neotica.neotica.components.widgets.IconButton
 import org.jetbrains.compose.web.css.DisplayStyle
 import org.jetbrains.compose.web.css.cssRem
 import org.jetbrains.compose.web.css.em
+import org.jetbrains.compose.web.css.px
 
 @Composable
 fun NeoNavHeader(currentRoute: String? = "") {
@@ -32,10 +33,14 @@ fun NeoNavHeader(currentRoute: String? = "") {
             .padding(topBottom = 1.cssRem)
             .fillMaxWidth(),
         horizontalArrangement = Arrangement.SpaceBetween,
-        verticalAlignment = Alignment.CenterVertically
+        verticalAlignment = Alignment.CenterVertically,
     ) {
         Row(
-
+            modifier = Modifier
+                .weight(1f)
+                .minWidth(0.px)
+                .padding(right = 1.cssRem), // Added padding for spacing
+            verticalAlignment = Alignment.CenterVertically //
         ) {
             Link("/") {
                 // Block display overrides inline display of the <img> tag, so it calculates centering better
@@ -51,13 +56,13 @@ fun NeoNavHeader(currentRoute: String? = "") {
             SpanText(
                 "Neotica.id$currentRoute",
                 Modifier
+                    .overflowWrap(OverflowWrap.BreakWord)
                     .color(NeoColor.white)
                     .fontSize(1.5.em)
                     .fontStyle(FontStyle.Italic)
                     .fontWeight(FontWeight.Bold)
             )
 
-            Spacer()
         }
         Row(Modifier.gap(1.5.cssRem).displayIfAtLeast(Breakpoint.MD), verticalAlignment = Alignment.CenterVertically) {
             NeoMenuItems()

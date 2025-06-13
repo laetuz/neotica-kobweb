@@ -24,7 +24,7 @@ For the purposes of this Privacy Policy:
 - Account means a unique account created for You to access our Service or parts of our Service.
 - Affiliate means an entity that controls, is controlled by or is under common control with a party, where "control" means ownership of 50% or more of the shares, equity interest or other securities entitled to vote for election of directors or other managing authority.
 - Application refers to Neoverse, the software program provided by the Company. This includes any entities under the package “id.neotica.neoverse”
-- Company (referred to as either "the Company", "We", "Us" or "Our" in this Agreement) refers to PT Neotica Digital Solusi, Umbul Kunci Street No. 0, Keteguhan, East Teluk Betung, Bandar Lampung, Lampung, Indonesia 35238.
+- Company (referred to as either "the Company", "We", "Us" or "Our" in this Agreement) refers to PT Neotica Digital Solusi, Bandar Lampung, Lampung, Indonesia.
 - Country refers to: Indonesia
 - Device means any device that can access the Service such as a computer, a cellphone or a digital tablet.
 - Personal Data is any information that relates to an identified or identifiable individual.
