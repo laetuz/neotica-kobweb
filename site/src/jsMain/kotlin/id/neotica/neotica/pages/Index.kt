@@ -13,6 +13,7 @@ import com.varabyte.kobweb.core.data.add
 import com.varabyte.kobweb.core.init.InitRoute
 import com.varabyte.kobweb.core.init.InitRouteContext
 import com.varabyte.kobweb.core.layout.Layout
+import com.varabyte.kobweb.silk.components.navigation.Link
 import com.varabyte.kobweb.silk.components.text.SpanText
 import com.varabyte.kobweb.silk.style.CssStyle
 import com.varabyte.kobweb.silk.style.base
@@ -65,9 +66,10 @@ fun HomePage() {
             modifier = Modifier
                 .fillMaxWidth()
         ) {
-
             SpanText(" Home")
-
+            Link("/alexandria") {
+                SpanText("Alexandria")
+            }
         }
     }
 }

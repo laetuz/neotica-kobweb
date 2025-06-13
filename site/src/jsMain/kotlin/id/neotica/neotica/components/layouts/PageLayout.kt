@@ -23,8 +23,7 @@ import org.jetbrains.compose.web.css.fr
 import org.jetbrains.compose.web.css.percent
 import org.jetbrains.compose.web.dom.Div
 import org.jetbrains.compose.web.css.vh
-import id.neotica.neotica.components.sections.Footer
-import id.neotica.neotica.components.sections.NavHeader
+import id.neotica.neotica.components.sections.header.NeoNavHeader
 import id.neotica.neotica.toSitePalette
 
 val PageContentStyle = CssStyle {
@@ -99,12 +98,12 @@ fun PageLayout(ctx: PageContext, content: @Composable ColumnScope.() -> Unit) {
             Modifier.fillMaxSize().gridRow(1),
             horizontalAlignment = Alignment.CenterHorizontally,
         ) {
-            NavHeader()
+            NeoNavHeader()
             Div(PageContentStyle.toAttrs()) {
                 content()
             }
         }
         // Associate the footer with the row that will get pushed off the bottom of the page if it can't fit.
-        Footer(Modifier.fillMaxWidth().gridRow(2))
+//        NeoFooter()
     }
 }

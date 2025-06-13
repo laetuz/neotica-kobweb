@@ -4,6 +4,7 @@ import androidx.compose.runtime.Composable
 import com.varabyte.kobweb.compose.css.FontWeight
 import com.varabyte.kobweb.compose.css.Overflow
 import com.varabyte.kobweb.compose.css.OverflowWrap
+import com.varabyte.kobweb.compose.foundation.layout.Column
 import com.varabyte.kobweb.compose.ui.Modifier
 import com.varabyte.kobweb.compose.ui.modifiers.*
 import com.varabyte.kobweb.core.data.add
@@ -15,6 +16,7 @@ import com.varabyte.kobweb.silk.style.toAttrs
 import com.varabyte.kobweb.silk.theme.colors.palette.color
 import com.varabyte.kobweb.silk.theme.colors.palette.toPalette
 import com.varabyte.kobwebx.markdown.markdown
+import id.neotica.neotica.components.NeoColor
 import org.jetbrains.compose.web.css.DisplayStyle
 import org.jetbrains.compose.web.css.LineStyle
 import org.jetbrains.compose.web.css.cssRem
@@ -89,15 +91,25 @@ val MarkdownStyle = CssStyle {
 @InitRoute
 fun initMarkdownLayout(ctx: InitRouteContext) {
     val title = ctx.markdown!!.frontMatter["title"]?.singleOrNull()
+    val route = ctx.route.path //!!.frontMatter["title"]?.singleOrNull()
     require(title != null) { "Markdown file must set \"title\" in frontmatter" }
 
-    ctx.data.add(PageLayoutData(title))
+    ctx.data.add(NeoLayoutData(title, route.lowercase()))
 }
 
 @Composable
-@Layout(".components.layouts.PageLayout")
+@Layout(".components.layouts.NeoPageLayout")
 fun MarkdownLayout(content: @Composable () -> Unit) {
-    Div(MarkdownStyle.toAttrs()) {
-        content()
+    Column(
+        modifier = Modifier
+            .backgroundColor(NeoColor.backgroundPrimary)
+            .fillMaxSize()
+            .padding(leftRight = 2.cssRem)
+            .overflow(Overflow.Auto)
+    ) {
+        Div(MarkdownStyle.toAttrs()) {
+            content()
+        }
     }
+
 }

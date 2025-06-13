@@ -89,6 +89,7 @@ fun NeoNavHeader(currentRoute: String? = "") {
 fun NeoMenuItems() {
     NavLink("/", "Home")
     NavLink("/about", "About")
+    NavLink("/contact", "Contact")
 }
 
 @Composable

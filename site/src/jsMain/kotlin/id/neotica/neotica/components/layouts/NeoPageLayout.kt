@@ -12,7 +12,6 @@ import com.varabyte.kobweb.compose.ui.modifiers.padding
 import com.varabyte.kobweb.core.PageContext
 import com.varabyte.kobweb.core.data.getValue
 import com.varabyte.kobweb.core.layout.Layout
-import com.varabyte.kobweb.core.rememberPageContext
 import id.neotica.neotica.components.NeoColor
 import id.neotica.neotica.components.sections.NeoFooter
 import id.neotica.neotica.components.sections.header.NeoNavHeader
@@ -24,13 +23,11 @@ class NeoLayoutData(val title: String, val route: String? = "")
 @Layout
 @Composable
 fun NeoPageLayout(ctx: PageContext, content: @Composable () -> Unit) {
-    val ctx = rememberPageContext()
+//    val ctx = rememberPageContext()
     val data = ctx.data.getValue<NeoLayoutData>()
     LaunchedEffect(data.title) {
         document.title = "::${data.title}"
     }
-//    val colorMode by rememberCol()
-//    val sitePalette = colorMode.toSitePalette()
 
     // This Column will be the main container for the entire page content
     Column(modifier = Modifier.fillMaxSize().backgroundColor(NeoColor.backgroundPrimary)) {
@@ -49,7 +46,10 @@ fun NeoPageLayout(ctx: PageContext, content: @Composable () -> Unit) {
         // This is where the actual content of the page (e.g., AboutPage, HomePage) will be rendered.
         // It should expand to fill the remaining space below the header and above the footer.
         Box(modifier = Modifier.weight(1f)) { // Use weight to make content area flexible
-            content()
+            Column {
+                content()
+            }
+
         }
 
         // Footer common to all pages using this layout.
