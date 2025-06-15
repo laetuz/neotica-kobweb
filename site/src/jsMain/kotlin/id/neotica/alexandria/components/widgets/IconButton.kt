@@ -1,4 +1,4 @@
-package id.neotica.neotica.components.widgets
+package id.neotica.alexandria.components.widgets
 
 import androidx.compose.runtime.Composable
 import com.varabyte.kobweb.compose.ui.Modifier
@@ -6,8 +6,8 @@ import com.varabyte.kobweb.compose.ui.modifiers.setVariable
 import com.varabyte.kobweb.silk.components.forms.Button
 import com.varabyte.kobweb.silk.components.forms.ButtonVars
 import org.jetbrains.compose.web.css.em
-import id.neotica.neotica.CircleButtonVariant
-import id.neotica.neotica.UncoloredButtonVariant
+import id.neotica.alexandria.CircleButtonVariant
+import id.neotica.alexandria.UncoloredButtonVariant
 
 @Composable
 fun IconButton(onClick: () -> Unit, content: @Composable () -> Unit) {

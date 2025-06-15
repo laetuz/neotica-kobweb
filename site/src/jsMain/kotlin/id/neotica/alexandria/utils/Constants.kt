@@ -1,4 +1,4 @@
-package id.neotica.neotica.utils
+package id.neotica.alexandria.utils
 
 const val aboutDesc = "Neotica is a software development studio specializing in mobile applications and libraries.\n" +
         "\n" +

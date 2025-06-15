@@ -1,4 +1,4 @@
-package id.neotica.neotica.pages
+package id.neotica.alexandria.pages
 
 import androidx.compose.runtime.Composable
 import com.varabyte.kobweb.compose.css.Overflow
@@ -18,8 +18,8 @@ import com.varabyte.kobweb.silk.components.text.SpanText
 import com.varabyte.kobweb.silk.style.CssStyle
 import com.varabyte.kobweb.silk.style.base
 import com.varabyte.kobweb.silk.style.breakpoint.Breakpoint
-import id.neotica.neotica.components.NeoColor
-import id.neotica.neotica.components.layouts.NeoLayoutData
+import id.neotica.alexandria.components.NeoColor
+import id.neotica.alexandria.components.layouts.NeoLayoutData
 import org.jetbrains.compose.web.css.cssRem
 import org.jetbrains.compose.web.css.vh
 
@@ -48,7 +48,7 @@ val HomeGridCellStyle = CssStyle.base {
 
 @InitRoute
 fun initHomePage(ctx: InitRouteContext) {
-    ctx.data.add(NeoLayoutData("Home"))
+    ctx.data.add(NeoLayoutData("Alexandria - Home"))
 }
 
 @Page

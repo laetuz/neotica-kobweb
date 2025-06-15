@@ -1,4 +1,4 @@
-package id.neotica.neotica
+package id.neotica.alexandria
 
 import com.varabyte.kobweb.compose.css.ScrollBehavior
 import com.varabyte.kobweb.compose.css.TextAlign

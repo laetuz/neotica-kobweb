@@ -1,4 +1,4 @@
-package id.neotica.neotica.components.sections
+package id.neotica.alexandria.components.sections
 
 import androidx.compose.runtime.Composable
 import com.varabyte.kobweb.compose.css.TextAlign

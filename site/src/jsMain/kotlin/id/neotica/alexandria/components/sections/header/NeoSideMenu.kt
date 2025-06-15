@@ -1,4 +1,4 @@
-package id.neotica.neotica.components.sections.header
+package id.neotica.alexandria.components.sections.header
 
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.key
@@ -13,8 +13,8 @@ import com.varabyte.kobweb.silk.components.overlay.Overlay
 import com.varabyte.kobweb.silk.components.overlay.OverlayVars
 import com.varabyte.kobweb.silk.style.animation.Keyframes
 import com.varabyte.kobweb.silk.style.animation.toAnimation
-import id.neotica.neotica.components.NeoColor
-import id.neotica.neotica.components.widgets.IconButton
+import id.neotica.alexandria.components.NeoColor
+import id.neotica.alexandria.components.widgets.IconButton
 import org.jetbrains.compose.web.css.*
 
 @Composable

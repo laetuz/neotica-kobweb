@@ -1,4 +1,4 @@
-package id.neotica.neotica.components.layouts
+package id.neotica.alexandria.components.layouts
 
 import androidx.compose.runtime.Composable
 import com.varabyte.kobweb.compose.css.FontWeight
@@ -16,13 +16,13 @@ import com.varabyte.kobweb.silk.style.toAttrs
 import com.varabyte.kobweb.silk.theme.colors.palette.color
 import com.varabyte.kobweb.silk.theme.colors.palette.toPalette
 import com.varabyte.kobwebx.markdown.markdown
-import id.neotica.neotica.components.NeoColor
+import id.neotica.alexandria.components.NeoColor
 import org.jetbrains.compose.web.css.DisplayStyle
 import org.jetbrains.compose.web.css.LineStyle
 import org.jetbrains.compose.web.css.cssRem
 import org.jetbrains.compose.web.css.px
 import org.jetbrains.compose.web.dom.Div
-import id.neotica.neotica.toSitePalette
+import id.neotica.alexandria.toSitePalette
 
 val MarkdownStyle = CssStyle {
     base { Modifier.fillMaxSize() }

@@ -25,6 +25,6 @@ gradle.settingsEvaluated {
     dependencyResolutionManagement.repositories { kobwebSnapshots() }
 }
 
-rootProject.name = "neotica"
+rootProject.name = "alexandria"
 
 include(":site")
