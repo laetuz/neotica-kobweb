@@ -1,4 +1,4 @@
-package id.neotica.alexandria.components.sections.header
+package id.neotica.neotica.components.sections.header
 
 import androidx.compose.runtime.*
 import com.varabyte.kobweb.compose.css.FontStyle
@@ -18,8 +18,8 @@ import com.varabyte.kobweb.silk.components.text.SpanText
 import com.varabyte.kobweb.silk.style.breakpoint.Breakpoint
 import com.varabyte.kobweb.silk.style.breakpoint.displayIfAtLeast
 import com.varabyte.kobweb.silk.style.breakpoint.displayUntil
-import id.neotica.alexandria.components.NeoColor
-import id.neotica.alexandria.components.widgets.IconButton
+import id.neotica.neotica.components.NeoColor
+import id.neotica.neotica.components.widgets.IconButton
 import org.jetbrains.compose.web.css.DisplayStyle
 import org.jetbrains.compose.web.css.cssRem
 import org.jetbrains.compose.web.css.em
@@ -44,8 +44,8 @@ fun NeoNavHeader(currentRoute: String? = "") {
             Link("/") {
                 // Block display overrides inline display of the <img> tag, so it calculates centering better
                 Image(
-                    "/alexandria-logo.svg",
-                    "Alexandria Logo",
+                    "/neotica-logo.png",
+                    "Kobweb Logo",
                     Modifier
                         .padding(right = 0.5.cssRem)
                         .height(2.cssRem)
@@ -53,7 +53,7 @@ fun NeoNavHeader(currentRoute: String? = "") {
                 )
             }
             SpanText(
-                "Alexandria",
+                "Neotica.id$currentRoute",
                 Modifier
                     .overflowWrap(OverflowWrap.BreakWord)
                     .color(NeoColor.white)
@@ -63,29 +63,29 @@ fun NeoNavHeader(currentRoute: String? = "") {
             )
 
         }
-//        Row(Modifier.gap(1.5.cssRem).displayIfAtLeast(Breakpoint.MD), verticalAlignment = Alignment.CenterVertically) {
-//            NeoMenuItems()
-//        }
-//
-//        Row(
-//            Modifier
-//                .fontSize(1.5.cssRem)
-//                .gap(1.cssRem)
-//                .displayUntil(Breakpoint.MD),
-//            verticalAlignment = Alignment.CenterVertically
-//        ) {
-//            var menuState by remember { mutableStateOf(SideMenuState.CLOSED) }
-//
-//            HamburgerButton(onClick =  { menuState = SideMenuState.OPEN })
-//
-//            if (menuState != SideMenuState.CLOSED) {
-//                NeoSideMenu(
-//                    menuState,
-//                    close = { menuState = menuState.close() },
-//                    onAnimationEnd = { if (menuState == SideMenuState.CLOSING) menuState = SideMenuState.CLOSED }
-//                )
-//            }
-//        }
+        Row(Modifier.gap(1.5.cssRem).displayIfAtLeast(Breakpoint.MD), verticalAlignment = Alignment.CenterVertically) {
+            NeoMenuItems()
+        }
+
+        Row(
+            Modifier
+                .fontSize(1.5.cssRem)
+                .gap(1.cssRem)
+                .displayUntil(Breakpoint.MD),
+            verticalAlignment = Alignment.CenterVertically
+        ) {
+            var menuState by remember { mutableStateOf(SideMenuState.CLOSED) }
+
+            HamburgerButton(onClick =  { menuState = SideMenuState.OPEN })
+
+            if (menuState != SideMenuState.CLOSED) {
+                NeoSideMenu(
+                    menuState,
+                    close = { menuState = menuState.close() },
+                    onAnimationEnd = { if (menuState == SideMenuState.CLOSING) menuState = SideMenuState.CLOSED }
+                )
+            }
+        }
     }
 }
 

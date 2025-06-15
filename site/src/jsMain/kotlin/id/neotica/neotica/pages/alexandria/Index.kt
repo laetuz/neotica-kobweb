@@ -1,4 +1,4 @@
-package id.neotica.alexandria.pages.alexandria
+package id.neotica.neotica.pages.alexandria
 
 import androidx.compose.runtime.*
 import com.varabyte.kobweb.compose.css.Overflow
@@ -12,8 +12,8 @@ import com.varabyte.kobweb.core.init.InitRoute
 import com.varabyte.kobweb.core.init.InitRouteContext
 import com.varabyte.kobweb.core.layout.Layout
 import com.varabyte.kobweb.silk.components.text.SpanText
-import id.neotica.alexandria.components.NeoColor
-import id.neotica.alexandria.components.layouts.NeoLayoutData
+import id.neotica.neotica.components.NeoColor
+import id.neotica.neotica.components.layouts.NeoLayoutData
 import kotlinx.browser.window
 import kotlinx.coroutines.await
 import org.jetbrains.compose.web.css.cssRem

@@ -1,4 +1,4 @@
-package id.neotica.alexandria.components.layouts
+package id.neotica.neotica.components.layouts
 
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
@@ -12,9 +12,9 @@ import com.varabyte.kobweb.compose.ui.modifiers.padding
 import com.varabyte.kobweb.core.PageContext
 import com.varabyte.kobweb.core.data.getValue
 import com.varabyte.kobweb.core.layout.Layout
-import id.neotica.alexandria.components.NeoColor
-import id.neotica.alexandria.components.sections.NeoFooter
-import id.neotica.alexandria.components.sections.header.NeoNavHeader
+import id.neotica.neotica.components.NeoColor
+import id.neotica.neotica.components.sections.NeoFooter
+import id.neotica.neotica.components.sections.header.NeoNavHeader
 import kotlinx.browser.document
 import org.jetbrains.compose.web.css.cssRem
 
@@ -23,6 +23,7 @@ class NeoLayoutData(val title: String, val route: String? = "")
 @Layout
 @Composable
 fun NeoPageLayout(ctx: PageContext, content: @Composable () -> Unit) {
+//    val ctx = rememberPageContext()
     val data = ctx.data.getValue<NeoLayoutData>()
     LaunchedEffect(data.title) {
         document.title = "::${data.title}"
@@ -30,6 +31,9 @@ fun NeoPageLayout(ctx: PageContext, content: @Composable () -> Unit) {
 
     // This Column will be the main container for the entire page content
     Column(modifier = Modifier.fillMaxSize().backgroundColor(NeoColor.backgroundPrimary)) {
+        // Set the browser tab title using the title from PageLayoutData
+        // If pageData is null (e.g., no InitRoute added data), fallback to a default title
+//        Title(pageData?.title ?: "Neotica")
 
         Column(
             Modifier

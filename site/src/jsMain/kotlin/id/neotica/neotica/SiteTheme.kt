@@ -1,4 +1,4 @@
-package id.neotica.alexandria
+package id.neotica.neotica
 
 import com.varabyte.kobweb.compose.ui.graphics.Color
 import com.varabyte.kobweb.compose.ui.graphics.Colors

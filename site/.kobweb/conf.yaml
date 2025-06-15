@@ -1,14 +1,14 @@
 site:
-  title: "Alexandria"
+  title: "Neotica"
 
 server:
   files:
     dev:
       contentRoot: "build/processedResources/js/main/public"
-      script: "build/kotlin-webpack/js/developmentExecutable/alexandria.js"
-      api: "build/libs/alexandria.jar"
+      script: "build/kotlin-webpack/js/developmentExecutable/neotica.js"
+      api: "build/libs/neotica.jar"
     prod:
-      script: "build/kotlin-webpack/js/productionExecutable/alexandria.js"
+      script: "build/kotlin-webpack/js/productionExecutable/neotica.js"
       siteRoot: ".kobweb/site"
 
-  port: 8082
+  port: 8080

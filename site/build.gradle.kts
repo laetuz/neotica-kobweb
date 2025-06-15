@@ -7,13 +7,13 @@ plugins {
     alias(libs.plugins.kobwebx.markdown)
 }
 
-group = "id.neotica.alexandria"
+group = "id.neotica.neotica"
 version = "1.0-SNAPSHOT"
 
 kobweb {
     app {
         index {
-            description.set("Alexandria")
+            description.set("Neotica.id - A mobile development research platform.")
         }
     }
 }
@@ -21,7 +21,7 @@ kobweb {
 kotlin {
     // This example is frontend only. However, for a fullstack app, you can uncomment the includeServer parameter
     // and the `jvmMain` source set below.
-    configAsKobwebApplication("alexandria" /*, includeServer = true*/)
+    configAsKobwebApplication("neotica" /*, includeServer = true*/)
 
     sourceSets {
 //        commonMain.dependencies {

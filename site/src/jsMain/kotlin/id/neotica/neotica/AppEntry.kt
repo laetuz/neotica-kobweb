@@ -1,4 +1,4 @@
-package id.neotica.alexandria
+package id.neotica.neotica
 
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect

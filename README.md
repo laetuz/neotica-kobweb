@@ -1,6 +1,10 @@
-# Alexandria Website
+# Neotica Website
 
-[Alexandria](https://alexandrianeotica.id/) 
+[Neotica](https://neotica.id/) is a software development studio specializing in mobile applications and libraries.
+
+Our mission is to explore new frontiers in software development, crafting high-quality applications for users and powerful tools for fellow developers.
+
+For business inquiries or consultations on your Android and iOS project, please contact us via email.
 
 This website is built using [Kotlin](https://kotlinlang.org/), [Kobweb](https://github.com/varabyte/kobweb), and [Compose for Web](https://compose-web.ui.jetbrains.org/).
 
