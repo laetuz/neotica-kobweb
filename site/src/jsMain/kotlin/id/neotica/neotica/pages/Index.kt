@@ -70,12 +70,6 @@ fun HomePage() {
             Link("/alexandria") {
                 SpanText("Alexandria")
             }
-            Link("/legal/terms-of-service") {
-                SpanText("Terms of Service")
-            }
-            Link("/legal/privacy-policy") {
-                SpanText("Privacy Policy")
-            }
         }
     }
 }

@@ -19,7 +19,6 @@ import com.varabyte.kobweb.silk.style.breakpoint.Breakpoint
 import com.varabyte.kobweb.silk.style.breakpoint.displayIfAtLeast
 import com.varabyte.kobweb.silk.style.breakpoint.displayUntil
 import id.neotica.neotica.components.NeoColor
-import id.neotica.neotica.components.sections.SideMenuState
 import id.neotica.neotica.components.widgets.IconButton
 import org.jetbrains.compose.web.css.DisplayStyle
 import org.jetbrains.compose.web.css.cssRem
@@ -87,6 +86,20 @@ fun NeoNavHeader(currentRoute: String? = "") {
                 )
             }
         }
+    }
+}
+
+// Note: When the user closes the side menu, we don't immediately stop rendering it (at which point it would disappear
+// abruptly). Instead, we start animating it out and only stop rendering it when the animation is complete.
+enum class SideMenuState {
+    CLOSED,
+    OPEN,
+    CLOSING;
+
+    fun close() = when (this) {
+        CLOSED -> CLOSED
+        OPEN -> CLOSING
+        CLOSING -> CLOSING
     }
 }
 

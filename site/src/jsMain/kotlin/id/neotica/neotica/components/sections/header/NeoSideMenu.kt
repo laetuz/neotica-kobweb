@@ -11,10 +11,9 @@ import com.varabyte.kobweb.compose.ui.modifiers.*
 import com.varabyte.kobweb.silk.components.icons.CloseIcon
 import com.varabyte.kobweb.silk.components.overlay.Overlay
 import com.varabyte.kobweb.silk.components.overlay.OverlayVars
+import com.varabyte.kobweb.silk.style.animation.Keyframes
 import com.varabyte.kobweb.silk.style.animation.toAnimation
 import id.neotica.neotica.components.NeoColor
-import id.neotica.neotica.components.sections.SideMenuSlideInAnim
-import id.neotica.neotica.components.sections.SideMenuState
 import id.neotica.neotica.components.widgets.IconButton
 import org.jetbrains.compose.web.css.*
 
@@ -58,6 +57,15 @@ fun NeoSideMenu(menuState: SideMenuState, close: () -> Unit, onAnimationEnd: () 
     }
 }
 
+val SideMenuSlideInAnim = Keyframes {
+    from {
+        Modifier.translateX(100.percent)
+    }
+
+    to {
+        Modifier
+    }
+}
 
 @Composable
 private fun CloseButton(onClick: () -> Unit) {
