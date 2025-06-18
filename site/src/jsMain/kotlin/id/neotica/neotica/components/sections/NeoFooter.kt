@@ -16,7 +16,7 @@ import org.jetbrains.compose.web.css.em
 @Composable
 fun NeoFooter(modifier: Modifier = Modifier) {
     SpanText(
-        text = "Ωåœ∑´®¡™®†¨¥ˆNeotica.id 2025",
+        text = "© Neotica.id 2025",
         modifier = modifier
             .backgroundColor(NeoColor.backgroundPrimary)
             .fillMaxWidth()
