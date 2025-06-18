@@ -63,6 +63,7 @@ fun NeoNavHeader(currentRoute: String? = "") {
             )
 
         }
+
         Row(Modifier.gap(1.5.cssRem).displayIfAtLeast(Breakpoint.MD), verticalAlignment = Alignment.CenterVertically) {
             NeoMenuItems()
         }

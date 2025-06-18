@@ -5,6 +5,7 @@ import com.varabyte.kobweb.compose.css.Overflow
 import com.varabyte.kobweb.compose.css.StyleVariable
 import com.varabyte.kobweb.compose.foundation.layout.Box
 import com.varabyte.kobweb.compose.foundation.layout.Column
+import com.varabyte.kobweb.compose.foundation.layout.Row
 import com.varabyte.kobweb.compose.ui.Modifier
 import com.varabyte.kobweb.compose.ui.graphics.Color
 import com.varabyte.kobweb.compose.ui.modifiers.*
@@ -20,7 +21,9 @@ import com.varabyte.kobweb.silk.style.base
 import com.varabyte.kobweb.silk.style.breakpoint.Breakpoint
 import id.neotica.neotica.components.NeoColor
 import id.neotica.neotica.components.layouts.NeoLayoutData
+import id.neotica.neotica.utils.homeDesc
 import org.jetbrains.compose.web.css.cssRem
+import org.jetbrains.compose.web.css.em
 import org.jetbrains.compose.web.css.vh
 
 // Container that has a tagline and grid on desktop, and just the tagline on mobile
@@ -66,10 +69,31 @@ fun HomePage() {
             modifier = Modifier
                 .fillMaxWidth()
         ) {
-            SpanText("Home")
-            Link("/alexandria") {
-                SpanText("Alexandria")
+            SpanText(
+                text = "> Last updated: 19/06/2025",
+                modifier = Modifier.fontSize(0.8.em)
+            )
+            SpanText(
+                text = homeDesc,
+                modifier = Modifier.fontSize(0.8.em)
+            )
+            Link("/projects") {
+                SpanText(
+                    text = "> [View Projects]",
+                    modifier = Modifier.fontSize(0.8.em)
+                )
             }
+//            Row(
+//                modifier = Modifier
+//                    .margin(top = 5.cssRem)
+//                    .fontSize(0.8.em)
+//            ) {
+//                SpanText("Edited by ")
+//                Link("/profile/ryo-martin") {
+//                    SpanText("Ryo Martin")
+//                }
+//                SpanText(" on 19")
+//            }
         }
     }
 }

@@ -4,25 +4,36 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import com.varabyte.kobweb.compose.foundation.layout.Box
 import com.varabyte.kobweb.compose.foundation.layout.Column
+import com.varabyte.kobweb.compose.foundation.layout.ColumnScope
+import com.varabyte.kobweb.compose.ui.Alignment
 import com.varabyte.kobweb.compose.ui.Modifier
 import com.varabyte.kobweb.compose.ui.modifiers.backgroundColor
 import com.varabyte.kobweb.compose.ui.modifiers.fillMaxSize
 import com.varabyte.kobweb.compose.ui.modifiers.fillMaxWidth
+import com.varabyte.kobweb.compose.ui.modifiers.gridRow
+import com.varabyte.kobweb.compose.ui.modifiers.gridTemplateRows
+import com.varabyte.kobweb.compose.ui.modifiers.maxWidth
 import com.varabyte.kobweb.compose.ui.modifiers.padding
 import com.varabyte.kobweb.core.PageContext
 import com.varabyte.kobweb.core.data.getValue
 import com.varabyte.kobweb.core.layout.Layout
+import com.varabyte.kobweb.silk.components.text.SpanText
+import com.varabyte.kobweb.silk.style.CssStyle
+import com.varabyte.kobweb.silk.style.breakpoint.Breakpoint
+import com.varabyte.kobweb.silk.style.toAttrs
 import id.neotica.neotica.components.NeoColor
 import id.neotica.neotica.components.sections.NeoFooter
 import id.neotica.neotica.components.sections.header.NeoNavHeader
 import kotlinx.browser.document
 import org.jetbrains.compose.web.css.cssRem
+import org.jetbrains.compose.web.css.fr
+import org.jetbrains.compose.web.dom.Div
 
 class NeoLayoutData(val title: String, val route: String? = "")
 
 @Layout
 @Composable
-fun NeoPageLayout(ctx: PageContext, content: @Composable () -> Unit) {
+fun NeoPageLayout(ctx: PageContext, content: @Composable /*ColumnScope.*/() -> Unit) {
 //    val ctx = rememberPageContext()
     val data = ctx.data.getValue<NeoLayoutData>()
     LaunchedEffect(data.title) {
@@ -30,32 +41,31 @@ fun NeoPageLayout(ctx: PageContext, content: @Composable () -> Unit) {
     }
 
     // This Column will be the main container for the entire page content
-    Column(modifier = Modifier.fillMaxSize().backgroundColor(NeoColor.backgroundPrimary)) {
-        // Set the browser tab title using the title from PageLayoutData
-        // If pageData is null (e.g., no InitRoute added data), fallback to a default title
-//        Title(pageData?.title ?: "Neotica")
+    Box(
+        modifier = Modifier
+            .fillMaxSize()
+            .backgroundColor(NeoColor.backgroundPrimary)
+            .gridTemplateRows { size(1.fr); size(minContent) },
+        contentAlignment = Alignment.TopCenter
+    )
+    {
 
         Column(
             Modifier
-                .fillMaxWidth()
-                .padding(leftRight = 2.cssRem)
+                .fillMaxWidth().gridRow(1),
+            horizontalAlignment = Alignment.CenterHorizontally
         ) {
-            NeoNavHeader(data.route) // Pass current path to header for active link highlighting
+            Box(
+                modifier = Modifier.fillMaxSize().padding(leftRight = 2.cssRem)
+            ) { NeoNavHeader(data.route) }
+            Div(PageContentStyle.toAttrs()) { content() }
         }
+        NeoFooter(Modifier.fillMaxWidth().gridRow(2))
 
-        // This is where the actual content of the page (e.g., AboutPage, HomePage) will be rendered.
-        // It should expand to fill the remaining space below the header and above the footer.
-        Box(modifier = Modifier.weight(1f)) { // Use weight to make content area flexible
-            Column {
-                content()
-            }
-
-        }
-
-        // Footer common to all pages using this layout.
-        // Note: If you need a footer that scrolls *with* the content within a specific page,
-        // it's better to include NeoFooter directly inside that page's Composable.
-        // But for a common layout footer, this is where it goes.
-        NeoFooter()
     }
+}
+
+val PageContentStyle = CssStyle {
+    base { Modifier.fillMaxSize()/*.padding(leftRight = 2.cssRem, top = 4.cssRem)*/ }
+//    Breakpoint.MD { Modifier.maxWidth(60.cssRem) }
 }
