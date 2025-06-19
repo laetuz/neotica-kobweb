@@ -1,7 +1,7 @@
 package id.neotica.neotica.utils
 
 const val homeDesc = "" +
-        "Hello. I'm Ryo Martin, the designer and developer behind Neotica.id.\n" +
+        "Hello. I'm Martin, the developer and maintainer behind Neotica.id.\n" +
         "\n" +
         "This site serves as a running log of my work in building clean, effective digital things. I specialize in mobile development, and other niche technologies; focusing on well structured, industry standard projects that are both functional and weirdly beautiful." +
         ""

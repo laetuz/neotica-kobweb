@@ -22,7 +22,6 @@ import id.neotica.neotica.components.NeoColor
 import id.neotica.neotica.components.layouts.NeoLayoutData
 import id.neotica.neotica.utils.homeDesc
 import org.jetbrains.compose.web.css.cssRem
-import org.jetbrains.compose.web.css.em
 import org.jetbrains.compose.web.css.vh
 
 // Container that has a tagline and grid on desktop, and just the tagline on mobile
@@ -67,19 +66,22 @@ fun HomePage() {
         Column(
             modifier = Modifier
                 .fillMaxWidth()
+                .fontFamily("IBM Plex Mono")
         ) {
             SpanText(
                 text = "> Last updated: 19/06/2025",
-                modifier = Modifier.fontSize(0.8.em)
+                modifier = Modifier
+//                    .fontSize(0.8.em)
+//                    .fontFamily("font/ibmplexmono/IBMPlexMono-Regular.ttf")
             )
             SpanText(
                 text = homeDesc,
-                modifier = Modifier.fontSize(0.8.em)
+//                modifier = Modifier.fontSize(0.8.em)
             )
             Link("/projects") {
                 SpanText(
                     text = "> [View Projects]",
-                    modifier = Modifier.fontSize(0.8.em)
+//                    modifier = Modifier.fontSize(0.8.em)
                 )
             }
 //            Row(
