@@ -1,13 +1,33 @@
 ---
 layout: .components.layouts.MarkdownLayout
-title: Privacy Policy
+title: Terms Of Service
 ---
 
 ## Terms of Service
 
-Last Updated: 4th of October, 2024
+Effective as of 23rd of June 2025
 
 These terms of service ("Terms") apply to your access and use of Neoverse (the "Service"). Under the legal entity of PT Neotica Digital Solusi. Please read them carefully.
+
+## Table of Contents
+- [Accepting these Terms](#accepting-these-terms)
+- [Changes to these Terms](#changes-to-these-terms)
+- [Privacy Policy](#privacy-policy)
+- [Eligibility](#eligibility)
+- [Third-Party Services](#third-party-services)
+- [Creating Accounts](#creating-accounts)
+- [Your Content & Conduct](#your-content--conduct)
+- [Neoverse Materials](#neoverse-materials)
+- [Public Domain Content](#public-domain-content)
+- [Hyperlinks and Third Party Content](#hyperlinks-and-third-party-content)
+- [Disclaimer of Warranties](#disclaimer-of-warranties)
+- [Copyright Complaints](#copyright-complaints)
+- [Governing Law](#governing-law)
+- [Jurisdiction](#jurisdiction)
+- [Termination & Suspension](#termination-and-suspension)
+- [Entire Agreement & Severability](#entire-agreement-and-severability)
+- [Feedback](#feedback)
+- [Questions & Contact Information](#questions--contact-information)
 
 ---
 
@@ -17,18 +37,28 @@ If you access or use the Service, it means you agree to be bound by all of the t
 #### Changes to these Terms
 We reserve the right to modify these Terms at any time. For instance, we may need to change these Terms if we come out with a new feature or for some other reason.
 
-Whenever we make changes to these Terms, the changes are effective effectively after we post such revised Terms (indicated by revising the date at the top of these Terms) or upon your acceptance if we provide a mechanism for your immediate acceptance of the revised Terms (such as a click-through confirmation or acceptance button). It is your responsibility to check on the Neoverse’s  Terms and Conditions gradually for changes to these Terms.
+Whenever we make changes to these Terms, the changes becomes effective after we post such revised Terms (indicated by revising the date at the top of these Terms) or upon your acceptance if we provide a mechanism for your immediate acceptance of the revised Terms (such as a click-through confirmation or acceptance button). 
+It is your responsibility to check on the Neoverse’s  Terms and Conditions periodically for changes to these Terms.
 
 If you continue to use the Service after the revised Terms go into effect, then you have accepted the changes to these Terms.
 
 #### Privacy Policy
-For information about how we collect and use information about users of the Service, please check out our privacy policy available at [here](/legal/privacy-policy).
+To understand how we handle your data, please review our [Privacy Policy](/legal/privacy-policy).
+
+#### Eligibility
+To use Neoverse, you must:
+
+- Be at least 18 years old, or the legal age of majority in your jurisdiction.
+- Have the legal capacity to enter into a binding agreement.
+- Not be prohibited from using the Service under any applicable law.
+
+By using the Service, you represent and warrant that you meet these requirements. If you are under 18, you may not create an account or use the Service.
 
 #### Third-Party Services
-From time to time, we may provide you with links to third party websites or services that we do not own or control. Your use of the Service may also include the use of applications that are developed or owned by a third party. Your use of such third party applications, websites, and services is governed by that party's own terms of service or privacy policies. We encourage you to read the terms and conditions and privacy policy of any third party application, website or service that you visit or use.
+We may integrate with or link to third-party websites or services. These are governed by their own terms and policies. You are responsible for reviewing them.
 
 #### Creating Accounts
-When you create an account or use another service to log in to the Service, you agree to maintain the security of your password and accept all risks of unauthorized access to any data or other information you provide to the Service.
+When you create an account or log in, you must keep your credentials secure. You're responsible for all activity under your account.
 
 If you discover or suspect any Service security breaches, please let us know as soon as possible.
 
@@ -54,13 +84,31 @@ Also, you agree that you will not do any of the following in connection with the
 - Use the Service in any manner that could interfere with, disrupt, negatively affect or inhibit other users from fully enjoying the Service or that could damage, disable, overburden or impair the functioning of the Service; 
 - Impersonate or post on behalf of any person or entity or otherwise misrepresent your affiliation with a person or entity; 
 - Collect any personal information about other users, or intimidate, threaten, stalk or otherwise harass other users of the Service; 
-- Create an account or post any content if you are not over 13 years of age years of age; and 
+- Create an account or post any content if you are not over 13 years of age; and 
 - Circumvent or attempt to circumvent any filtering, security measures, rate limits or other features designed to protect the Service, users of the Service, or third parties.
 
 #### Neoverse Materials
-We put a lot of effort into creating the Service including, the logo and all designs, text, graphics, pictures, information and other content (excluding your content). This property is owned by us or our licensors and it is protected by U.S. and international copyright laws. We grant you the right to use it.
+We put a lot of effort into creating the Service including, the logo and all designs, text, graphics, pictures, information and other content (excluding your content) are owned by PT Neotica Digital Solusi or licensors and are protected by copyright law.
 
-However, unless we expressly state otherwise, your rights do not include: (i) publicly performing or publicly displaying the Service; (ii) modifying or otherwise making any derivative uses of the Service or any portion thereof; (iii) using any data mining, robots or similar data gathering or extraction methods; (iv) downloading (other than page caching) of any portion of the Service or any information contained therein; (v) reverse engineering or accessing the Service in order to build a competitive product or service; or (vi) using the Service other than for its intended purposes. If you do any of this stuff, we may terminate your use of the Service.
+You may not:
+
+- Modify, copy, or make derivative works
+- Scrape, reverse-engineer, or download content (except caching)
+- Use materials for unauthorized purposes
+
+Violation may result in termination of access.
+
+#### Public Domain Content
+Neoverse may display or make available content that is in the public domain, including literary works sourced from Project Gutenberg.
+These texts are believed to be free of known copyright restrictions and are offered as-is for reading and educational purposes.
+While we may reformat, paginate, or visually enhance this content, we make no claims of ownership over the original public domain works.
+
+You understand that:
+- Public domain texts are provided without warranties of any kind, including but not limited to accuracy, completeness, or fitness for any purpose.
+- Any modern formatting, annotations, or additional UI features applied to public domain content remain the property of Neoverse and may not be copied or redistributed without permission.
+- We do not charge for access to public domain books, nor do we claim exclusive rights to their original content.
+
+We respect the spirit and mission of Project Gutenberg and encourage users to explore their vast digital library directly.
 
 #### Hyperlinks and Third Party Content
 You may create a hyperlink to the Service. But, you may not use, frame or utilize framing techniques to enclose any of our trademarks, logos or other proprietary information without our express written consent.
@@ -69,7 +117,7 @@ Neotica makes no claim or representation regarding, and accepts no responsibilit
 
 If there is any content on the Service from you and others, we don't review, verify or authenticate it, and it may include inaccuracies or false information. We make no representations, warranties, or guarantees relating to the quality, suitability, truth, accuracy or completeness of any content contained in the Service. You acknowledge sole responsibility for and assume all risk arising from your use of or reliance on any content.
 
-#### Unavoidable Legal Stuff
+#### Disclaimer of Warranties
 THE SERVICE AND ANY OTHER SERVICE AND CONTENT INCLUDED ON OR OTHERWISE MADE AVAILABLE TO YOU THROUGH THE SERVICE ARE PROVIDED TO YOU ON AN AS IS OR AS AVAILABLE BASIS WITHOUT ANY REPRESENTATIONS OR WARRANTIES OF ANY KIND. WE DISCLAIM ANY AND ALL WARRANTIES AND REPRESENTATIONS (EXPRESS OR IMPLIED, ORAL OR WRITTEN) WITH RESPECT TO THE SERVICE AND CONTENT INCLUDED ON OR OTHERWISE MADE AVAILABLE TO YOU THROUGH THE SERVICE WHETHER ALLEGED TO ARISE BY OPERATION OF LAW, BY REASON OF CUSTOM OR USAGE IN THE TRADE, BY COURSE OF DEALING OR OTHERWISE.
 
 IN NO EVENT WILL PT Neotica Digital Solusi BE LIABLE TO YOU OR ANY THIRD PARTY FOR ANY SPECIAL, INDIRECT, INCIDENTAL, EXEMPLARY OR CONSEQUENTIAL DAMAGES OF ANY KIND ARISING OUT OF OR IN CONNECTION WITH THE SERVICE OR ANY OTHER SERVICE AND/OR CONTENT INCLUDED ON OR OTHERWISE MADE AVAILABLE TO YOU THROUGH THE SERVICE, REGARDLESS OF THE FORM OF ACTION, WHETHER IN CONTRACT, TORT, STRICT LIABILITY OR OTHERWISE, EVEN IF WE HAVE BEEN ADVISED OF THE POSSIBILITY OF SUCH DAMAGES OR ARE AWARE OF THE POSSIBILITY OF SUCH DAMAGES. OUR TOTAL LIABILITY FOR ALL CAUSES OF ACTION AND UNDER ALL THEORIES OF LIABILITY WILL BE LIMITED TO THE AMOUNT YOU PAID TO PT Neotica Digital Solusi. THIS SECTION WILL BE GIVEN FULL EFFECT EVEN IF ANY REMEDY SPECIFIED IN THIS AGREEMENT IS DEEMED TO HAVE FAILED OF ITS ESSENTIAL PURPOSE.
@@ -80,15 +128,15 @@ You agree to defend, indemnify and hold us harmless from and against any and all
 We take intellectual property rights seriously. In accordance with the Digital Millennium Copyright Act ("DMCA") and other applicable law, we have adopted a policy of terminating, in appropriate circumstances and, at our sole discretion, access to the service for users who are deemed to be repeat infringers.
 
 #### Governing Law
-The validity of these Terms and the rights, obligations, and relations of the parties under these Terms will be construed and determined under and in accordance with the laws of the Republic of Indonesia , without regard to conflicts of law principles.
+These Terms are governed by the laws of the **Republic of Indonesia**, without regard to conflict of law principles.
 
 #### Jurisdiction
-You expressly agree that exclusive jurisdiction for any dispute with the Service or relating to your use of it, resides in the courts of the Republic of Indonesia and you further agree and expressly consent to the exercise of personal jurisdiction in the courts of the Republic of Indonesia in connection with any such dispute including any claim involving Service. You further agree that you and Service will not commence against the other a class action, class arbitration or other representative action or proceeding.
+Disputes must be resolved exclusively in the courts of the Republic of Indonesia. You waive the right to initiate or join class actions.
 
-#### Termination
+#### Termination and Suspension
 If you breach any of these Terms, we have the right to suspend or disable your access to or use of the Service.
 
-#### Entire Agreement
+#### Entire Agreement and Severability
 These Terms constitute the entire agreement between you and PT Neotica Digital Solusi regarding the use of the Service, superseding any prior agreements between you and PT Neotica Digital Solusi relating to your use of the Service.
 
 #### Feedback
