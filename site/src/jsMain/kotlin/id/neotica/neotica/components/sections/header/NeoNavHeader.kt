@@ -107,7 +107,7 @@ enum class SideMenuState {
 @Composable
 fun NeoMenuItems() {
     NavLink("/", "Home")
-    NavLink("/about", "About")
+//    NavLink("/about", "About")
     NavLink("/contact", "Contact")
 }
 

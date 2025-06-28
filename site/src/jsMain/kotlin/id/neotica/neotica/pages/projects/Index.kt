@@ -2,7 +2,9 @@ package id.neotica.neotica.pages.projects
 
 import androidx.compose.runtime.Composable
 import com.varabyte.kobweb.compose.css.FontStyle
+import com.varabyte.kobweb.compose.css.FontWeight
 import com.varabyte.kobweb.compose.css.Overflow
+import com.varabyte.kobweb.compose.css.TextAlign
 import com.varabyte.kobweb.compose.foundation.layout.Arrangement
 import com.varabyte.kobweb.compose.foundation.layout.Column
 import com.varabyte.kobweb.compose.foundation.layout.Row
@@ -74,87 +76,113 @@ fun ProjectsPage() {
 
 @Composable
 private fun ProjectRow() {
-    Column(
-        modifier = Modifier
-            .borderRadius(20.percent)
-            .backgroundColor(NeoColor.colorPrimary20)
-            .fillMaxSize()
-            .padding(2.cssRem)
-            .width(16.cssRem)
-            .flexDirection(FlexDirection.Column),
-        horizontalAlignment = Alignment.CenterHorizontally
+    ProjectCard(
+        name = "Neoverse",
+        image = "/projects/neoverse-logo.png",
+        desc = "An RPG inspired social media.",
+        techStacks = {
+            Row(
+                verticalAlignment = Alignment.CenterVertically,
+            ) {
+                val neoverseStacks = listOf(
+                    "/projects/stacks/android-head_3D.png",
+                    "/projects/stacks/jetpack_compose_icon.png",
+                    "/projects/stacks/koin_logo.png",
+                    "/projects/stacks/firestore_logo.svg",
+                )
+
+                neoverseStacks.forEach {
+                    Image(
+                        src = it,
+                        width = 30,
+                        modifier = Modifier
+                    )
+                }
+            }
+        }
     ) {
-        Image(
-            src = "/projects/neoverse-logo.png",
-            width = 180,
-            modifier = Modifier
-                .borderRadius(20.percent)
-        )
-        SpanText(
-            text = "Neoverse"
-        )
-        SpanText(
-            text = "An RPG inspired social media.",
-            modifier = Modifier
-                .fontSize(0.8.cssRem)
-                .fontStyle(FontStyle.Italic)
-        )
         Link("https://play.google.com/store/apps/details?id=id.neotica.neoverse") {
             SpanText("Play store")
         }
-    }
 
-    Column(
-        modifier = Modifier
-            .borderRadius(20.percent)
-            .backgroundColor(NeoColor.colorPrimary20)
-            .padding(2.cssRem)
-            .width(16.cssRem),
-        horizontalAlignment = Alignment.CenterHorizontally
+
+//        SimpleGrid(
+//            numColumns = numColumns(2, 2),
+//        ){
+//            SpanText("Kotlin")
+//            SpanText("Kotlin Multiplatform Compose")
+//            SpanText("Firebase")
+//        }PostgreSQL_logo.3colors.120x120.png
+    }
+    ProjectCard(
+        name = "Alexandria",
+        image = "/projects/alexandria-logo.png",
+        desc = "A vast community-driven reading and writing platform.",
+        techStacks = {
+            Row(
+                verticalAlignment = Alignment.CenterVertically,
+            ) {
+                val alexandriaStacks = listOf(
+                    "/projects/stacks/android-head_3D.png",
+                    "/projects/stacks/apple_logo_black.svg",
+                    "/projects/compose-multiplatform-logo.svg",
+                    "/projects/stacks/koin_logo.png",
+                )
+
+                alexandriaStacks.forEach {
+                    Image(
+                        src = it,
+                        width = 30,
+                        modifier = Modifier
+                    )
+                }
+            }
+
+            Row {
+                val alexandriaStacks2 = listOf(
+                    "/projects/stacks/nginx-icon.svg",
+                    "/projects/stacks/ktor_logo.svg",
+                    "/projects/stacks/postgresql_logo.png",
+                    "/projects/stacks/docker-logo.svg",
+                )
+
+                alexandriaStacks2.forEach {
+                    Image(
+                        src = it,
+                        width = 30,
+                        modifier = Modifier
+                    )
+                }
+            }
+        }
     ) {
-        Image(
-            src = "/projects/alexandria-logo.png",
-            width = 180,
-            modifier = Modifier
-                .borderRadius(20.percent)
-        )
-        SpanText(
-            text = "Alexandria"
-        )
-        SpanText(
-            text = "A vast community-driven reading and writing platform.",
-            modifier = Modifier
-                .fontSize(0.8.cssRem)
-                .fontStyle(FontStyle.Italic)
-        )
         Link("https://alexandria.neotica.id") {
             SpanText("Website")
         }
     }
+    ProjectCard(
+        name = "Droidcore",
+        image = "/projects/compose-multiplatform-logo.svg",
+        imageSize = 120,
+        imageModifier = Modifier.padding(topBottom = 1.cssRem),
+        desc = "A Compose Multiplatform library.",
+        techStacks = {
+            Row {
+                val alexandriaStacks = listOf(
+                    "/projects/stacks/maven-central-icon.png",
+                    "/projects/compose-multiplatform-logo.svg",
+                )
 
-    Column(
-        modifier = Modifier
-            .borderRadius(20.percent)
-            .backgroundColor(NeoColor.colorPrimary20)
-            .padding(2.cssRem)
-            .width(16.cssRem),
-        horizontalAlignment = Alignment.CenterHorizontally
+                alexandriaStacks.forEach {
+                    Image(
+                        src = it,
+                        width = 30,
+                        modifier = Modifier
+                    )
+                }
+            }
+        }
     ) {
-        Image(
-            src = "/projects/compose-multiplatform-logo.svg",
-            width = 180,
-            modifier = Modifier
-                .borderRadius(20.percent)
-        )
-        SpanText(
-            text = "Droidcore"
-        )
-        SpanText(
-            text = "A Compose Multiplatform library.",
-            modifier = Modifier
-                .fontSize(0.8.cssRem)
-                .fontStyle(FontStyle.Italic)
-        )
         Row(
             verticalAlignment = Alignment.CenterVertically,
             horizontalArrangement = Arrangement.spacedBy(0.8.cssRem)
@@ -167,5 +195,56 @@ private fun ProjectRow() {
             }
         }
 
+    }
+}
+
+@Composable
+private fun ProjectCard(
+    name: String,
+    image: String,
+    imageSize: Int? = 180,
+    imageModifier: Modifier? = Modifier,
+    desc: String,
+    techStacks: @Composable () -> Unit,
+    content: @Composable () -> Unit
+) {
+    Column(
+        modifier = Modifier
+            .borderRadius(20.percent)
+            .backgroundColor(NeoColor.colorPrimary20)
+            .fillMaxSize()
+            .padding(2.cssRem)
+            .width(16.cssRem)
+            .flexDirection(FlexDirection.Column),
+        horizontalAlignment = Alignment.CenterHorizontally
+    ) {
+        Image(
+            src = image,
+            width = imageSize,
+            modifier = Modifier
+                .borderRadius(20.percent)
+                .then(imageModifier ?: Modifier)
+        )
+        SpanText(
+            text = name,
+            modifier = Modifier
+                .fontWeight(FontWeight.Bold)
+                .textAlign(TextAlign.Center)
+        )
+        SpanText(
+            text = desc,
+            modifier = Modifier
+                .fontSize(0.8.cssRem)
+                .fontStyle(FontStyle.Italic)
+                .textAlign(TextAlign.Center)
+        )
+        content()
+        SpanText(
+            text = "Tech stacks:",
+            modifier = Modifier
+                .padding(top = 1.cssRem)
+                .fontSize(0.9.cssRem)
+        )
+        techStacks()
     }
 }

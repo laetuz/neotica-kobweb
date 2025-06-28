@@ -68,12 +68,12 @@ fun HomePage() {
                 .fillMaxWidth()
                 .fontFamily("IBM Plex Mono")
         ) {
-            SpanText(
-                text = "> Last updated: 19/06/2025",
-                modifier = Modifier
+//            SpanText(
+//                text = "> Last updated: 19/06/2025",
+//                modifier = Modifier
 //                    .fontSize(0.8.em)
 //                    .fontFamily("font/ibmplexmono/IBMPlexMono-Regular.ttf")
-            )
+//            )
             SpanText(
                 text = homeDesc,
 //                modifier = Modifier.fontSize(0.8.em)

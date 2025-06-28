@@ -38,7 +38,6 @@ fun ContactPage() {
             modifier = Modifier
                 .fillMaxWidth()
         ) {
-            SpanText("Email: laetuzg@gmail.com")
             Link("https://www.linkedin.com/company/neotica") {
                 SpanText("LinkedIn")
             }
