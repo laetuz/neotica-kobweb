@@ -23,6 +23,7 @@ import com.varabyte.kobweb.silk.style.breakpoint.Breakpoint
 import com.varabyte.kobweb.silk.style.breakpoint.displayIfAtLeast
 import com.varabyte.kobweb.silk.style.breakpoint.displayUntil
 import id.neotica.neotica.components.NeoColor
+import id.neotica.neotica.components.icons.NeoIcons
 import id.neotica.neotica.components.layouts.NeoLayoutData
 import org.jetbrains.compose.web.css.FlexDirection
 import org.jetbrains.compose.web.css.cssRem
@@ -30,7 +31,7 @@ import org.jetbrains.compose.web.css.percent
 
 @InitRoute() // Match this with your @Page path if you define it explicitly
 fun initProjectsPage(ctx: InitRouteContext) {
-    ctx.data.add(NeoLayoutData("Projects - Neotica.id", "/projects")) // Set your desired tab title here
+    ctx.data.add(NeoLayoutData("Projects Portfolio - Neotica.id", "/projects")) // Set your desired tab title here
 }
 
 @Page
@@ -52,7 +53,7 @@ fun ProjectsPage() {
             verticalAlignment = Alignment.CenterVertically
         ) {
             SpanText(
-                text = "Projects",
+                text = "Our Portfolio",
                 modifier = Modifier
                     .fontSize(2.cssRem)
             )
@@ -78,17 +79,18 @@ fun ProjectsPage() {
 private fun ProjectRow() {
     ProjectCard(
         name = "Neoverse",
-        image = "/projects/neoverse-logo.png",
+        image = NeoIcons.NEOVERSE,
         desc = "An RPG inspired social media.",
         techStacks = {
             Row(
                 verticalAlignment = Alignment.CenterVertically,
             ) {
                 val neoverseStacks = listOf(
-                    "/projects/stacks/android-head_3D.png",
-                    "/projects/stacks/jetpack_compose_icon.png",
-                    "/projects/stacks/koin_logo.png",
-                    "/projects/stacks/firestore_logo.svg",
+                    NeoIcons.KOTLIN,
+                    NeoIcons.ANDROID,
+                    NeoIcons.COMPOSE,
+                    NeoIcons.KOIN,
+                    NeoIcons.FIRESTORE,
                 )
 
                 neoverseStacks.forEach {
@@ -105,28 +107,21 @@ private fun ProjectRow() {
             SpanText("Play store")
         }
 
-
-//        SimpleGrid(
-//            numColumns = numColumns(2, 2),
-//        ){
-//            SpanText("Kotlin")
-//            SpanText("Kotlin Multiplatform Compose")
-//            SpanText("Firebase")
-//        }PostgreSQL_logo.3colors.120x120.png
     }
     ProjectCard(
         name = "Alexandria",
-        image = "/projects/alexandria-logo.png",
+        image = NeoIcons.ALEXANDRIA,
         desc = "A vast community-driven reading and writing platform.",
         techStacks = {
             Row(
                 verticalAlignment = Alignment.CenterVertically,
             ) {
                 val alexandriaStacks = listOf(
-                    "/projects/stacks/android-head_3D.png",
-                    "/projects/stacks/apple_logo_black.svg",
-                    "/projects/compose-multiplatform-logo.svg",
-                    "/projects/stacks/koin_logo.png",
+                    NeoIcons.KOTLIN,
+                    NeoIcons.ANDROID,
+                    NeoIcons.APPLE,
+                    NeoIcons.CMP,
+                    NeoIcons.KOIN,
                 )
 
                 alexandriaStacks.forEach {
@@ -140,10 +135,11 @@ private fun ProjectRow() {
 
             Row {
                 val alexandriaStacks2 = listOf(
-                    "/projects/stacks/nginx-icon.svg",
-                    "/projects/stacks/ktor_logo.svg",
-                    "/projects/stacks/postgresql_logo.png",
-                    "/projects/stacks/docker-logo.svg",
+                    NeoIcons.NGINX,
+                    NeoIcons.KTOR,
+                    NeoIcons.POSTGRESQL,
+                    NeoIcons.DOCKER,
+                    NeoIcons.EC2,
                 )
 
                 alexandriaStacks2.forEach {
@@ -162,15 +158,16 @@ private fun ProjectRow() {
     }
     ProjectCard(
         name = "Droidcore",
-        image = "/projects/compose-multiplatform-logo.svg",
+        image = NeoIcons.CMP,
         imageSize = 120,
         imageModifier = Modifier.padding(topBottom = 1.cssRem),
         desc = "A Compose Multiplatform library.",
         techStacks = {
             Row {
                 val alexandriaStacks = listOf(
-                    "/projects/stacks/maven-central-icon.png",
-                    "/projects/compose-multiplatform-logo.svg",
+                    NeoIcons.KOTLIN,
+                    NeoIcons.MAVENCENTRAL,
+                    NeoIcons.CMP,
                 )
 
                 alexandriaStacks.forEach {
@@ -192,6 +189,40 @@ private fun ProjectRow() {
             }
             Link("https://mvnrepository.com/artifact/id.neotica/droidcore") {
                 SpanText("Maven")
+            }
+        }
+
+    }
+
+    ProjectCard(
+        name = "KotSpam",
+        image = NeoIcons.KOTSPAM,
+        imageSize = 120,
+        imageModifier = Modifier.padding(topBottom = 1.cssRem),
+        desc = "KotSpam is a Kotlin-based tool designed to simulate automated message for spamming.",
+        techStacks = {
+            Row {
+                val alexandriaStacks = listOf(
+                    NeoIcons.KOTLIN,
+                    NeoIcons.JAVA
+                )
+
+                alexandriaStacks.forEach {
+                    Image(
+                        src = it,
+                        width = 30,
+                        modifier = Modifier
+                    )
+                }
+            }
+        }
+    ) {
+        Row(
+            verticalAlignment = Alignment.CenterVertically,
+            horizontalArrangement = Arrangement.spacedBy(0.8.cssRem)
+        ) {
+            Link("https://github.com/laetuz/KotSpam") {
+                SpanText("Github")
             }
         }
 
