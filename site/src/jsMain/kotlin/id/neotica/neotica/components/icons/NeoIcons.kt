@@ -14,6 +14,7 @@ object NeoIcons {
     const val ANDROID = "/projects/stacks/android-head_3D.png"
     const val KOTLIN = "/projects/stacks/kotlin.svg"
     const val JAVA = "/projects/stacks/java-icon.svg"
+    const val SWIFT = "/projects/stacks/swift.svg"
     const val MAVENCENTRAL = "/projects/stacks/maven-central-icon.png"
     const val CMP = "/projects/compose-multiplatform-logo.svg"
     const val COMPOSE = "/projects/stacks/jetpack_compose_icon.png"

@@ -170,7 +170,7 @@ fun ProjectsPage() {
                     ),
                     UrlList(
                         "Github",
-                        "https://github.com/laetuz/ModernADB"
+                        "https://github.com/Neotica/ModernADB"
                     )
                 )
             )
@@ -183,7 +183,7 @@ fun ProjectsPage() {
                 download = listOf(
                     UrlList(
                         "Download",
-                        "https://github.com/laetuz/KotSpam/releases"
+                        "https://github.com/Neotica/KotSpam/releases"
                     ),
                     UrlList(
                         "Github",

@@ -3,8 +3,13 @@ package id.neotica.neotica.pages
 import androidx.compose.runtime.Composable
 import com.varabyte.kobweb.compose.css.Overflow
 import com.varabyte.kobweb.compose.css.StyleVariable
+import com.varabyte.kobweb.compose.css.TextAlign
+import com.varabyte.kobweb.compose.css.TextDecorationLine
+import com.varabyte.kobweb.compose.foundation.layout.Arrangement
 import com.varabyte.kobweb.compose.foundation.layout.Box
 import com.varabyte.kobweb.compose.foundation.layout.Column
+import com.varabyte.kobweb.compose.foundation.layout.Row
+import com.varabyte.kobweb.compose.ui.Alignment
 import com.varabyte.kobweb.compose.ui.Modifier
 import com.varabyte.kobweb.compose.ui.graphics.Color
 import com.varabyte.kobweb.compose.ui.modifiers.*
@@ -13,12 +18,14 @@ import com.varabyte.kobweb.core.data.add
 import com.varabyte.kobweb.core.init.InitRoute
 import com.varabyte.kobweb.core.init.InitRouteContext
 import com.varabyte.kobweb.core.layout.Layout
+import com.varabyte.kobweb.silk.components.graphics.Image
 import com.varabyte.kobweb.silk.components.navigation.Link
 import com.varabyte.kobweb.silk.components.text.SpanText
 import com.varabyte.kobweb.silk.style.CssStyle
 import com.varabyte.kobweb.silk.style.base
 import com.varabyte.kobweb.silk.style.breakpoint.Breakpoint
 import id.neotica.neotica.components.NeoColor
+import id.neotica.neotica.components.icons.NeoIcons
 import id.neotica.neotica.components.layouts.NeoLayoutData
 import id.neotica.neotica.utils.homeDesc
 import org.jetbrains.compose.web.css.cssRem
@@ -61,40 +68,86 @@ fun HomePage() {
             .backgroundColor(NeoColor.backgroundPrimary)
             .fillMaxSize()
             .padding(leftRight = 2.cssRem)
-            .overflow(Overflow.Auto)
+            .overflow(Overflow.Auto),
+        contentAlignment = Alignment.Center
     ) {
         Column(
             modifier = Modifier
                 .fillMaxWidth()
                 .fontFamily("IBM Plex Mono")
+                .gap(1.cssRem),
+            horizontalAlignment = Alignment.CenterHorizontally
         ) {
-//            SpanText(
-//                text = "> Last updated: 19/06/2025",
-//                modifier = Modifier
-//                    .fontSize(0.8.em)
-//                    .fontFamily("font/ibmplexmono/IBMPlexMono-Regular.ttf")
-//            )
             SpanText(
                 text = homeDesc,
-//                modifier = Modifier.fontSize(0.8.em)
+                modifier = Modifier.fontSize(1.2.cssRem).lineHeight(1.5).textAlign(textAlign = TextAlign.Center)
             )
             Link("/projects") {
                 SpanText(
-                    text = "> [View Projects]",
-//                    modifier = Modifier.fontSize(0.8.em)
+                    text = "> View Projects",
+                    modifier = Modifier.fontSize(1.2.cssRem).textDecorationLine(TextDecorationLine.None)
                 )
             }
-//            Row(
-//                modifier = Modifier
-//                    .margin(top = 5.cssRem)
-//                    .fontSize(0.8.em)
-//            ) {
-//                SpanText("Edited by ")
-//                Link("/profile/ryo-martin") {
-//                    SpanText("Ryo Martin")
-//                }
-//                SpanText(" on 19")
-//            }
+            Column(
+                horizontalAlignment = Alignment.CenterHorizontally
+            ) {
+                SpanText(
+                    text = "Our Core Technologies:",
+                    modifier = Modifier.fontSize(1.2.cssRem).textDecorationLine(TextDecorationLine.None)
+                )
+                val iconWidth = 40
+                val stacks = listOf(
+                    TechStacks(
+                        title = "Java",
+                        image = NeoIcons.JAVA,
+                    ),
+                    TechStacks(
+                        title = "Kotlin",
+                        image = NeoIcons.KOTLIN,
+                    ),
+                    TechStacks(
+                        title = "Compose",
+                        image = NeoIcons.COMPOSE,
+                    ),
+                    TechStacks(
+                        title = "Ktor",
+                        image = NeoIcons.KTOR,
+                    ),
+                    TechStacks(
+                        title = "Swift",
+                        image = NeoIcons.SWIFT,
+                    )
+                )
+                Row(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .gap(1.cssRem),
+                    verticalAlignment = Alignment.Bottom,
+                    horizontalArrangement = Arrangement.Center
+                ) {
+                    stacks.forEach {
+                        Column(
+                            modifier = Modifier,
+                            horizontalAlignment = Alignment.CenterHorizontally
+                        ) {
+                            Image(
+                                src = it.image,
+                                width = iconWidth,
+                                modifier = Modifier
+                            )
+                            SpanText(it.title)
+                        }
+
+                    }
+                }
+
+            }
         }
     }
 }
+
+private data class TechStacks(
+    val title: String,
+    val image: String,
+    val url: String? = null
+)
