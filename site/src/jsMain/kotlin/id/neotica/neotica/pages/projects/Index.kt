@@ -5,7 +5,6 @@ import com.varabyte.kobweb.compose.css.FontStyle
 import com.varabyte.kobweb.compose.css.FontWeight
 import com.varabyte.kobweb.compose.css.Overflow
 import com.varabyte.kobweb.compose.css.TextAlign
-import com.varabyte.kobweb.compose.css.TextDecorationLine
 import com.varabyte.kobweb.compose.foundation.layout.Arrangement
 import com.varabyte.kobweb.compose.foundation.layout.Column
 import com.varabyte.kobweb.compose.foundation.layout.Row
@@ -22,14 +21,11 @@ import com.varabyte.kobweb.silk.components.layout.SimpleGrid
 import com.varabyte.kobweb.silk.components.layout.numColumns
 import com.varabyte.kobweb.silk.components.navigation.Link
 import com.varabyte.kobweb.silk.components.text.SpanText
-import com.varabyte.kobweb.silk.style.CssStyle
-import com.varabyte.kobweb.silk.style.selectors.hover
-import com.varabyte.kobweb.silk.style.selectors.link
-import com.varabyte.kobweb.silk.style.selectors.visited
 import com.varabyte.kobweb.silk.style.toModifier
 import id.neotica.neotica.components.NeoColor
 import id.neotica.neotica.components.icons.NeoIcons
 import id.neotica.neotica.components.layouts.NeoLayoutData
+import id.neotica.neotica.components.modifiers.BackgroundHoverStyle
 import org.jetbrains.compose.web.css.AlignItems
 import org.jetbrains.compose.web.css.FlexDirection
 import org.jetbrains.compose.web.css.cssRem
@@ -239,20 +235,21 @@ private fun ProjectCard(
                 modifier = Modifier
                     .fontWeight(FontWeight.Bold)
                     .textAlign(TextAlign.Center)
-                    .fontSize(1.2.cssRem)
+                    .fontSize(1.5.cssRem)
             )
             SpanText(
                 text = desc,
                 modifier = Modifier
-                    .fontSize(0.9.cssRem)
+                    .fontSize(1.2.cssRem)
                     .fontStyle(FontStyle.Italic)
+                    .fontWeight(FontWeight.Light)
                     .textAlign(TextAlign.Center)
             )
             SpanText(
                 text = "Tech stacks:",
                 modifier = Modifier
                     .padding(top = 1.cssRem)
-                    .fontSize(0.9.cssRem)
+                    .fontWeight(FontWeight.Bold)
             )
             if (techStacks.size < 2) {
                 Row {
@@ -293,7 +290,7 @@ private fun ProjectCard(
                 text = "Platforms:",
                 modifier = Modifier
                     .padding(top = 1.cssRem)
-                    .fontSize(0.9.cssRem)
+                    .fontWeight(FontWeight.Bold)
             )
             SimpleGrid(
                 numColumns = numColumns(5, 5),
@@ -389,18 +386,3 @@ private data class UrlList(
     val title: String,
     val url: String
 )
-
-val BackgroundHoverStyle = CssStyle {
-    base {
-        Modifier
-            .background(NeoColor.backgroundPrimary)
-            .textDecorationLine(TextDecorationLine.None)
-    }
-    link {
-        Modifier.color(NeoColor.white) // Set your static text color
-    }
-    visited {
-        Modifier.color(NeoColor.white) // Use the same color to keep it static
-    }
-    hover { Modifier.backgroundColor(NeoColor.colorPrimary) }
-}

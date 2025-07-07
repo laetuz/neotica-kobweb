@@ -1,11 +1,7 @@
 package id.neotica.neotica.pages
 
 import androidx.compose.runtime.Composable
-import com.varabyte.kobweb.compose.css.Overflow
-import com.varabyte.kobweb.compose.css.StyleVariable
-import com.varabyte.kobweb.compose.css.TextAlign
-import com.varabyte.kobweb.compose.css.TextDecorationLine
-import com.varabyte.kobweb.compose.foundation.layout.Arrangement
+import com.varabyte.kobweb.compose.css.*
 import com.varabyte.kobweb.compose.foundation.layout.Box
 import com.varabyte.kobweb.compose.foundation.layout.Column
 import com.varabyte.kobweb.compose.foundation.layout.Row
@@ -18,15 +14,19 @@ import com.varabyte.kobweb.core.data.add
 import com.varabyte.kobweb.core.init.InitRoute
 import com.varabyte.kobweb.core.init.InitRouteContext
 import com.varabyte.kobweb.core.layout.Layout
+import com.varabyte.kobweb.framework.annotations.DelicateApi
 import com.varabyte.kobweb.silk.components.graphics.Image
 import com.varabyte.kobweb.silk.components.navigation.Link
 import com.varabyte.kobweb.silk.components.text.SpanText
 import com.varabyte.kobweb.silk.style.CssStyle
 import com.varabyte.kobweb.silk.style.base
 import com.varabyte.kobweb.silk.style.breakpoint.Breakpoint
+import com.varabyte.kobweb.silk.style.toModifier
+import com.varabyte.kobweb.silk.theme.breakpoint.rememberBreakpoint
 import id.neotica.neotica.components.NeoColor
 import id.neotica.neotica.components.icons.NeoIcons
 import id.neotica.neotica.components.layouts.NeoLayoutData
+import id.neotica.neotica.components.modifiers.BackgroundHoverStyle
 import id.neotica.neotica.utils.homeDesc
 import org.jetbrains.compose.web.css.cssRem
 import org.jetbrains.compose.web.css.vh
@@ -59,6 +59,7 @@ fun initHomePage(ctx: InitRouteContext) {
     ctx.data.add(NeoLayoutData("Home"))
 }
 
+@OptIn(DelicateApi::class)
 @Page
 @Layout(".components.layouts.NeoPageLayout")
 @Composable
@@ -75,14 +76,32 @@ fun HomePage() {
             modifier = Modifier
                 .fillMaxWidth()
                 .fontFamily("IBM Plex Mono")
-                .gap(1.cssRem),
+                .gap(2.cssRem),
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
+            val breakpoint = rememberBreakpoint()
+
+            val imageWidth = if (breakpoint > Breakpoint.SM) {
+                700
+            } else {
+                450
+            }
+
+            // 3. Apply the calculated width to your Image component.
+            Image(
+                src = "/main_banner.png",
+                width = imageWidth
+            )
             SpanText(
                 text = homeDesc,
                 modifier = Modifier.fontSize(1.2.cssRem).lineHeight(1.5).textAlign(textAlign = TextAlign.Center)
             )
-            Link("/projects") {
+            Link(
+                path = "/projects",
+                modifier = BackgroundHoverStyle.toModifier()
+                    .padding(1.cssRem)
+                    .borderRadius(1.cssRem)
+            ) {
                 SpanText(
                     text = "> View Projects",
                     modifier = Modifier.fontSize(1.2.cssRem).textDecorationLine(TextDecorationLine.None)
@@ -91,11 +110,6 @@ fun HomePage() {
             Column(
                 horizontalAlignment = Alignment.CenterHorizontally
             ) {
-                SpanText(
-                    text = "Our Core Technologies:",
-                    modifier = Modifier.fontSize(1.2.cssRem).textDecorationLine(TextDecorationLine.None)
-                )
-                val iconWidth = 40
                 val stacks = listOf(
                     TechStacks(
                         title = "Java",
@@ -118,32 +132,32 @@ fun HomePage() {
                         image = NeoIcons.SWIFT,
                     )
                 )
+                SpanText(
+                    text = "Our Core Technologies",
+                    modifier = Modifier.fontSize(1.5.cssRem).fontWeight(FontWeight.Bold)
+                )
                 Row(
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .gap(1.cssRem),
-                    verticalAlignment = Alignment.Bottom,
-                    horizontalArrangement = Arrangement.Center
+                    modifier = Modifier.gap(1.cssRem),
+                    verticalAlignment = Alignment.CenterVertically
                 ) {
                     stacks.forEach {
                         Column(
                             modifier = Modifier,
                             horizontalAlignment = Alignment.CenterHorizontally
                         ) {
-                            Image(
-                                src = it.image,
-                                width = iconWidth,
-                                modifier = Modifier
+                            Image(src = it.image, width = 50)
+                            SpanText(
+                                text = it.title,
+                                modifier = Modifier.fontWeight(FontWeight.Bold)
                             )
-                            SpanText(it.title)
                         }
-
                     }
-                }
 
+                }
             }
         }
     }
+
 }
 
 private data class TechStacks(
