@@ -4,6 +4,12 @@ object NeoIcons {
     const val NEOVERSE = "/projects/neoverse-logo.png"
     const val ALEXANDRIA = "/projects/alexandria-logo.png"
     const val KOTSPAM = "/projects/kotspam.png"
+    const val MODERNADB = "/projects/modern-adb.svg"
+
+    const val IOS = "/projects/platforms/platform_ios.svg"
+    const val MACOS = "/projects/platforms/platform_macos.svg"
+    const val LINUX = "/projects/platforms/tux.svg"
+    const val WINDOWS = "/projects/platforms/windows.svg"
 
     const val ANDROID = "/projects/stacks/android-head_3D.png"
     const val KOTLIN = "/projects/stacks/kotlin.svg"
