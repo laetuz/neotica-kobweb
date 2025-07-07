@@ -64,6 +64,7 @@ fun initHomePage(ctx: InitRouteContext) {
 @Layout(".components.layouts.NeoPageLayout")
 @Composable
 fun HomePage() {
+    val breakpoint = rememberBreakpoint()
     Box(
         modifier = Modifier
             .backgroundColor(NeoColor.backgroundPrimary)
@@ -79,15 +80,14 @@ fun HomePage() {
                 .gap(2.cssRem),
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
-            val breakpoint = rememberBreakpoint()
-
-            val imageWidth = if (breakpoint > Breakpoint.SM) {
-                700
-            } else {
-                450
+            val imageWidth = when (breakpoint) {
+                Breakpoint.ZERO -> 400
+                Breakpoint.SM -> 500
+                Breakpoint.MD -> 500
+                else -> 700
             }
 
-            // 3. Apply the calculated width to your Image component.
+
             Image(
                 src = "/main_banner.png",
                 width = imageWidth
@@ -137,7 +137,9 @@ fun HomePage() {
                     modifier = Modifier.fontSize(1.5.cssRem).fontWeight(FontWeight.Bold)
                 )
                 Row(
-                    modifier = Modifier.gap(1.cssRem),
+                    modifier = Modifier
+                        .gap(1.cssRem)
+                        .padding(bottom = 1.cssRem),
                     verticalAlignment = Alignment.CenterVertically
                 ) {
                     stacks.forEach {
@@ -152,12 +154,10 @@ fun HomePage() {
                             )
                         }
                     }
-
                 }
             }
         }
     }
-
 }
 
 private data class TechStacks(

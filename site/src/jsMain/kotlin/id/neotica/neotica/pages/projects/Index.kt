@@ -70,7 +70,7 @@ fun ProjectsPage() {
             numColumns = numColumns(1, md = 2, lg = 3, xl = 4),
             modifier = Modifier
                 .fillMaxWidth()
-                .padding(top = 1.cssRem)
+                .padding(topBottom = 1.cssRem)
                 .gap(1.cssRem)
         ) {
             ProjectCard(
@@ -162,7 +162,7 @@ fun ProjectsPage() {
                 download = listOf(
                     UrlList(
                         "Download",
-                        "https://github.com/laetuz/ModernADB/releases"
+                        "https://github.com/Neotica/ModernADB/releases"
                     ),
                     UrlList(
                         "Github",
@@ -179,7 +179,7 @@ fun ProjectsPage() {
                 download = listOf(
                     UrlList(
                         "Download",
-                        "https://github.com/Neotica/KotSpam/releases"
+                        "https://github.com/laetuz/KotSpam/releases"
                     ),
                     UrlList(
                         "Github",
