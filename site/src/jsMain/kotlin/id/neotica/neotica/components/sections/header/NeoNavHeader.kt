@@ -14,11 +14,10 @@ import com.varabyte.kobweb.silk.components.icons.HamburgerIcon
 import com.varabyte.kobweb.silk.components.navigation.Link
 import com.varabyte.kobweb.silk.components.navigation.UncoloredLinkVariant
 import com.varabyte.kobweb.silk.components.navigation.UndecoratedLinkVariant
-import com.varabyte.kobweb.silk.components.text.SpanText
 import com.varabyte.kobweb.silk.style.breakpoint.Breakpoint
 import com.varabyte.kobweb.silk.style.breakpoint.displayIfAtLeast
 import com.varabyte.kobweb.silk.style.breakpoint.displayUntil
-import id.neotica.neotica.components.NeoColor
+import id.neotica.neotica.components.others.NeoText
 import id.neotica.neotica.components.widgets.IconButton
 import org.jetbrains.compose.web.css.DisplayStyle
 import org.jetbrains.compose.web.css.cssRem
@@ -52,11 +51,10 @@ fun NeoNavHeader(currentRoute: String? = "") {
                         .display(DisplayStyle.Block)
                 )
             }
-            SpanText(
+            NeoText(
                 "Neotica.id$currentRoute",
                 Modifier
                     .overflowWrap(OverflowWrap.BreakWord)
-                    .color(NeoColor.white)
                     .fontSize(1.5.em)
                     .fontStyle(FontStyle.Italic)
                     .fontWeight(FontWeight.Bold)

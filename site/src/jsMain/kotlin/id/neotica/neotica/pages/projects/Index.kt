@@ -20,12 +20,12 @@ import com.varabyte.kobweb.silk.components.graphics.Image
 import com.varabyte.kobweb.silk.components.layout.SimpleGrid
 import com.varabyte.kobweb.silk.components.layout.numColumns
 import com.varabyte.kobweb.silk.components.navigation.Link
-import com.varabyte.kobweb.silk.components.text.SpanText
 import com.varabyte.kobweb.silk.style.toModifier
 import id.neotica.neotica.components.NeoColor
 import id.neotica.neotica.components.icons.NeoIcons
 import id.neotica.neotica.components.layouts.NeoLayoutData
 import id.neotica.neotica.components.modifiers.BackgroundHoverStyle
+import id.neotica.neotica.components.others.NeoText
 import org.jetbrains.compose.web.css.AlignItems
 import org.jetbrains.compose.web.css.FlexDirection
 import org.jetbrains.compose.web.css.cssRem
@@ -51,13 +51,13 @@ fun ProjectsPage() {
             modifier = Modifier.fillMaxWidth(),
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
-            SpanText(
+            NeoText(
                 text = "Our Portfolio",
                 modifier = Modifier
                     .fontSize(2.cssRem)
                     .fontWeight(FontWeight.Bold),
             )
-            SpanText(
+            NeoText(
                 text = "A showcase of our projects and experiments.",
                 modifier = Modifier
                     .fontSize(1.2.cssRem)
@@ -230,14 +230,14 @@ private fun ProjectCard(
                     .borderRadius(1.cssRem)
                     .then(imageModifier ?: Modifier)
             )
-            SpanText(
+            NeoText(
                 text = name,
                 modifier = Modifier
                     .fontWeight(FontWeight.Bold)
                     .textAlign(TextAlign.Center)
                     .fontSize(1.5.cssRem)
             )
-            SpanText(
+            NeoText(
                 text = desc,
                 modifier = Modifier
                     .fontSize(1.2.cssRem)
@@ -245,7 +245,7 @@ private fun ProjectCard(
                     .fontWeight(FontWeight.Light)
                     .textAlign(TextAlign.Center)
             )
-            SpanText(
+            NeoText(
                 text = "Tech stacks:",
                 modifier = Modifier
                     .padding(top = 1.cssRem)
@@ -286,7 +286,7 @@ private fun ProjectCard(
                 .padding(leftRight = 1.cssRem)
         ) {
 
-            SpanText(
+            NeoText(
                 text = "Platforms:",
                 modifier = Modifier
                     .padding(top = 1.cssRem)
@@ -337,7 +337,7 @@ private fun ProjectCard(
                                 Modifier.fillMaxWidth(),
                                 horizontalArrangement = Arrangement.Center
                             ) {
-                                SpanText(
+                                NeoText(
                                     text = it.first().title,
                                 )
                             }
@@ -367,7 +367,7 @@ private fun ProjectCard(
                                         Modifier.fillMaxWidth(),
                                         horizontalArrangement = Arrangement.Center
                                     ) {
-                                        SpanText(
+                                        NeoText(
                                             text = item.title,
                                         )
                                     }

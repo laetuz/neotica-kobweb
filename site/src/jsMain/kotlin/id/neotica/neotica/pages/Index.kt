@@ -17,7 +17,6 @@ import com.varabyte.kobweb.core.layout.Layout
 import com.varabyte.kobweb.framework.annotations.DelicateApi
 import com.varabyte.kobweb.silk.components.graphics.Image
 import com.varabyte.kobweb.silk.components.navigation.Link
-import com.varabyte.kobweb.silk.components.text.SpanText
 import com.varabyte.kobweb.silk.style.CssStyle
 import com.varabyte.kobweb.silk.style.base
 import com.varabyte.kobweb.silk.style.breakpoint.Breakpoint
@@ -27,6 +26,7 @@ import id.neotica.neotica.components.NeoColor
 import id.neotica.neotica.components.icons.NeoIcons
 import id.neotica.neotica.components.layouts.NeoLayoutData
 import id.neotica.neotica.components.modifiers.BackgroundHoverStyle
+import id.neotica.neotica.components.others.NeoText
 import id.neotica.neotica.utils.homeDesc
 import org.jetbrains.compose.web.css.cssRem
 import org.jetbrains.compose.web.css.vh
@@ -92,7 +92,7 @@ fun HomePage() {
                 src = "/main_banner.png",
                 width = imageWidth
             )
-            SpanText(
+            NeoText(
                 text = homeDesc,
                 modifier = Modifier.fontSize(1.2.cssRem).lineHeight(1.5).textAlign(textAlign = TextAlign.Center)
             )
@@ -102,7 +102,7 @@ fun HomePage() {
                     .padding(1.cssRem)
                     .borderRadius(1.cssRem)
             ) {
-                SpanText(
+                NeoText(
                     text = "> View Projects",
                     modifier = Modifier.fontSize(1.2.cssRem).textDecorationLine(TextDecorationLine.None)
                 )
@@ -132,9 +132,12 @@ fun HomePage() {
                         image = NeoIcons.SWIFT,
                     )
                 )
-                SpanText(
+                NeoText(
                     text = "Our Core Technologies",
-                    modifier = Modifier.fontSize(1.5.cssRem).fontWeight(FontWeight.Bold)
+                    modifier = Modifier
+                        .color(NeoColor.white)
+                        .fontSize(1.5.cssRem)
+                        .fontWeight(FontWeight.Bold)
                 )
                 Row(
                     modifier = Modifier
@@ -148,7 +151,7 @@ fun HomePage() {
                             horizontalAlignment = Alignment.CenterHorizontally
                         ) {
                             Image(src = it.image, width = 50)
-                            SpanText(
+                            NeoText(
                                 text = it.title,
                                 modifier = Modifier.fontWeight(FontWeight.Bold)
                             )
