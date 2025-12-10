@@ -171,6 +171,28 @@ fun ProjectsPage() {
                 )
             )
             ProjectCard(
+                name = "Invoicer",
+                image = NeoIcons.INVOICER,
+                imageSize = 120,
+                imageModifier = Modifier.padding(topBottom = 1.cssRem),
+                desc = "Invoicer is a desktop app built to create a quick and simple invoice, while still maintaining a professional looks. Designed to be used with ease.",
+                download = listOf(
+                    UrlList(
+                        "Github",
+                        "https://github.com/laetuz/Invoicer"
+                    )
+                ),
+                techStacks = listOf(
+                    NeoIcons.KOTLIN,
+                    NeoIcons.CMP
+                ),
+                platforms = listOf(
+                    NeoIcons.WINDOWS,
+                    NeoIcons.LINUX,
+                    NeoIcons.MACOS,
+                ),
+            )
+            ProjectCard(
                 name = "KotSpam",
                 image = NeoIcons.KOTSPAM,
                 imageSize = 120,
@@ -361,7 +383,7 @@ private fun ProjectCard(
                                     modifier = BackgroundHoverStyle.toModifier()
                                         .weight(1f)
                                         .padding(1.cssRem)
-                                        .borderRadius(1.cssRem),
+                                        .borderRadius(1.cssRem)
                                 ) {
                                     Row(
                                         Modifier.fillMaxWidth(),
@@ -371,7 +393,6 @@ private fun ProjectCard(
                                             text = item.title,
                                         )
                                     }
-
                                 }
                             }
                         }
@@ -384,5 +405,5 @@ private fun ProjectCard(
 
 private data class UrlList(
     val title: String,
-    val url: String
+    val url: String,
 )

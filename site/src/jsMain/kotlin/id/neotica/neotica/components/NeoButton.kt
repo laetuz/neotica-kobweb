@@ -45,8 +45,6 @@ fun NeoButton(
                 )
                 SpanText(title)
             }
-
         }
     }
-
 }

@@ -42,6 +42,33 @@ val BackgroundHoverStyle = CssStyle {
     }
 }
 
+val BackgroundHoverStyleNegative = CssStyle {
+    base {
+        Modifier
+            .background(NeoColor.backgroundPrimary)
+            .textDecorationLine(TextDecorationLine.None)
+            .border(
+                width = 2.px,
+                style = LineStyle.Solid,
+                color = NeoColor.white
+            )
+    }
+    link {
+        Modifier.color(NeoColor.white) // Set your static text color
+    }
+    visited {
+        Modifier.color(NeoColor.white) // Use the same color to keep it static
+    }
+    hover {
+        Modifier.backgroundColor(NeoColor.negativePrimary)
+            .border(
+                width = 2.px,
+                style = LineStyle.Solid,
+                color = NeoColor.white
+            )
+    }
+}
+
 val BackgroundHoverStyleMain = CssStyle {
     base {
         Modifier

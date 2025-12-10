@@ -5,6 +5,7 @@ object NeoIcons {
     const val ALEXANDRIA = "/projects/alexandria-logo.png"
     const val KOTSPAM = "/projects/kotspam.png"
     const val MODERNADB = "/projects/modern-adb.svg"
+    const val INVOICER = "/projects/invoicer-logo.png"
 
     const val IOS = "/projects/platforms/platform_ios.svg"
     const val MACOS = "/projects/platforms/platform_macos.svg"
@@ -30,4 +31,6 @@ object NeoIcons {
     const val KTOR = "/projects/stacks/ktor_logo.svg"
     const val POSTGRESQL = "/projects/stacks/postgresql_logo.png"
     const val DOCKER = "/projects/stacks/docker-logo.svg"
+
+    const val WHATSAPP = "/projects/others/whatsapp.svg"
 }
