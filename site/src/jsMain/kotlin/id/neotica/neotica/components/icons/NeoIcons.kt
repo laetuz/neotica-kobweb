@@ -33,4 +33,6 @@ object NeoIcons {
     const val DOCKER = "/projects/stacks/docker-logo.svg"
 
     const val WHATSAPP = "/projects/others/whatsapp.svg"
+    const val LINKEDIN = "/projects/others/linkedin.svg"
+    const val GITHUB = "/projects/others/github.svg"
 }

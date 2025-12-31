@@ -66,7 +66,7 @@ fun RyoMartinPage() {
             NeoButton(
                 "Github",
                 "https://github.com/laetuz",
-                "/icons/github-mark.svg",
+                "/icons/github.svg",
                 Modifier.padding(top = 0.8.cssRem)
             )
             NeoButton(

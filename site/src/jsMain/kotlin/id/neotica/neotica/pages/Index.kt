@@ -27,6 +27,7 @@ import id.neotica.neotica.components.icons.NeoIcons
 import id.neotica.neotica.components.layouts.NeoLayoutData
 import id.neotica.neotica.components.modifiers.BackgroundHoverStyle
 import id.neotica.neotica.components.others.NeoText
+import id.neotica.neotica.domain.model.TechStacks
 import id.neotica.neotica.utils.homeDesc
 import org.jetbrains.compose.web.css.cssRem
 import org.jetbrains.compose.web.css.vh
@@ -162,9 +163,3 @@ fun HomePage() {
         }
     }
 }
-
-private data class TechStacks(
-    val title: String,
-    val image: String,
-    val url: String? = null
-)
