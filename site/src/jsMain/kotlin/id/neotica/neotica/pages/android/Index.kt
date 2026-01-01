@@ -1,6 +1,7 @@
 package id.neotica.neotica.pages.android
 
 import androidx.compose.runtime.*
+import com.varabyte.kobweb.compose.css.Cursor
 import com.varabyte.kobweb.compose.css.Overflow
 import com.varabyte.kobweb.compose.foundation.layout.Arrangement
 import com.varabyte.kobweb.compose.foundation.layout.Column
@@ -14,6 +15,7 @@ import com.varabyte.kobweb.core.data.add
 import com.varabyte.kobweb.core.init.InitRoute
 import com.varabyte.kobweb.core.init.InitRouteContext
 import com.varabyte.kobweb.core.layout.Layout
+import com.varabyte.kobweb.core.rememberPageContext
 import com.varabyte.kobweb.silk.components.graphics.Image
 import com.varabyte.kobweb.silk.components.text.SpanText
 import id.neotica.neotica.components.NeoButton
@@ -31,17 +33,22 @@ import org.jetbrains.compose.web.css.FlexWrap
 import org.jetbrains.compose.web.css.LineStyle
 import org.jetbrains.compose.web.css.cssRem
 import org.jetbrains.compose.web.css.px
+import org.jetbrains.compose.web.dom.Button
 import org.jetbrains.compose.web.dom.Input
+import kotlin.math.min
 
 @InitRoute()
 fun initProjectsPage(ctx: InitRouteContext) {
     ctx.data.add(NeoLayoutData("Android - Neotica.id", "/android")) // Set your desired tab title here
 }
 
-@Page
+@Page("/android")
 @Composable
 @Layout(".components.layouts.NeoPageLayout")
 fun AndroidPage() {
+
+    val ctx = rememberPageContext()
+    val page = ctx.route.params["page"]
 
     val linkToJson = "https://raw.githubusercontent.com/Neotica/JsonDB/refs/heads/main/android-video-archives.json"
     var searchText by remember { mutableStateOf("") }
@@ -49,9 +56,35 @@ fun AndroidPage() {
     var videoList by remember { mutableStateOf<List<YoutubeVideo>>(emptyList()) }
     var isLoading by remember { mutableStateOf(true) }
 
+    var currentPage by remember { mutableStateOf(page?.toIntOrNull()?:1) }
+    val itemsPerPage = 10
+
     val filteredList = videoList.filter {
         it.title.contains(searchText, ignoreCase = true) ||
                 it.description.contains(searchText, ignoreCase = true)
+    }.sortedBy { it.dateUploaded }
+
+    val totalPages = if (filteredList.isEmpty()) 1 else (filteredList.size + itemsPerPage - 1) / itemsPerPage
+    val startIndex = (currentPage - 1) * itemsPerPage
+    val endIndex = min(startIndex + itemsPerPage, filteredList.size)
+
+    val paginatedList = if (startIndex < filteredList.size) {
+        filteredList.subList(startIndex, endIndex)
+    } else {
+        emptyList()
+    }
+
+    LaunchedEffect(currentPage) {
+        val newPath = "/android/$currentPage"
+        if (!window.location.pathname.endsWith("/$currentPage")) {
+            window.history.pushState(null, "", newPath)
+        }
+    }
+
+    LaunchedEffect(searchText) {
+        if (searchText.isNotEmpty()) {
+            currentPage = 1
+        }
     }
 
     LaunchedEffect(Unit) {
@@ -104,13 +137,12 @@ fun AndroidPage() {
             )
         }
 
-        filteredList.forEach { data ->
+        paginatedList.forEach { data ->
             Column(
                 horizontalAlignment = Alignment.CenterHorizontally,
                 modifier = Modifier
                     .border(1.px, LineStyle.Solid, NeoColor.colorPrimary)
                     .borderRadius(8.px)
-                    .margin(topBottom = 1.cssRem)
                     .padding(1.cssRem)
                     .fillMaxWidth()
             ) {
@@ -174,6 +206,61 @@ fun AndroidPage() {
                             NeoButton(title = "Go to YouTube Video", url = "https://www.youtube.com/watch?v=${data.videoId}", "")
                         }
                     }
+                }
+            }
+        }
+
+        if (!isLoading && filteredList.isNotEmpty()) {
+            Row(
+                modifier = Modifier.fillMaxWidth().padding(topBottom = 2.cssRem),
+                horizontalArrangement = Arrangement.Center,
+                verticalAlignment = Alignment.CenterVertically
+            ) {
+                // Previous Button
+                Button(
+                    attrs = Modifier
+                        .backgroundColor(if (currentPage > 1) NeoColor.colorPrimary else NeoColor.backgroundPrimary)
+                        .color(NeoColor.white)
+                        .padding(10.px)
+                        .borderRadius(5.px)
+                        .border(1.px, LineStyle.Solid, NeoColor.colorPrimary)
+                        .cursor(if (currentPage > 1) Cursor.Pointer else Cursor.NotAllowed)
+                        .onClick {
+                            if (currentPage > 1) currentPage--
+                        }
+                        .toAttrs {
+                            if (currentPage <= 1) attr("disabled", "true")
+                        }
+                ) {
+                    SpanText("Previous")
+                }
+
+                // Page Indicator
+                SpanText(
+                    text = "Page $currentPage of $totalPages",
+                    modifier = Modifier
+                        .color(NeoColor.white)
+                        .margin(leftRight = 1.cssRem)
+                        .fontSize(1.2.cssRem)
+                )
+
+                // Next Button
+                Button(
+                    attrs = Modifier
+                        .backgroundColor(if (currentPage < totalPages) NeoColor.colorPrimary else NeoColor.backgroundPrimaryTransparent)
+                        .color(NeoColor.white)
+                        .padding(10.px)
+                        .borderRadius(5.px)
+                        .border(1.px, LineStyle.Solid, NeoColor.colorPrimary)
+                        .cursor(if (currentPage < totalPages) Cursor.Pointer else Cursor.NotAllowed)
+                        .onClick {
+                            if (currentPage < totalPages) currentPage++
+                        }
+                        .toAttrs {
+                            if (currentPage >= totalPages) attr("disabled", "true")
+                        }
+                ) {
+                    SpanText("Next")
                 }
             }
         }
