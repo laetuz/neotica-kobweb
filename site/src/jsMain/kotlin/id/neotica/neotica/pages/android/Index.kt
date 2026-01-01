@@ -43,7 +43,7 @@ fun initProjectsPage(ctx: InitRouteContext) {
 @Layout(".components.layouts.NeoPageLayout")
 fun AndroidPage() {
 
-    val linkToJson = "https://raw.githubusercontent.com/Neotica/JsonDB/refs/heads/main/android-video-archives"
+    val linkToJson = "https://raw.githubusercontent.com/Neotica/JsonDB/refs/heads/main/android-video-archives.json"
     var searchText by remember { mutableStateOf("") }
 
     var videoList by remember { mutableStateOf<List<YoutubeVideo>>(emptyList()) }
