@@ -42,7 +42,7 @@ fun initProjectsPage(ctx: InitRouteContext) {
     ctx.data.add(NeoLayoutData("Android - Neotica.id", "/android")) // Set your desired tab title here
 }
 
-@Page("/android")
+@Page("/android/{page}")
 @Composable
 @Layout(".components.layouts.NeoPageLayout")
 fun AndroidPage() {
