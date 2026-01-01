@@ -42,6 +42,16 @@ fun initProjectsPage(ctx: InitRouteContext) {
     ctx.data.add(NeoLayoutData("Android - Neotica.id", "/android")) // Set your desired tab title here
 }
 
+@Page("/android")
+@Composable
+fun AndroidIndexRedirect() {
+    val ctx = rememberPageContext()
+    LaunchedEffect(Unit) {
+        // If user hits /android, simply redirect them to /android/1
+        ctx.router.navigateTo("/android/1")
+    }
+}
+
 @Page("/android/{page}")
 @Composable
 @Layout(".components.layouts.NeoPageLayout")
