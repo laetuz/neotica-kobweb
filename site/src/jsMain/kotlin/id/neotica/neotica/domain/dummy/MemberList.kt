@@ -9,7 +9,7 @@ import kotlin.js.Date
 class MemberList {
     val memberList = listOf(
         MemberData(
-            name = "Ryo Martin Sopian",
+            name = "Ryo Martin",
             joinDate = Date(
                 day = 4,
                 month = 11,
