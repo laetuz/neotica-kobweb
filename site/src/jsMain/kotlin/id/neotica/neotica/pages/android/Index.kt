@@ -38,27 +38,17 @@ import org.jetbrains.compose.web.dom.Input
 import kotlin.math.min
 
 @InitRoute()
-fun initProjectsPage(ctx: InitRouteContext) {
+fun initAndroidPage(ctx: InitRouteContext) {
     ctx.data.add(NeoLayoutData("Android - Neotica.id", "/android")) // Set your desired tab title here
 }
 
-@Page("/android")
-@Composable
-fun AndroidIndexRedirect() {
-    val ctx = rememberPageContext()
-    LaunchedEffect(Unit) {
-        // If user hits /android, simply redirect them to /android/1
-        ctx.router.navigateTo("/android/1")
-    }
-}
-
-@Page("/android/{page}")
+@Page
 @Composable
 @Layout(".components.layouts.NeoPageLayout")
 fun AndroidPage() {
 
     val ctx = rememberPageContext()
-    val page = ctx.route.params["page"]
+    val page = ctx.route.queryParams["page"]?.toIntOrNull() ?: 1
 
     val linkToJson = "https://raw.githubusercontent.com/Neotica/JsonDB/refs/heads/main/android-video-archives.json"
     var searchText by remember { mutableStateOf("") }
@@ -66,7 +56,9 @@ fun AndroidPage() {
     var videoList by remember { mutableStateOf<List<YoutubeVideo>>(emptyList()) }
     var isLoading by remember { mutableStateOf(true) }
 
-    var currentPage by remember { mutableStateOf(page?.toIntOrNull()?:1) }
+    val currentPageParam = ctx.route.queryParams["page"]?.toIntOrNull() ?: 1
+
+    var currentPage by remember { mutableStateOf(currentPageParam) }
     val itemsPerPage = 10
 
     val filteredList = videoList.filter {
@@ -85,8 +77,8 @@ fun AndroidPage() {
     }
 
     LaunchedEffect(currentPage) {
-        val newPath = "/android/$currentPage"
-        if (!window.location.pathname.endsWith("/$currentPage")) {
+        val newPath = "/android?page=$currentPage"
+        if (window.location.search != "?page=$currentPage") {
             window.history.pushState(null, "", newPath)
         }
     }
@@ -226,53 +218,68 @@ fun AndroidPage() {
                 horizontalArrangement = Arrangement.Center,
                 verticalAlignment = Alignment.CenterVertically
             ) {
-                // Previous Button
-                Button(
-                    attrs = Modifier
-                        .backgroundColor(if (currentPage > 1) NeoColor.colorPrimary else NeoColor.backgroundPrimary)
-                        .color(NeoColor.white)
-                        .padding(10.px)
-                        .borderRadius(5.px)
-                        .border(1.px, LineStyle.Solid, NeoColor.colorPrimary)
-                        .cursor(if (currentPage > 1) Cursor.Pointer else Cursor.NotAllowed)
-                        .onClick {
-                            if (currentPage > 1) currentPage--
-                        }
-                        .toAttrs {
-                            if (currentPage <= 1) attr("disabled", "true")
-                        }
-                ) {
-                    SpanText("Previous")
-                }
-
-                // Page Indicator
-                SpanText(
-                    text = "Page $currentPage of $totalPages",
-                    modifier = Modifier
-                        .color(NeoColor.white)
-                        .margin(leftRight = 1.cssRem)
-                        .fontSize(1.2.cssRem)
-                )
-
-                // Next Button
-                Button(
-                    attrs = Modifier
-                        .backgroundColor(if (currentPage < totalPages) NeoColor.colorPrimary else NeoColor.backgroundPrimaryTransparent)
-                        .color(NeoColor.white)
-                        .padding(10.px)
-                        .borderRadius(5.px)
-                        .border(1.px, LineStyle.Solid, NeoColor.colorPrimary)
-                        .cursor(if (currentPage < totalPages) Cursor.Pointer else Cursor.NotAllowed)
-                        .onClick {
-                            if (currentPage < totalPages) currentPage++
-                        }
-                        .toAttrs {
-                            if (currentPage >= totalPages) attr("disabled", "true")
-                        }
-                ) {
-                    SpanText("Next")
+                PaginationFooter(currentPage, totalPages) {
+                    currentPage = it
                 }
             }
         }
+    }
+}
+
+@Composable
+private fun PaginationFooter(
+    currentPage: Int,
+    totalPages: Int,
+    onPageChange: (Int) -> Unit
+) {
+
+    Button(
+        attrs = Modifier
+            .backgroundColor(if (currentPage > 1) NeoColor.colorPrimary else NeoColor.backgroundPrimary)
+            .color(NeoColor.white)
+            .padding(10.px)
+            .borderRadius(5.px)
+            .border(1.px, LineStyle.Solid, NeoColor.colorPrimary)
+            .cursor(if (currentPage > 1) Cursor.Pointer else Cursor.NotAllowed)
+            .onClick {
+                if (currentPage > 1) {
+                    onPageChange(currentPage -1)
+                }
+            }
+            .toAttrs {
+                if (currentPage <= 1) attr("disabled", "true")
+            }
+    ) {
+        SpanText("Previous")
+    }
+
+    // Page Indicator
+    SpanText(
+        text = "Page $currentPage of $totalPages",
+        modifier = Modifier
+            .color(NeoColor.white)
+            .margin(leftRight = 1.cssRem)
+            .fontSize(1.2.cssRem)
+    )
+
+    // Next Button
+    Button(
+        attrs = Modifier
+            .backgroundColor(if (currentPage < totalPages) NeoColor.colorPrimary else NeoColor.backgroundPrimaryTransparent)
+            .color(NeoColor.white)
+            .padding(10.px)
+            .borderRadius(5.px)
+            .border(1.px, LineStyle.Solid, NeoColor.colorPrimary)
+            .cursor(if (currentPage < totalPages) Cursor.Pointer else Cursor.NotAllowed)
+            .onClick {
+                if (currentPage < totalPages) {
+                    onPageChange(currentPage + 1)
+                }
+            }
+            .toAttrs {
+                if (currentPage >= totalPages) attr("disabled", "true")
+            }
+    ) {
+        SpanText("Next")
     }
 }

@@ -24,14 +24,12 @@ class NeoLayoutData(val title: String, val route: String? = "")
 
 @Layout
 @Composable
-fun NeoPageLayout(ctx: PageContext, content: @Composable /*ColumnScope.*/() -> Unit) {
-//    val ctx = rememberPageContext()
+fun NeoPageLayout(ctx: PageContext, content: @Composable () -> Unit) {
     val data = ctx.data.getValue<NeoLayoutData>()
     LaunchedEffect(data.title) {
         document.title = "::${data.title}"
     }
 
-    // This Column will be the main container for the entire page content
     Box(
         modifier = Modifier
             .fillMaxSize()
@@ -57,6 +55,5 @@ fun NeoPageLayout(ctx: PageContext, content: @Composable /*ColumnScope.*/() -> U
 }
 
 val PageContentStyle = CssStyle {
-    base { Modifier.fillMaxSize()/*.padding(leftRight = 2.cssRem, top = 4.cssRem)*/ }
-//    Breakpoint.MD { Modifier.maxWidth(60.cssRem) }
+    base { Modifier.fillMaxSize() }
 }
