@@ -48,7 +48,6 @@ fun initAndroidPage(ctx: InitRouteContext) {
 fun AndroidPage() {
 
     val ctx = rememberPageContext()
-    val page = ctx.route.queryParams["page"]?.toIntOrNull() ?: 1
 
     val linkToJson = "https://raw.githubusercontent.com/Neotica/JsonDB/refs/heads/main/android-video-archives.json"
     var searchText by remember { mutableStateOf("") }
@@ -176,6 +175,7 @@ fun AndroidPage() {
                                 SpanText(
                                     modifier = Modifier
                                         .fontSize(1.5.cssRem)
+                                        .color(NeoColor.white)
                                     /*.onClick {
                                         ctx.router.navigateTo(data.url)
                                     }*/,
@@ -184,6 +184,7 @@ fun AndroidPage() {
                                 SpanText(
                                     modifier = Modifier
                                         .fontSize(0.8.cssRem)
+                                        .color(NeoColor.white)
                                     /*.onClick {
                                         ctx.router.navigateTo(data.url)
                                     }*/,
@@ -193,7 +194,8 @@ fun AndroidPage() {
 
                             SpanText(
                                 modifier = Modifier
-                                    .fontSize(1.cssRem),
+                                    .fontSize(1.cssRem)
+                                    .color(NeoColor.white),
                                 text = data.description
                             )
                         }

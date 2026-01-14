@@ -7,6 +7,7 @@ import com.varabyte.kobweb.compose.foundation.layout.Row
 import com.varabyte.kobweb.compose.ui.Alignment
 import com.varabyte.kobweb.compose.ui.Modifier
 import com.varabyte.kobweb.compose.ui.modifiers.backgroundColor
+import com.varabyte.kobweb.compose.ui.modifiers.color
 import com.varabyte.kobweb.compose.ui.modifiers.padding
 import com.varabyte.kobweb.compose.ui.modifiers.title
 import com.varabyte.kobweb.silk.components.forms.Button
@@ -32,6 +33,7 @@ fun NeoButton(
             modifier = Modifier
 //            .then(modifier ?: Modifier)
                 .title(url)
+                .color(NeoColor.white)
                 .backgroundColor(NeoColor.colorPrimary)
         ) {
             Row(
