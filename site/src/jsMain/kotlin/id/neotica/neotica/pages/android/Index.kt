@@ -18,7 +18,7 @@ import com.varabyte.kobweb.core.layout.Layout
 import com.varabyte.kobweb.core.rememberPageContext
 import com.varabyte.kobweb.silk.components.graphics.Image
 import com.varabyte.kobweb.silk.components.text.SpanText
-import id.neotica.neotica.components.NeoButton
+import id.neotica.neotica.components.button.NeoButtonLink
 import id.neotica.neotica.components.NeoColor
 import id.neotica.neotica.components.layouts.NeoLayoutData
 import id.neotica.neotica.domain.model.YoutubeVideo
@@ -206,8 +206,8 @@ fun AndroidPage() {
                             horizontalArrangement = Arrangement.spacedBy(1.cssRem),
                             verticalAlignment = Alignment.CenterVertically,
                         ) {
-                            NeoButton(title = "Go to Video", url = data.url, "")
-                            NeoButton(title = "Go to YouTube Video", url = "https://www.youtube.com/watch?v=${data.videoId}", "")
+                            NeoButtonLink(title = "Go to Video", url = data.url, "")
+                            NeoButtonLink(title = "Go to YouTube Video", url = "https://www.youtube.com/watch?v=${data.videoId}", "")
                         }
                     }
                 }

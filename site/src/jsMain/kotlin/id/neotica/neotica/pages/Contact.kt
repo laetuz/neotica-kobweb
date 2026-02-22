@@ -19,7 +19,7 @@ import com.varabyte.kobweb.silk.components.layout.SimpleGrid
 import com.varabyte.kobweb.silk.components.layout.numColumns
 import com.varabyte.kobweb.silk.components.navigation.Link
 import com.varabyte.kobweb.silk.components.text.SpanText
-import id.neotica.neotica.components.NeoButton
+import id.neotica.neotica.components.button.NeoButtonLink
 import id.neotica.neotica.components.NeoColor
 import id.neotica.neotica.components.icons.NeoIcons
 import id.neotica.neotica.components.layouts.NeoLayoutData
@@ -88,7 +88,7 @@ fun ContactPage() {
                     modifier = Modifier.fillMaxSize(),
                     contentAlignment = Alignment.Center
                 ) {
-                    NeoButton(
+                    NeoButtonLink(
                         "Chat with us on Whatsapp!",
                         "https://wa.me/6289512971217",
                         NeoIcons.WHATSAPP

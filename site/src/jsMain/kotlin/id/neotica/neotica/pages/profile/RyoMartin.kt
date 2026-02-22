@@ -15,7 +15,7 @@ import com.varabyte.kobweb.core.init.InitRoute
 import com.varabyte.kobweb.core.init.InitRouteContext
 import com.varabyte.kobweb.silk.components.graphics.Image
 import com.varabyte.kobweb.silk.components.text.SpanText
-import id.neotica.neotica.components.NeoButton
+import id.neotica.neotica.components.button.NeoButtonLink
 import id.neotica.neotica.components.NeoColor
 import id.neotica.neotica.components.layouts.NeoLayoutData
 import org.jetbrains.compose.web.css.cssRem
@@ -63,13 +63,13 @@ fun RyoMartinPage() {
                     .fontSize(0.8.cssRem),
                 text = "Mobile Developer | Android (Kotlin) | iOS (Swift) | Kotlin Multiplatform"
             )
-            NeoButton(
+            NeoButtonLink(
                 "Github",
                 "https://github.com/laetuz",
                 "/icons/github.svg",
                 Modifier.padding(top = 0.8.cssRem)
             )
-            NeoButton(
+            NeoButtonLink(
                 "LinkedIn",
                 "https://linkedin.com/in/ryo-martin",
                 "/icons/linkedin_icon.svg",

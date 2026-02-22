@@ -14,7 +14,7 @@ import com.varabyte.kobweb.core.layout.Layout
 import com.varabyte.kobweb.silk.components.text.SpanText
 import id.neotica.neotica.components.NeoColor
 import id.neotica.neotica.components.layouts.NeoLayoutData
-import id.neotica.neotica.utils.aboutDesc
+import id.neotica.neotica.utils.Constants.ABOUT_DESC
 import org.jetbrains.compose.web.css.cssRem
 
 @InitRoute() // Match this with your @Page path if you define it explicitly
@@ -38,7 +38,7 @@ fun AboutPage() {
             modifier = Modifier
                 .fillMaxWidth()
         ) {
-            SpanText(aboutDesc)
+            SpanText(ABOUT_DESC)
         }
     }
 }

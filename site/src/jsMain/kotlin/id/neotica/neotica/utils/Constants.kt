@@ -6,10 +6,16 @@ package id.neotica.neotica.utils
 //        "This site serves as a running log of my work in building clean, effective digital things. I specialize in mobile development, and other niche technologies; focusing on well structured, industry standard projects that are both functional and weirdly beautiful." +
 //        ""
 
-const val homeDesc = "Neotica.id is a digital studio focused on building clean and effective mobile experiences. We specialize in mobile development and niche technologies, delivering well-structured, industry-standard projects that are both functional and beautifully designed."
+object Constants {
+    const val HOME_DESC = "Neotica.id is a digital studio focused on building clean and effective mobile experiences. We specialize in mobile development and niche technologies, delivering well-structured, industry-standard projects that are both functional and beautifully designed."
+    const val ABOUT_DESC = "Neotica is a software development studio specializing in mobile applications and libraries.\n" +
+            "\n" +
+            "Our mission is to explore new frontiers in software development, crafting high-quality applications for users and powerful tools for fellow developers.\n" +
+            "\n" +
+            "For business inquiries or consultations on your Android project, please contact us via email."
 
-const val aboutDesc = "Neotica is a software development studio specializing in mobile applications and libraries.\n" +
-        "\n" +
-        "Our mission is to explore new frontiers in software development, crafting high-quality applications for users and powerful tools for fellow developers.\n" +
-        "\n" +
-        "For business inquiries or consultations on your Android project, please contact us via email."
+    const val DEV_URL = "https://admin-dev.neotica.id"
+    const val DEV_URL_UNSECURED = "http://admin-dev.neotica.id"
+//    const val KOBWEB_DEV_URL = "http://dev.neotica.id"
+    const val KOBWEB_DEV_URL = "http://localhost:8080"
+}

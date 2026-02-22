@@ -17,6 +17,7 @@ import com.varabyte.kobweb.silk.components.navigation.UndecoratedLinkVariant
 import com.varabyte.kobweb.silk.style.breakpoint.Breakpoint
 import com.varabyte.kobweb.silk.style.breakpoint.displayIfAtLeast
 import com.varabyte.kobweb.silk.style.breakpoint.displayUntil
+import id.neotica.neotica.components.NeoColor
 import id.neotica.neotica.components.others.NeoText
 import id.neotica.neotica.components.widgets.IconButton
 import org.jetbrains.compose.web.css.DisplayStyle
@@ -111,7 +112,12 @@ fun NeoMenuItems() {
 
 @Composable
 private fun NavLink(path: String, text: String) {
-    Link(path, text, variant = UndecoratedLinkVariant.then(UncoloredLinkVariant))
+    Link(
+        path = path,
+        text = text,
+        modifier = Modifier.color(NeoColor.white),
+        variant = UndecoratedLinkVariant.then(UncoloredLinkVariant)
+    )
 }
 
 @Composable

@@ -1,4 +1,4 @@
-package id.neotica.neotica.components
+package id.neotica.neotica.components.button
 
 import androidx.compose.runtime.Composable
 import com.varabyte.kobweb.compose.foundation.layout.Arrangement
@@ -14,25 +14,24 @@ import com.varabyte.kobweb.silk.components.forms.Button
 import com.varabyte.kobweb.silk.components.forms.ButtonSize
 import com.varabyte.kobweb.silk.components.graphics.Image
 import com.varabyte.kobweb.silk.components.text.SpanText
+import id.neotica.neotica.components.NeoColor
 import kotlinx.browser.window
 import org.jetbrains.compose.web.css.cssRem
 
 @Composable
 fun NeoButton(
     title: String,
-    url: String,
-    imageSrc: String,
-    modifier: Modifier? = null
+    imageSrc: String? = null,
+    modifier: Modifier? = null,
+    onClick: (() -> Unit)? = null,
 ) {
     Box(modifier?: Modifier) {
         Button(
-            onClick = {
-                window.location.href = url
-            },
+            onClick = { onClick?.invoke() },
             size = ButtonSize.SM,
             modifier = Modifier
 //            .then(modifier ?: Modifier)
-                .title(url)
+//                .title(url)
                 .color(NeoColor.white)
                 .backgroundColor(NeoColor.colorPrimary)
         ) {
@@ -40,11 +39,14 @@ fun NeoButton(
                 verticalAlignment = Alignment.CenterVertically,
                 horizontalArrangement = Arrangement.SpaceEvenly
             ) {
-                Image(
-                    src = imageSrc,
-                    height = 20,
-                    modifier = Modifier.padding(right = 0.5.cssRem)
-                )
+                imageSrc?.let {
+                    Image(
+                        src = it,
+                        height = 20,
+                        modifier = Modifier.padding(right = 0.5.cssRem)
+                    )
+                }
+
                 SpanText(title)
             }
         }

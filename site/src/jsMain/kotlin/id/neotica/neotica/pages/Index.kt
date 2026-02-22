@@ -28,7 +28,7 @@ import id.neotica.neotica.components.layouts.NeoLayoutData
 import id.neotica.neotica.components.modifiers.BackgroundHoverStyle
 import id.neotica.neotica.components.others.NeoText
 import id.neotica.neotica.domain.model.TechStacks
-import id.neotica.neotica.utils.homeDesc
+import id.neotica.neotica.utils.Constants.HOME_DESC
 import org.jetbrains.compose.web.css.cssRem
 import org.jetbrains.compose.web.css.vh
 
@@ -94,7 +94,7 @@ fun HomePage() {
                 width = imageWidth
             )
             NeoText(
-                text = homeDesc,
+                text = HOME_DESC,
                 modifier = Modifier.fontSize(1.2.cssRem).lineHeight(1.5).textAlign(textAlign = TextAlign.Center)
             )
             Link(

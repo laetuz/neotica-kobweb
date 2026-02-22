@@ -24,7 +24,7 @@ import com.varabyte.kobweb.silk.style.selectors.hover
 import com.varabyte.kobweb.silk.style.selectors.link
 import com.varabyte.kobweb.silk.style.selectors.visited
 import com.varabyte.kobweb.silk.style.toModifier
-import id.neotica.neotica.components.NeoButton
+import id.neotica.neotica.components.button.NeoButtonLink
 import id.neotica.neotica.components.NeoColor
 import id.neotica.neotica.components.layouts.NeoLayoutData
 import id.neotica.neotica.domain.dummy.MemberList
@@ -220,7 +220,7 @@ fun MemberDetailPage() {
                             verticalAlignment = Alignment.CenterVertically
                         ) {
                             member.buttonLinks.forEach { btn ->
-                                NeoButton(
+                                NeoButtonLink(
                                     title = btn.name,
                                     url = btn.url,
                                     imageSrc = btn.imageUrl,
