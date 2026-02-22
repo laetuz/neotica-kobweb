@@ -109,8 +109,11 @@ fun AuthPage() {
                 )
             }
 
+            val service = AuthService()
+
             NeoButton(
                 if (isLoading) "Loading..." else "Login",
+                modifier = Modifier.padding(bottom = 1.cssRem)
             ) {
                 if (username.isNotBlank() && password.isNotBlank()) {
                     scope.launch {
@@ -130,8 +133,7 @@ fun AuthPage() {
                                 val text = response.text().await()
                                 val authData = jsonParser.decodeFromString<LoginResponse>(text)
 
-                                window.localStorage.setItem("token", authData.token)
-                                window.localStorage.setItem("refreshToken", authData.refreshToken)
+                                service.login(authData.token, authData.refreshToken)
 
                                 ctx.router.navigateTo("/auth/content")
                             } else {
@@ -149,6 +151,14 @@ fun AuthPage() {
                 } else {
                     errorMessage = "Please enter both the username and password."
                 }
+            }
+
+            NeoButton("Clear cookies", modifier = Modifier.padding(bottom = 1.cssRem)) {
+                service.logout()
+            }
+
+            NeoButton("Check", modifier = Modifier.padding(bottom = 1.cssRem)) {
+                service.isLoggedIn()
             }
         }
     }

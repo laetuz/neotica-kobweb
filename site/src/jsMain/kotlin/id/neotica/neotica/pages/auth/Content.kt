@@ -17,7 +17,6 @@ import id.neotica.neotica.components.NeoColor
 import id.neotica.neotica.components.button.NeoButton
 import id.neotica.neotica.components.layouts.NeoLayoutData
 import id.neotica.neotica.components.others.NeoText
-import kotlinx.browser.window
 import kotlinx.serialization.json.Json
 import org.jetbrains.compose.web.css.cssRem
 
@@ -42,9 +41,9 @@ fun ContentPage() {
     val jsonParser = remember { Json { ignoreUnknownKeys = true } }
 
     LaunchedEffect(Unit) {
-        val token = window.localStorage.getItem("token")
+        val isLoggedIn = AuthService().isLoggedIn()
 
-        if (token == null) {
+        if (!isLoggedIn) {
             ctx.router.navigateTo("/auth")
         }
     }
@@ -78,8 +77,7 @@ fun ContentPage() {
             )
 
             NeoButton("Logout") {
-                window.localStorage.removeItem("token")
-                window.localStorage.removeItem("refreshToken")
+                AuthService().logout()
 
                 ctx.router.navigateTo("/auth")
             }
