@@ -35,4 +35,5 @@ object NeoIcons {
     const val WHATSAPP = "/projects/others/whatsapp.svg"
     const val LINKEDIN = "/projects/others/linkedin.svg"
     const val GITHUB = "/projects/others/github.svg"
+    const val EMAIL = "/projects/others/email-icon.png"
 }

@@ -88,11 +88,19 @@ fun ContactPage() {
                     modifier = Modifier.fillMaxSize(),
                     contentAlignment = Alignment.Center
                 ) {
-                    NeoButtonLink(
-                        "Chat with us on Whatsapp!",
-                        "https://wa.me/6289512971217",
-                        NeoIcons.WHATSAPP
-                    )
+                    Column(verticalArrangement = Arrangement.spacedBy(2.cssRem)) {
+                        NeoButtonLink(
+                            "Chat with us on Whatsapp!",
+                            "https://wa.me/6289512971217",
+                            NeoIcons.WHATSAPP
+                        )
+                        NeoButtonLink(
+                            "Or email us!",
+                            "mailto:laetuz@://neotica.id",
+                            NeoIcons.EMAIL
+                        )
+                    }
+
                 }
             }
         }
@@ -106,10 +114,7 @@ fun StyledSocialLink(text: String, url: String) {
         modifier = Modifier
             .color(Colors.White)
             .fontWeight(FontWeight.SemiBold)
-//            .textDecorationLine(com.varabyte.kobweb.compose.css.TextDecorationLine.None)
             .opacity(0.7)
-//            .transition(com.varabyte.kobweb.compose.css.CSSTransition("opacity", 0.2.s))
-//            .onHover { opacity(1) }
     ) {
         SpanText(text)
     }
