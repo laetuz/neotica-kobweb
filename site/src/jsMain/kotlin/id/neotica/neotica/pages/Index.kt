@@ -2,6 +2,7 @@ package id.neotica.neotica.pages
 
 import androidx.compose.runtime.Composable
 import com.varabyte.kobweb.compose.css.*
+import com.varabyte.kobweb.compose.foundation.layout.Arrangement
 import com.varabyte.kobweb.compose.foundation.layout.Box
 import com.varabyte.kobweb.compose.foundation.layout.Column
 import com.varabyte.kobweb.compose.foundation.layout.Row
@@ -29,7 +30,10 @@ import id.neotica.neotica.components.modifiers.BackgroundHoverStyle
 import id.neotica.neotica.components.others.NeoText
 import id.neotica.neotica.domain.model.TechStacks
 import id.neotica.neotica.utils.Constants.HOME_DESC
+import org.jetbrains.compose.web.css.FlexWrap
+import org.jetbrains.compose.web.css.LineStyle
 import org.jetbrains.compose.web.css.cssRem
+import org.jetbrains.compose.web.css.px
 import org.jetbrains.compose.web.css.vh
 
 // Container that has a tagline and grid on desktop, and just the tagline on mobile
@@ -83,8 +87,7 @@ fun HomePage() {
         ) {
             val imageWidth = when (breakpoint) {
                 Breakpoint.ZERO -> 400
-                Breakpoint.SM -> 500
-                Breakpoint.MD -> 500
+                Breakpoint.SM, Breakpoint.MD  -> 500
                 else -> 700
             }
 
@@ -97,17 +100,60 @@ fun HomePage() {
                 text = HOME_DESC,
                 modifier = Modifier.fontSize(1.2.cssRem).lineHeight(1.5).textAlign(textAlign = TextAlign.Center)
             )
-            Link(
-                path = "/projects",
-                modifier = BackgroundHoverStyle.toModifier()
-                    .padding(1.cssRem)
-                    .borderRadius(1.cssRem)
+
+            Row(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .gap(1.5.cssRem)
+                    .flexWrap(FlexWrap.Wrap), // Wraps to next line on small mobile screens
+                horizontalArrangement = Arrangement.Center,
+                verticalAlignment = Alignment.CenterVertically
             ) {
-                NeoText(
-                    text = "> View Projects",
-                    modifier = Modifier.fontSize(1.2.cssRem).textDecorationLine(TextDecorationLine.None)
-                )
+                Link(
+                    path = "/projects",
+                    modifier = BackgroundHoverStyle.toModifier()
+                        .padding(1.cssRem)
+                        .borderRadius(1.cssRem)
+                        .border(1.px, LineStyle.Solid, NeoColor.colorPrimary)
+                ) {
+                    NeoText(
+                        text = "> View Projects",
+                        modifier = Modifier.fontSize(1.2.cssRem).textDecorationLine(TextDecorationLine.None)
+                    )
+                }
+
+                Link(
+                    path = "/orpheum",
+                    modifier = BackgroundHoverStyle.toModifier()
+                        .padding(1.cssRem)
+                        .borderRadius(1.cssRem)
+                        .border(1.px, LineStyle.Solid, NeoColor.colorPrimary)
+                ) {
+                    NeoText(
+                        text = "🎵 Stream Orpheum",
+                        modifier = Modifier
+                            .fontSize(1.2.cssRem)
+                            .textDecorationLine(TextDecorationLine.None)
+                            .color(NeoColor.colorPrimary)
+                    )
+                }
+                Link(
+                    path = "/photobooth",
+                    modifier = BackgroundHoverStyle.toModifier()
+                        .padding(1.cssRem)
+                        .borderRadius(1.cssRem)
+                        .border(1.px, LineStyle.Solid, NeoColor.colorPrimary)
+                ) {
+                    NeoText(
+                        text = "📷 NeoBooth",
+                        modifier = Modifier
+                            .fontSize(1.2.cssRem)
+                            .textDecorationLine(TextDecorationLine.None)
+                            .color(NeoColor.colorPrimary)
+                    )
+                }
             }
+
             Column(
                 horizontalAlignment = Alignment.CenterHorizontally
             ) {
