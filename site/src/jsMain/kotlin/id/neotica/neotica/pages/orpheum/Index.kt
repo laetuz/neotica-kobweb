@@ -19,6 +19,9 @@ import com.varabyte.kobweb.core.rememberPageContext
 import com.varabyte.kobweb.silk.components.text.SpanText
 import id.neotica.neotica.components.NeoColor
 import id.neotica.neotica.components.layouts.NeoLayoutData
+import id.neotica.neotica.components.others.NeoText
+import id.neotica.neotica.domain.dummy.OrpheumTrackList
+import id.neotica.neotica.utils.Constants
 import kotlinx.browser.window
 import kotlinx.coroutines.await
 import kotlinx.serialization.SerialName
@@ -27,12 +30,13 @@ import kotlinx.serialization.json.Json
 import org.jetbrains.compose.web.css.FlexWrap
 import org.jetbrains.compose.web.css.LineStyle
 import org.jetbrains.compose.web.css.cssRem
+import org.jetbrains.compose.web.css.percent
 import org.jetbrains.compose.web.css.px
 import org.jetbrains.compose.web.dom.Button
+import org.jetbrains.compose.web.dom.Div
 import org.w3c.dom.HTMLAudioElement
 import org.w3c.dom.events.Event
 
-// --- Data Models ---
 @Serializable
 data class TrackFeedResponse(
     val data: List<TrackRemoteModel>,
@@ -49,8 +53,17 @@ data class TrackRemoteModel(
     val title: String,
     @SerialName("duration_seconds") val durationSeconds: Int,
     @SerialName("file_url") val fileUrl: String,
-    @SerialName("track_number") val trackNumber: Int
+    @SerialName("track_number") val trackNumber: Int,
+    @SerialName("artist_name") val artistName: String
 )
+
+private const val USE_DUMMY_DATA = false
+
+private fun formatDuration(totalSeconds: Int): String {
+    val min = totalSeconds / 60
+    val sec = totalSeconds % 60
+    return "${min}:${sec.toString().padStart(2, '0')}"
+}
 
 @InitRoute()
 fun initOrpheumPage(ctx: InitRouteContext) {
@@ -71,21 +84,26 @@ fun OrpheumPage() {
     var currentPage by remember { mutableStateOf(currentPageParam) }
     var totalPages by remember { mutableStateOf(1) }
 
-    // --- Audio Player State ---
-    // Instantiate a single native HTML5 audio element for the lifecycle of this page
     val audioPlayer = remember { window.document.createElement("audio") as HTMLAudioElement }
     var currentlyPlayingId by remember { mutableStateOf<String?>(null) }
     var isPlaying by remember { mutableStateOf(false) }
+    var currentTime by remember { mutableStateOf(0.0) }
+    var trackDuration by remember { mutableStateOf(0.0) }
 
     val jsonParser = remember { Json { ignoreUnknownKeys = true } }
 
-    // Clean up audio bindings when the user navigates away
     DisposableEffect(Unit) {
         val onEnded = { _: Event -> isPlaying = false }
+        val onTimeUpdate = { _: Event ->
+            currentTime = audioPlayer.currentTime
+            trackDuration = audioPlayer.duration
+        }
         audioPlayer.addEventListener("ended", onEnded)
+        audioPlayer.addEventListener("timeupdate", onTimeUpdate)
 
         onDispose {
             audioPlayer.removeEventListener("ended", onEnded)
+            audioPlayer.removeEventListener("timeupdate", onTimeUpdate)
             audioPlayer.pause()
             audioPlayer.src = ""
         }
@@ -95,32 +113,37 @@ fun OrpheumPage() {
         isLoading = true
         errorMessage = null
 
-        try {
-            val newPath = "/orpheum?page=$currentPage"
-            if (window.location.search != "?page=$currentPage") {
-                window.history.pushState(null, "", newPath)
-            }
+        val newPath = "/orpheum?page=$currentPage"
+        if (window.location.search != "?page=$currentPage") {
+            window.history.pushState(null, "", newPath)
+        }
 
-            // Server-side pagination via Ktor
-            val url = "https://dev.neotica.id/orpheum/catalog/tracks/new?page=$currentPage&limit=10"
-            val response = window.fetch(url).await()
-
-            if (!response.ok) {
-                throw Exception("HTTP Error: ${response.status} ${response.statusText}")
-            }
-
-            val text = response.text().await()
-            val feedResponse = jsonParser.decodeFromString(TrackFeedResponse.serializer(), text)
-
+        if (USE_DUMMY_DATA) {
+            val feedResponse = OrpheumTrackList.getPage(currentPage)
             trackList = feedResponse.data
             totalPages = feedResponse.totalPages
+        } else {
+            try {
+                val url = "${Constants.ORPHEUM_DEV_URL}/orpheum/catalog/tracks/new?page=$currentPage&limit=10"
+                val response = window.fetch(url).await()
 
-        } catch (e: Throwable) {
-            console.error("Failed to load tracks: ", e)
-            errorMessage = e.message ?: "An unknown network error occurred (Likely CORS)."
-        } finally {
-            isLoading = false
+                if (!response.ok) {
+                    throw Exception("HTTP Error: ${response.status} ${response.statusText}")
+                }
+
+                val text = response.text().await()
+                val feedResponse = jsonParser.decodeFromString(TrackFeedResponse.serializer(), text)
+
+                trackList = feedResponse.data
+                totalPages = feedResponse.totalPages
+
+            } catch (e: Throwable) {
+                console.error("Failed to load tracks: ", e)
+                errorMessage = e.message ?: "An unknown network error occurred (Likely CORS)."
+            }
         }
+
+        isLoading = false
     }
 
     Column(
@@ -136,20 +159,17 @@ fun OrpheumPage() {
             modifier = Modifier
                 .color(NeoColor.colorPrimary)
                 .fontSize(2.cssRem)
-//                .fontWeight("bold")
         )
 
         if (isLoading) {
-            SpanText(
+            NeoText(
                 text = "Loading audio tracks...",
-                modifier = Modifier
-                    .color(NeoColor.white)
-                    .fontSize(1.5.cssRem)
+                modifier = Modifier.fontSize(1.5.cssRem)
             )
         } else if (errorMessage != null) {
-            SpanText(
+            NeoText(
                 text = "Failed to load: $errorMessage",
-                modifier = Modifier.color(NeoColor.white).fontSize(1.5.cssRem) // Assuming you don't have a red NeoColor yet
+                modifier = Modifier.color(NeoColor.negativePrimary).fontSize(1.5.cssRem)
             )
         }
 
@@ -168,18 +188,17 @@ fun OrpheumPage() {
                 horizontalArrangement = Arrangement.SpaceBetween,
                 verticalAlignment = Alignment.CenterVertically
             ) {
-                Column {
-                    SpanText(
-                        modifier = Modifier.fontSize(1.5.cssRem).color(NeoColor.white),
+                Column(modifier = Modifier.fillMaxWidth(60.percent)) {
+                    NeoText(
+                        modifier = Modifier.fontSize(1.5.cssRem),
                         text = track.title
                     )
-                    SpanText(
-                        modifier = Modifier.fontSize(0.9.cssRem).color(NeoColor.white),
-                        text = "Track ${track.trackNumber}"
+                    NeoText(
+                        modifier = Modifier.fontSize(0.9.cssRem),
+                        text = "${track.artistName}  \u00B7  ${formatDuration(track.durationSeconds)}"
                     )
                 }
 
-                // Playback Control Button
                 Button(
                     attrs = Modifier
                         .backgroundColor(NeoColor.colorPrimary)
@@ -190,16 +209,13 @@ fun OrpheumPage() {
                         .cursor(Cursor.Pointer)
                         .onClick {
                             if (isActive && isPlaying) {
-                                // Pause active track
                                 audioPlayer.pause()
                                 isPlaying = false
                             } else if (isActive && !isPlaying) {
-                                // Resume active track
                                 audioPlayer.play()
                                 isPlaying = true
                             } else {
-                                // Stream brand new track through the Ktor transparent pipe
-                                audioPlayer.src = "https://dev.neotica.id/orpheum/stream/${track.id}"
+                                audioPlayer.src = "${Constants.ORPHEUM_DEV_URL}/orpheum/stream/${track.id}"
                                 audioPlayer.play()
                                 currentlyPlayingId = track.id
                                 isPlaying = true
@@ -207,21 +223,58 @@ fun OrpheumPage() {
                         }
                         .toAttrs()
                 ) {
-                    val icon = if (isActive && isPlaying) "⏸ Pause" else "▶️ Play"
-                    SpanText(icon)
+                    SpanText(if (isActive && isPlaying) "\u23F8 Pause" else "\u25B6 Play")
+                }
+            }
+
+            if (isActive) {
+                val progress = if (trackDuration > 0) (currentTime / trackDuration).coerceIn(0.0, 1.0) else 0.0
+                val currentLabel = formatDuration(currentTime.toInt())
+                val totalLabel = formatDuration(trackDuration.toInt())
+
+                Row(
+                    modifier = Modifier.fillMaxWidth().gap(0.5.cssRem).padding(topBottom = 0.3.cssRem),
+                    verticalAlignment = Alignment.CenterVertically
+                ) {
+                    NeoText(text = currentLabel, modifier = Modifier.fontSize(0.8.cssRem))
+
+                    Div(
+                        attrs = Modifier
+                            .fillMaxWidth()
+                            .height(6.px)
+                            .backgroundColor(NeoColor.backgroundPrimaryTransparent)
+                            .borderRadius(3.px)
+                            .cursor(Cursor.Pointer)
+                            .onClick { e ->
+                                val rect = (e.currentTarget.asDynamic() as org.w3c.dom.Element)
+                                val width = rect.getBoundingClientRect().width
+                                if (width > 0) {
+                                    val offsetX = (e.asDynamic().offsetX as Double).coerceIn(0.0, width)
+                                    audioPlayer.currentTime = (offsetX / width) * trackDuration
+                                }
+                            }
+                            .toAttrs()
+                    ) {
+                        Div(
+                            attrs = Modifier
+                                .height(6.px)
+                                .backgroundColor(NeoColor.colorPrimary)
+                                .borderRadius(3.px)
+                                .toAttrs { style { property("width", "${(progress * 100).toInt()}%") } }
+                        )
+                    }
+
+                    NeoText(text = totalLabel, modifier = Modifier.fontSize(0.8.cssRem))
                 }
             }
         }
 
         if (!isLoading && trackList.isNotEmpty()) {
-            Row(
-                modifier = Modifier.fillMaxWidth().padding(topBottom = 2.cssRem),
-                horizontalArrangement = Arrangement.Center,
-                verticalAlignment = Alignment.CenterVertically
-            ) {
-                PaginationFooter(currentPage, totalPages) { newPage ->
-                    currentPage = newPage
-                }
+            PaginationFooter(currentPage, totalPages) { newPage ->
+                audioPlayer.pause()
+                isPlaying = false
+                currentlyPlayingId = null
+                currentPage = newPage
             }
         }
     }
@@ -233,39 +286,77 @@ private fun PaginationFooter(
     totalPages: Int,
     onPageChange: (Int) -> Unit
 ) {
-    Button(
-        attrs = Modifier
-            .backgroundColor(if (currentPage > 1) NeoColor.colorPrimary else NeoColor.backgroundPrimary)
-            .color(NeoColor.white)
-            .padding(10.px)
-            .borderRadius(5.px)
-            .border(1.px, LineStyle.Solid, NeoColor.colorPrimary)
-            .cursor(if (currentPage > 1) Cursor.Pointer else Cursor.NotAllowed)
-            .onClick { if (currentPage > 1) onPageChange(currentPage - 1) }
-            .toAttrs { if (currentPage <= 1) attr("disabled", "true") }
+    Row(
+        modifier = Modifier.fillMaxWidth().padding(topBottom = 2.cssRem),
+        horizontalArrangement = Arrangement.Center,
+        verticalAlignment = Alignment.CenterVertically
     ) {
-        SpanText("Previous")
-    }
+        Button(
+            attrs = Modifier
+                .backgroundColor(if (currentPage > 1) NeoColor.colorPrimary else NeoColor.backgroundPrimary)
+                .color(NeoColor.white)
+                .padding(10.px)
+                .borderRadius(5.px)
+                .border(1.px, LineStyle.Solid, NeoColor.colorPrimary)
+                .cursor(if (currentPage > 1) Cursor.Pointer else Cursor.NotAllowed)
+                .onClick { if (currentPage > 1) onPageChange(currentPage - 1) }
+                .toAttrs { if (currentPage <= 1) attr("disabled", "true") }
+        ) {
+            SpanText("\u00AB Prev")
+        }
 
-    SpanText(
-        text = "Page $currentPage of ${if (totalPages == 0) 1 else totalPages}",
-        modifier = Modifier
-            .color(NeoColor.white)
-            .margin(leftRight = 1.cssRem)
-            .fontSize(1.2.cssRem)
-    )
+        val visiblePages = buildList {
+            val rangeStart = (currentPage - 2).coerceAtLeast(1)
+            val rangeEnd = (currentPage + 2).coerceAtMost(totalPages)
+            if (rangeStart > 1) {
+                add(1)
+                if (rangeStart > 2) add(-1)
+            }
+            for (i in rangeStart..rangeEnd) add(i)
+            if (rangeEnd < totalPages) {
+                if (rangeEnd < totalPages - 1) add(-1)
+                add(totalPages)
+            }
+        }
 
-    Button(
-        attrs = Modifier
-            .backgroundColor(if (currentPage < totalPages) NeoColor.colorPrimary else NeoColor.backgroundPrimaryTransparent)
-            .color(NeoColor.white)
-            .padding(10.px)
-            .borderRadius(5.px)
-            .border(1.px, LineStyle.Solid, NeoColor.colorPrimary)
-            .cursor(if (currentPage < totalPages) Cursor.Pointer else Cursor.NotAllowed)
-            .onClick { if (currentPage < totalPages) onPageChange(currentPage + 1) }
-            .toAttrs { if (currentPage >= totalPages) attr("disabled", "true") }
-    ) {
-        SpanText("Next")
+        visiblePages.forEach { page ->
+            if (page == -1) {
+                SpanText(
+                    text = "\u2026",
+                    modifier = Modifier
+                        .color(NeoColor.white)
+                        .margin(leftRight = 0.5.cssRem)
+                        .fontSize(1.2.cssRem)
+                )
+            } else {
+                Button(
+                    attrs = Modifier
+                        .backgroundColor(if (page == currentPage) NeoColor.colorPrimary else NeoColor.backgroundPrimaryTransparent)
+                        .color(NeoColor.white)
+                        .padding(10.px)
+                        .borderRadius(5.px)
+                        .border(1.px, LineStyle.Solid, NeoColor.colorPrimary)
+                        .cursor(Cursor.Pointer)
+                        .onClick { onPageChange(page) }
+                        .toAttrs { if (page == currentPage) attr("disabled", "true") }
+                ) {
+                    SpanText(page.toString())
+                }
+            }
+        }
+
+        Button(
+            attrs = Modifier
+                .backgroundColor(if (currentPage < totalPages) NeoColor.colorPrimary else NeoColor.backgroundPrimaryTransparent)
+                .color(NeoColor.white)
+                .padding(10.px)
+                .borderRadius(5.px)
+                .border(1.px, LineStyle.Solid, NeoColor.colorPrimary)
+                .cursor(if (currentPage < totalPages) Cursor.Pointer else Cursor.NotAllowed)
+                .onClick { if (currentPage < totalPages) onPageChange(currentPage + 1) }
+                .toAttrs { if (currentPage >= totalPages) attr("disabled", "true") }
+        ) {
+            SpanText("Next \u00BB")
+        }
     }
 }

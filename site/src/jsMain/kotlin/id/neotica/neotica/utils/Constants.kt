@@ -18,4 +18,6 @@ object Constants {
     const val DEV_URL_UNSECURED = "http://admin-dev.neotica.id"
 //    const val KOBWEB_DEV_URL = "http://dev.neotica.id"
     const val KOBWEB_DEV_URL = "http://localhost:8080"
+
+    const val ORPHEUM_DEV_URL = "https://dev.neotica.id"
 }
