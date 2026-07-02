@@ -92,7 +92,7 @@ fun HoloMarketLandingPage() {
             .fillMaxSize()
             .padding(leftRight = 2.cssRem, topBottom = 1.cssRem)
             .overflow(Overflow.Auto)
-            .gap(3.cssRem),
+            .gap(1.5.cssRem),
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
         HeroSection()
@@ -117,13 +117,13 @@ private fun HeroSection() {
     ) {
         Box(
             modifier = Modifier
-                .backgroundColor(NeoColor.colorPrimary)
-                .padding(leftRight = 1.cssRem)
-                .borderRadius(4.px)
+                .size(260.px)
+                .border(1.px, LineStyle.Solid, NeoColor.colorPrimary.copy(alpha = 25))
+                .borderRadius(8.px)
         ) {
-            NeoText(
-                text = "NOW AVAILABLE FOR ANDROID 2.1+",
-                modifier = Modifier.fontSize(0.75.cssRem).fontWeight(FontWeight.Bold)
+            Image(
+                src = NeoResources.HOLOMARKET_ICON,
+                modifier = Modifier.fillMaxSize()
             )
         }
 
@@ -164,12 +164,12 @@ private fun DescriptionSection() {
         SectionHeading("Introducing HoloMarket")
 
         NeoText(
-            text = "There are millions of Android devices out there, and every one of them deserves access to great software. HoloMarket is a brand new, independent app store that brings you a hand-picked selection of the finest applications the Android ecosystem has to offer.",
+            text = "There are millions of Android devices out there, and every one of them deserves access to great software. Neotica presents to you HoloMarket. It is a brand new app store that brings you a hand-picked selection of the finest applications the Android ecosystem has to offer.",
             modifier = Modifier.fontSize(0.95.cssRem).lineHeight(1.7).textAlign(TextAlign.Center)
         )
 
         NeoText(
-            text = "Whether you are rocking the latest Android 4.0 Ice Cream Sandwich handset or holding onto your trusty 2.3 Gingerbread device, HoloMarket is designed to work seamlessly across the board. No frills, no clutter \u2014 just great apps, ready to download.",
+            text = "Whether you are rocking the latest Android 4.0 Ice Cream Sandwich handset or holding onto your 2.3 Gingerbread device, HoloMarket is designed to work seamlessly across the board. With a decluttered minimalist Holo UI, easy to navigate, and ready to download. Just that simple.",
             modifier = Modifier.fontSize(0.95.cssRem).lineHeight(1.7).textAlign(TextAlign.Center)
         )
     }
