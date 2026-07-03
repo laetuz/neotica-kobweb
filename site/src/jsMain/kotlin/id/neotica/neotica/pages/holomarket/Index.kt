@@ -18,7 +18,6 @@ import com.varabyte.kobweb.compose.ui.Alignment
 import com.varabyte.kobweb.compose.ui.Modifier
 import com.varabyte.kobweb.compose.ui.modifiers.*
 import com.varabyte.kobweb.core.Page
-import kotlinx.browser.window
 import com.varabyte.kobweb.core.data.add
 import com.varabyte.kobweb.core.init.InitRoute
 import com.varabyte.kobweb.core.init.InitRouteContext
@@ -31,6 +30,7 @@ import id.neotica.neotica.components.NeoColor
 import id.neotica.neotica.components.layouts.NeoLayoutData
 import id.neotica.neotica.components.others.NeoText
 import id.neotica.neotica.components.resources.NeoResources
+import kotlinx.browser.window
 import kotlinx.coroutines.await
 import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
@@ -84,6 +84,28 @@ fun HoloMarketLandingPage() {
         } catch (e: Throwable) {
             console.error("Failed to fetch latest release: ${e.message}")
         }
+    }
+
+    LaunchedEffect(Unit) {
+        val head = window.document.head ?: return@LaunchedEffect
+
+        val existing = head.querySelectorAll("meta[property^='og:']")
+        for (i in 0 until existing.length) {
+            existing.item(i)?.let { head.removeChild(it) }
+        }
+
+        fun injectMeta(property: String, content: String) {
+            val el = window.document.createElement("meta").apply {
+                setAttribute("property", property)
+                setAttribute("content", content)
+            }
+            head.appendChild(el)
+        }
+        injectMeta("og:title", "HoloMarket - Android App Store for Legacy Devices")
+        injectMeta("og:description", "A third-party marketplace featuring a curated collection of Android applications, games, and tools for Android 2.1+ devices.")
+        injectMeta("og:type", "website")
+        injectMeta("og:url", "https://neotica.id/holomarket")
+        injectMeta("og:image", "https://neotica.id/projects/holomarket/ss-holomarket-1.png")
     }
 
     Column(
