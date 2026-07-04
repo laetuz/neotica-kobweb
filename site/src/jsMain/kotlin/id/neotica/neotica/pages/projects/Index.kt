@@ -5,7 +5,6 @@ import com.varabyte.kobweb.compose.css.FontStyle
 import com.varabyte.kobweb.compose.css.FontWeight
 import com.varabyte.kobweb.compose.css.Overflow
 import com.varabyte.kobweb.compose.css.TextAlign
-import com.varabyte.kobweb.compose.css.TextDecorationLine
 import com.varabyte.kobweb.compose.foundation.layout.Arrangement
 import com.varabyte.kobweb.compose.foundation.layout.Column
 import com.varabyte.kobweb.compose.foundation.layout.Row
@@ -21,15 +20,12 @@ import com.varabyte.kobweb.silk.components.graphics.Image
 import com.varabyte.kobweb.silk.components.layout.SimpleGrid
 import com.varabyte.kobweb.silk.components.layout.numColumns
 import com.varabyte.kobweb.silk.components.navigation.Link
-import com.varabyte.kobweb.silk.components.text.SpanText
-import com.varabyte.kobweb.silk.style.CssStyle
-import com.varabyte.kobweb.silk.style.selectors.hover
-import com.varabyte.kobweb.silk.style.selectors.link
-import com.varabyte.kobweb.silk.style.selectors.visited
 import com.varabyte.kobweb.silk.style.toModifier
 import id.neotica.neotica.components.NeoColor
 import id.neotica.neotica.components.icons.NeoIcons
 import id.neotica.neotica.components.layouts.NeoLayoutData
+import id.neotica.neotica.components.modifiers.BackgroundHoverStyle
+import id.neotica.neotica.components.others.NeoText
 import org.jetbrains.compose.web.css.AlignItems
 import org.jetbrains.compose.web.css.FlexDirection
 import org.jetbrains.compose.web.css.cssRem
@@ -55,13 +51,13 @@ fun ProjectsPage() {
             modifier = Modifier.fillMaxWidth(),
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
-            SpanText(
+            NeoText(
                 text = "Our Portfolio",
                 modifier = Modifier
                     .fontSize(2.cssRem)
                     .fontWeight(FontWeight.Bold),
             )
-            SpanText(
+            NeoText(
                 text = "A showcase of our projects and experiments.",
                 modifier = Modifier
                     .fontSize(1.2.cssRem)
@@ -74,7 +70,7 @@ fun ProjectsPage() {
             numColumns = numColumns(1, md = 2, lg = 3, xl = 4),
             modifier = Modifier
                 .fillMaxWidth()
-                .padding(top = 1.cssRem)
+                .padding(topBottom = 1.cssRem)
                 .gap(1.cssRem)
         ) {
             ProjectCard(
@@ -166,13 +162,35 @@ fun ProjectsPage() {
                 download = listOf(
                     UrlList(
                         "Download",
-                        "https://github.com/laetuz/ModernADB/releases"
+                        "https://github.com/Neotica/ModernADB/releases"
                     ),
                     UrlList(
                         "Github",
-                        "https://github.com/laetuz/ModernADB"
+                        "https://github.com/Neotica/ModernADB"
                     )
                 )
+            )
+            ProjectCard(
+                name = "Invoicer",
+                image = NeoIcons.INVOICER,
+                imageSize = 120,
+                imageModifier = Modifier.padding(topBottom = 1.cssRem),
+                desc = "Invoicer is a desktop app built to create a quick and simple invoice, while still maintaining a professional looks. Designed to be used with ease.",
+                download = listOf(
+                    UrlList(
+                        "Github",
+                        "https://github.com/laetuz/Invoicer"
+                    )
+                ),
+                techStacks = listOf(
+                    NeoIcons.KOTLIN,
+                    NeoIcons.CMP
+                ),
+                platforms = listOf(
+                    NeoIcons.WINDOWS,
+                    NeoIcons.LINUX,
+                    NeoIcons.MACOS,
+                ),
             )
             ProjectCard(
                 name = "KotSpam",
@@ -234,25 +252,26 @@ private fun ProjectCard(
                     .borderRadius(1.cssRem)
                     .then(imageModifier ?: Modifier)
             )
-            SpanText(
+            NeoText(
                 text = name,
                 modifier = Modifier
                     .fontWeight(FontWeight.Bold)
                     .textAlign(TextAlign.Center)
-                    .fontSize(1.2.cssRem)
+                    .fontSize(1.5.cssRem)
             )
-            SpanText(
+            NeoText(
                 text = desc,
                 modifier = Modifier
-                    .fontSize(0.9.cssRem)
+                    .fontSize(1.2.cssRem)
                     .fontStyle(FontStyle.Italic)
+                    .fontWeight(FontWeight.Light)
                     .textAlign(TextAlign.Center)
             )
-            SpanText(
+            NeoText(
                 text = "Tech stacks:",
                 modifier = Modifier
                     .padding(top = 1.cssRem)
-                    .fontSize(0.9.cssRem)
+                    .fontWeight(FontWeight.Bold)
             )
             if (techStacks.size < 2) {
                 Row {
@@ -289,11 +308,11 @@ private fun ProjectCard(
                 .padding(leftRight = 1.cssRem)
         ) {
 
-            SpanText(
+            NeoText(
                 text = "Platforms:",
                 modifier = Modifier
                     .padding(top = 1.cssRem)
-                    .fontSize(0.9.cssRem)
+                    .fontWeight(FontWeight.Bold)
             )
             SimpleGrid(
                 numColumns = numColumns(5, 5),
@@ -340,7 +359,7 @@ private fun ProjectCard(
                                 Modifier.fillMaxWidth(),
                                 horizontalArrangement = Arrangement.Center
                             ) {
-                                SpanText(
+                                NeoText(
                                     text = it.first().title,
                                 )
                             }
@@ -364,17 +383,16 @@ private fun ProjectCard(
                                     modifier = BackgroundHoverStyle.toModifier()
                                         .weight(1f)
                                         .padding(1.cssRem)
-                                        .borderRadius(1.cssRem),
+                                        .borderRadius(1.cssRem)
                                 ) {
                                     Row(
                                         Modifier.fillMaxWidth(),
                                         horizontalArrangement = Arrangement.Center
                                     ) {
-                                        SpanText(
+                                        NeoText(
                                             text = item.title,
                                         )
                                     }
-
                                 }
                             }
                         }
@@ -387,20 +405,5 @@ private fun ProjectCard(
 
 private data class UrlList(
     val title: String,
-    val url: String
+    val url: String,
 )
-
-val BackgroundHoverStyle = CssStyle {
-    base {
-        Modifier
-            .background(NeoColor.backgroundPrimary)
-            .textDecorationLine(TextDecorationLine.None)
-    }
-    link {
-        Modifier.color(NeoColor.white) // Set your static text color
-    }
-    visited {
-        Modifier.color(NeoColor.white) // Use the same color to keep it static
-    }
-    hover { Modifier.backgroundColor(NeoColor.colorPrimary) }
-}

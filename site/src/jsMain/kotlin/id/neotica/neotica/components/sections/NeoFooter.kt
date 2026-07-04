@@ -8,15 +8,15 @@ import com.varabyte.kobweb.compose.ui.modifiers.fillMaxWidth
 import com.varabyte.kobweb.compose.ui.modifiers.fontSize
 import com.varabyte.kobweb.compose.ui.modifiers.padding
 import com.varabyte.kobweb.compose.ui.modifiers.textAlign
-import com.varabyte.kobweb.silk.components.text.SpanText
 import id.neotica.neotica.components.NeoColor
+import id.neotica.neotica.components.others.NeoText
 import org.jetbrains.compose.web.css.cssRem
 import org.jetbrains.compose.web.css.em
 
 @Composable
 fun NeoFooter(modifier: Modifier = Modifier) {
-    SpanText(
-        text = "© Neotica.id 2025",
+    NeoText(
+        text = "© Neotica.id 2026",
         modifier = modifier
             .backgroundColor(NeoColor.backgroundPrimary)
             .fillMaxWidth()

@@ -5,6 +5,7 @@ object NeoIcons {
     const val ALEXANDRIA = "/projects/alexandria-logo.png"
     const val KOTSPAM = "/projects/kotspam.png"
     const val MODERNADB = "/projects/modern-adb.svg"
+    const val INVOICER = "/projects/invoicer-logo.png"
 
     const val IOS = "/projects/platforms/platform_ios.svg"
     const val MACOS = "/projects/platforms/platform_macos.svg"
@@ -14,6 +15,7 @@ object NeoIcons {
     const val ANDROID = "/projects/stacks/android-head_3D.png"
     const val KOTLIN = "/projects/stacks/kotlin.svg"
     const val JAVA = "/projects/stacks/java-icon.svg"
+    const val SWIFT = "/projects/stacks/swift.svg"
     const val MAVENCENTRAL = "/projects/stacks/maven-central-icon.png"
     const val CMP = "/projects/compose-multiplatform-logo.svg"
     const val COMPOSE = "/projects/stacks/jetpack_compose_icon.png"
@@ -29,4 +31,9 @@ object NeoIcons {
     const val KTOR = "/projects/stacks/ktor_logo.svg"
     const val POSTGRESQL = "/projects/stacks/postgresql_logo.png"
     const val DOCKER = "/projects/stacks/docker-logo.svg"
+
+    const val WHATSAPP = "/projects/others/whatsapp.svg"
+    const val LINKEDIN = "/projects/others/linkedin.svg"
+    const val GITHUB = "/projects/others/github.svg"
+    const val EMAIL = "/projects/others/email-icon.png"
 }

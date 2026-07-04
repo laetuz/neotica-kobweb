@@ -1,10 +1,12 @@
 package id.neotica.neotica.pages
 
 import androidx.compose.runtime.Composable
-import com.varabyte.kobweb.compose.css.Overflow
-import com.varabyte.kobweb.compose.css.StyleVariable
+import com.varabyte.kobweb.compose.css.*
+import com.varabyte.kobweb.compose.foundation.layout.Arrangement
 import com.varabyte.kobweb.compose.foundation.layout.Box
 import com.varabyte.kobweb.compose.foundation.layout.Column
+import com.varabyte.kobweb.compose.foundation.layout.Row
+import com.varabyte.kobweb.compose.ui.Alignment
 import com.varabyte.kobweb.compose.ui.Modifier
 import com.varabyte.kobweb.compose.ui.graphics.Color
 import com.varabyte.kobweb.compose.ui.modifiers.*
@@ -13,15 +15,25 @@ import com.varabyte.kobweb.core.data.add
 import com.varabyte.kobweb.core.init.InitRoute
 import com.varabyte.kobweb.core.init.InitRouteContext
 import com.varabyte.kobweb.core.layout.Layout
+import com.varabyte.kobweb.framework.annotations.DelicateApi
+import com.varabyte.kobweb.silk.components.graphics.Image
 import com.varabyte.kobweb.silk.components.navigation.Link
-import com.varabyte.kobweb.silk.components.text.SpanText
 import com.varabyte.kobweb.silk.style.CssStyle
 import com.varabyte.kobweb.silk.style.base
 import com.varabyte.kobweb.silk.style.breakpoint.Breakpoint
+import com.varabyte.kobweb.silk.style.toModifier
+import com.varabyte.kobweb.silk.theme.breakpoint.rememberBreakpoint
 import id.neotica.neotica.components.NeoColor
+import id.neotica.neotica.components.icons.NeoIcons
 import id.neotica.neotica.components.layouts.NeoLayoutData
-import id.neotica.neotica.utils.homeDesc
+import id.neotica.neotica.components.modifiers.BackgroundHoverStyle
+import id.neotica.neotica.components.others.NeoText
+import id.neotica.neotica.domain.model.TechStacks
+import id.neotica.neotica.utils.Constants.HOME_DESC
+import org.jetbrains.compose.web.css.FlexWrap
+import org.jetbrains.compose.web.css.LineStyle
 import org.jetbrains.compose.web.css.cssRem
+import org.jetbrains.compose.web.css.px
 import org.jetbrains.compose.web.css.vh
 
 // Container that has a tagline and grid on desktop, and just the tagline on mobile
@@ -49,52 +61,151 @@ val HomeGridCellStyle = CssStyle.base {
 
 @InitRoute
 fun initHomePage(ctx: InitRouteContext) {
-    ctx.data.add(NeoLayoutData("Home"))
+    ctx.data.add(NeoLayoutData("Neotica.id — Mobile Development Studio"))
 }
 
+@OptIn(DelicateApi::class)
 @Page
 @Layout(".components.layouts.NeoPageLayout")
 @Composable
 fun HomePage() {
+    val breakpoint = rememberBreakpoint()
     Box(
         modifier = Modifier
             .backgroundColor(NeoColor.backgroundPrimary)
             .fillMaxSize()
             .padding(leftRight = 2.cssRem)
-            .overflow(Overflow.Auto)
+            .overflow(Overflow.Auto),
+        contentAlignment = Alignment.Center
     ) {
         Column(
             modifier = Modifier
                 .fillMaxWidth()
                 .fontFamily("IBM Plex Mono")
+                .gap(2.cssRem),
+            horizontalAlignment = Alignment.CenterHorizontally
         ) {
-//            SpanText(
-//                text = "> Last updated: 19/06/2025",
-//                modifier = Modifier
-//                    .fontSize(0.8.em)
-//                    .fontFamily("font/ibmplexmono/IBMPlexMono-Regular.ttf")
-//            )
-            SpanText(
-                text = homeDesc,
-//                modifier = Modifier.fontSize(0.8.em)
-            )
-            Link("/projects") {
-                SpanText(
-                    text = "> [View Projects]",
-//                    modifier = Modifier.fontSize(0.8.em)
-                )
+            val imageWidth = when (breakpoint) {
+                Breakpoint.ZERO -> 400
+                Breakpoint.SM, Breakpoint.MD  -> 500
+                else -> 700
             }
-//            Row(
-//                modifier = Modifier
-//                    .margin(top = 5.cssRem)
-//                    .fontSize(0.8.em)
-//            ) {
-//                SpanText("Edited by ")
-//                Link("/profile/ryo-martin") {
-//                    SpanText("Ryo Martin")
-//                }
-//                SpanText(" on 19")
-//            }
+
+
+            Image(
+                src = "/main_banner.png",
+                width = imageWidth
+            )
+            NeoText(
+                text = HOME_DESC,
+                modifier = Modifier.fontSize(1.2.cssRem).lineHeight(1.5).textAlign(textAlign = TextAlign.Center)
+            )
+
+            Row(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .gap(1.5.cssRem)
+                    .flexWrap(FlexWrap.Wrap), // Wraps to next line on small mobile screens
+                horizontalArrangement = Arrangement.Center,
+                verticalAlignment = Alignment.CenterVertically
+            ) {
+                Link(
+                    path = "/projects",
+                    modifier = BackgroundHoverStyle.toModifier()
+                        .padding(1.cssRem)
+                        .borderRadius(1.cssRem)
+                        .border(1.px, LineStyle.Solid, NeoColor.colorPrimary)
+                ) {
+                    NeoText(
+                        text = "> View Projects",
+                        modifier = Modifier.fontSize(1.2.cssRem).textDecorationLine(TextDecorationLine.None)
+                    )
+                }
+
+                Link(
+                    path = "/orpheum",
+                    modifier = BackgroundHoverStyle.toModifier()
+                        .padding(1.cssRem)
+                        .borderRadius(1.cssRem)
+                        .border(1.px, LineStyle.Solid, NeoColor.colorPrimary)
+                ) {
+                    NeoText(
+                        text = "🎵 Stream Orpheum",
+                        modifier = Modifier
+                            .fontSize(1.2.cssRem)
+                            .textDecorationLine(TextDecorationLine.None)
+                            .color(NeoColor.colorPrimary)
+                    )
+                }
+                Link(
+                    path = "/photobooth",
+                    modifier = BackgroundHoverStyle.toModifier()
+                        .padding(1.cssRem)
+                        .borderRadius(1.cssRem)
+                        .border(1.px, LineStyle.Solid, NeoColor.colorPrimary)
+                ) {
+                    NeoText(
+                        text = "📷 NeoBooth",
+                        modifier = Modifier
+                            .fontSize(1.2.cssRem)
+                            .textDecorationLine(TextDecorationLine.None)
+                            .color(NeoColor.colorPrimary)
+                    )
+                }
+            }
+
+            Column(
+                horizontalAlignment = Alignment.CenterHorizontally
+            ) {
+                val stacks = listOf(
+                    TechStacks(
+                        title = "Java",
+                        image = NeoIcons.JAVA,
+                    ),
+                    TechStacks(
+                        title = "Kotlin",
+                        image = NeoIcons.KOTLIN,
+                    ),
+                    TechStacks(
+                        title = "Compose",
+                        image = NeoIcons.COMPOSE,
+                    ),
+                    TechStacks(
+                        title = "Ktor",
+                        image = NeoIcons.KTOR,
+                    ),
+                    TechStacks(
+                        title = "Swift",
+                        image = NeoIcons.SWIFT,
+                    )
+                )
+                NeoText(
+                    text = "Our Core Technologies",
+                    modifier = Modifier
+                        .color(NeoColor.white)
+                        .fontSize(1.5.cssRem)
+                        .fontWeight(FontWeight.Bold)
+                )
+                Row(
+                    modifier = Modifier
+                        .gap(1.cssRem)
+                        .padding(bottom = 1.cssRem),
+                    verticalAlignment = Alignment.CenterVertically
+                ) {
+                    stacks.forEach {
+                        Column(
+                            modifier = Modifier,
+                            horizontalAlignment = Alignment.CenterHorizontally
+                        ) {
+                            Image(src = it.image, width = 50)
+                            NeoText(
+                                text = it.title,
+                                modifier = Modifier.fontWeight(FontWeight.Bold)
+                            )
+                        }
+                    }
+                }
+            }
         }
     }
 }
