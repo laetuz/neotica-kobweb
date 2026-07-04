@@ -23,6 +23,7 @@ import com.varabyte.kobweb.core.init.InitRoute
 import com.varabyte.kobweb.core.init.InitRouteContext
 import com.varabyte.kobweb.core.layout.Layout
 import com.varabyte.kobweb.silk.components.graphics.Image
+import com.varabyte.kobweb.silk.components.navigation.Link
 import com.varabyte.kobweb.silk.style.CssStyle
 import com.varabyte.kobweb.silk.style.base
 import com.varabyte.kobweb.silk.style.toModifier
@@ -102,7 +103,7 @@ fun HoloMarketLandingPage() {
             head.appendChild(el)
         }
         injectMeta("og:title", "HoloMarket - Android App Store for Legacy Devices")
-        injectMeta("og:description", "A third-party marketplace featuring a curated collection of Android applications, games, and tools for Android 2.1+ devices.")
+        injectMeta("og:description", "A third-party marketplace featuring a curated collection of Android applications, games, and tools for Android 1.5+ devices.")
         injectMeta("og:type", "website")
         injectMeta("og:url", "https://neotica.id/holomarket")
         injectMeta("og:image", "https://neotica.id/projects/holomarket/ss-holomarket-1.png")
@@ -141,7 +142,9 @@ private fun HeroSection() {
             modifier = Modifier
                 .size(260.px)
                 .border(1.px, LineStyle.Solid, NeoColor.colorPrimary.copy(alpha = 25))
+                .backgroundColor(NeoColor.white)
                 .borderRadius(8.px)
+                .padding(16.px)
         ) {
             Image(
                 src = NeoResources.HOLOMARKET_ICON,
@@ -166,7 +169,7 @@ private fun HeroSection() {
         )
 
         NeoText(
-            text = "A brand new third-party marketplace featuring a curated collection of applications, games, and tools. Lightweight, fast, and built for every Android phone and tablet.",
+            text = "A marketplace featuring a curated collection of applications, games, and tools. Lightweight, fast, and built for every Android phone and tablet; brought to you by Neotica.",
             modifier = Modifier
                 .fontSize(0.95.cssRem)
                 .textAlign(TextAlign.Center)
@@ -191,7 +194,7 @@ private fun DescriptionSection() {
         )
 
         NeoText(
-            text = "Whether you are rocking the latest Android 4.0 Ice Cream Sandwich handset or holding onto your 2.3 Gingerbread device, HoloMarket is designed to work seamlessly across the board. With a decluttered minimalist Holo UI, easy to navigate, and ready to download. Just that simple.",
+            text = "Whether you are rocking the latest Android 4.0 Ice Cream Sandwich handset or holding onto your 1.5 Cupcake device, HoloMarket is designed to work seamlessly across the board. With a decluttered minimalist Holo UI, easy to navigate, and ready to download. Just that simple.",
             modifier = Modifier.fontSize(0.95.cssRem).lineHeight(1.7).textAlign(TextAlign.Center)
         )
     }
@@ -207,8 +210,12 @@ private fun FeatureSection() {
 
         Column(modifier = Modifier.fillMaxWidth().gap(1.cssRem)) {
             FeatureCard(
+                "OVER 1000+ Applications!!",
+                "We manage a lot of legacy applications in our ecosystem! We have more than 1000s of applications within our database, more than 100 are personally tested and used by our CEO to pass our quality checking. We will add review systems in the future to include You as our quality tester as well."
+            )
+            FeatureCard(
                 "Browse by Category",
-                "Explore apps sorted into APPLICATION, GAME, and ADULT categories with paginated feeds. Find exactly what you need without endless scrolling."
+                "Explore apps sorted into APPLICATION, GAME, and SIMULATOR categories with paginated feeds. Find exactly what you need without endless scrolling."
             )
             FeatureCard(
                 "Featured Carousel",
@@ -220,7 +227,7 @@ private fun FeatureSection() {
             )
             FeatureCard(
                 "App Detail & Version History",
-                "View full app descriptions, ratings (upcoming), screenshots, and a complete version history with changelogs. Download any previous version you need."
+                "View full app descriptions, ratings (upcoming), and a complete version history with changelogs. Download any previous version you need."
             )
             FeatureCard(
                 "One-Tap Download & Install",
@@ -270,8 +277,8 @@ private fun RequirementsSection() {
                 .padding(1.2.cssRem)
         ) {
             Column(modifier = Modifier.gap(0.5.cssRem).fillMaxWidth()) {
-                RequirementRow("Android Version", "2.1 (Eclair) and up")
-                RequirementRow("Minimum SDK", "7")
+                RequirementRow("Android Version", "1.5 (Cupcake) and up")
+                RequirementRow("Minimum SDK", "3")
                 RequirementRow("Target SDK", "21+")
                 RequirementRow("Network", "HTTP connection (no TLS required)")
                 RequirementRow("Storage", "Less than 5 MB for the app")
@@ -375,7 +382,7 @@ private fun DownloadSection(tag: String, apkUrl: String) {
         }
 
         NeoText(
-            text = "$tag \u00B7 Requires Android 2.1+",
+            text = "$tag \u00B7 Requires Android 1.5+",
             modifier = Modifier.fontSize(0.8.cssRem).color(NeoColor.white.copy(alpha = 153))
         )
 
@@ -417,10 +424,18 @@ private fun DownloadSection(tag: String, apkUrl: String) {
                 .margin(top = 0.5.cssRem)
                 .padding(1.cssRem)
         ) {
-            NeoText(
-                text = "HoloMarket is open source. Source code available on GitHub.",
-                modifier = Modifier.fontSize(0.8.cssRem).color(NeoColor.colorPrimary).textAlign(TextAlign.Center)
-            )
+            Row {
+                NeoText(
+                    text = "HoloMarket is open source. Source code available on ",
+                    modifier = Modifier.fontSize(0.8.cssRem).color(NeoColor.colorPrimary).textAlign(TextAlign.Center)
+                )
+                Link(
+                    text = "GitHub.", path = "https://github.com/laetuz/HoloMarket",
+                    modifier = Modifier
+                        .fontSize(0.8.cssRem).color(NeoColor.colorPrimary).textAlign(TextAlign.Center)
+                )
+            }
+
         }
     }
 }
