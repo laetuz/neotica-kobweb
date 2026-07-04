@@ -61,7 +61,7 @@ val HomeGridCellStyle = CssStyle.base {
 
 @InitRoute
 fun initHomePage(ctx: InitRouteContext) {
-    ctx.data.add(NeoLayoutData("Home"))
+    ctx.data.add(NeoLayoutData("Neotica.id — Mobile Development Studio"))
 }
 
 @OptIn(DelicateApi::class)

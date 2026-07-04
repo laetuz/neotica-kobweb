@@ -27,7 +27,7 @@ class NeoLayoutData(val title: String, val route: String? = "")
 fun NeoPageLayout(ctx: PageContext, content: @Composable () -> Unit) {
     val data = ctx.data.getValue<NeoLayoutData>()
     LaunchedEffect(data.title) {
-        document.title = "::${data.title}"
+        document.title = data.title
     }
 
     Box(
