@@ -10,12 +10,14 @@ import com.varabyte.kobweb.compose.css.Cursor
 import com.varabyte.kobweb.compose.css.FontWeight
 import com.varabyte.kobweb.compose.css.Overflow
 import com.varabyte.kobweb.compose.css.TextAlign
+import com.varabyte.kobweb.compose.css.BoxShadow
 import com.varabyte.kobweb.compose.foundation.layout.Arrangement
 import com.varabyte.kobweb.compose.foundation.layout.Box
 import com.varabyte.kobweb.compose.foundation.layout.Column
 import com.varabyte.kobweb.compose.foundation.layout.Row
 import com.varabyte.kobweb.compose.ui.Alignment
 import com.varabyte.kobweb.compose.ui.Modifier
+import com.varabyte.kobweb.compose.ui.graphics.Color
 import com.varabyte.kobweb.compose.ui.modifiers.*
 import com.varabyte.kobweb.core.Page
 import com.varabyte.kobweb.core.data.add
@@ -24,6 +26,7 @@ import com.varabyte.kobweb.core.init.InitRouteContext
 import com.varabyte.kobweb.core.layout.Layout
 import com.varabyte.kobweb.silk.components.graphics.Image
 import com.varabyte.kobweb.silk.components.navigation.Link
+import com.varabyte.kobweb.silk.components.text.SpanText
 import com.varabyte.kobweb.silk.style.CssStyle
 import com.varabyte.kobweb.silk.style.base
 import com.varabyte.kobweb.silk.style.toModifier
@@ -31,33 +34,44 @@ import id.neotica.neotica.components.NeoColor
 import id.neotica.neotica.components.layouts.NeoLayoutData
 import id.neotica.neotica.components.others.NeoText
 import id.neotica.neotica.components.resources.NeoResources
+import id.neotica.neotica.utils.Constants
 import kotlinx.browser.window
 import kotlinx.coroutines.await
+import kotlinx.coroutines.delay
 import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
 import kotlinx.serialization.json.Json
 import org.jetbrains.compose.web.css.LineStyle
+import org.jetbrains.compose.web.css.color
 import org.jetbrains.compose.web.css.cssRem
+import org.jetbrains.compose.web.css.fontSize
+import org.jetbrains.compose.web.css.percent
 import org.jetbrains.compose.web.css.px
+import org.jetbrains.compose.web.css.textAlign
+import org.jetbrains.compose.web.css.width
+import org.jetbrains.compose.web.dom.Span
+import org.jetbrains.compose.web.dom.Text
+import kotlin.time.Duration.Companion.milliseconds
 
 @Serializable
-private data class GitHubRelease(
-    @SerialName("tag_name") val tagName: String,
-    val assets: List<GitHubAsset>,
-)
-
-@Serializable
-private data class GitHubAsset(
-    @SerialName("browser_download_url") val browserDownloadUrl: String,
+private data class HoloMarketLatest(
+    @SerialName("version_name") val versionName: String = "",
+    @SerialName("version_code") val versionCode: Int = 0,
+    @SerialName("file_url") val fileUrl: String = "",
+    @SerialName("changelog") val changelog: String = "",
+    @SerialName("min_sdk") val minSdk: Int = 0,
+    @SerialName("max_sdk") val maxSdk: Int = 0,
+    @SerialName("created_at") val createdAt: Long = 0,
 )
 
 val FeatureCardStyle = CssStyle.base {
     Modifier
         .backgroundColor(NeoColor.backgroundPrimaryTransparent)
-        .border(1.px, LineStyle.Solid, NeoColor.colorPrimary.copy(alpha = 25))
-        .borderRadius(8.px)
+        .border(2.px, LineStyle.Solid, RetroColor.steelBlue.copy(alpha = 90))
+        .borderRadius(4.px)
         .padding(1.2.cssRem)
         .gap(0.8.cssRem)
+        .boxShadow(2.px, 2.px, color = Color.rgb(0, 0, 0).copy(alpha = 115))
 }
 
 @InitRoute
@@ -69,21 +83,30 @@ fun initHoloMarketLanding(ctx: InitRouteContext) {
 @Layout(".components.layouts.NeoPageLayout")
 @Composable
 fun HoloMarketLandingPage() {
-    var latestTag by remember { mutableStateOf(NeoResources.HOLOMARKET_LATEST_TAG) }
-    var downloadUrl by remember { mutableStateOf(NeoResources.HOLOMARKET_DL_URL) }
+    var latestVersion by remember { mutableStateOf("") }
+    var downloadUrl by remember { mutableStateOf("") }
+    var errorMessage by remember { mutableStateOf<String?>(null) }
+    var fetchAttempt by remember { mutableStateOf(0) }
     val jsonParser = remember { Json { ignoreUnknownKeys = true } }
 
-    LaunchedEffect(Unit) {
+    LaunchedEffect(fetchAttempt) {
+        errorMessage = null
         try {
-            val response = window.fetch("https://api.github.com/repos/laetuz/HoloMarket/releases/latest").await()
+            val response = window.fetch("${Constants.PUBLIC_API_URL}/holomarket/latest").await()
             if (response.ok) {
                 val text = response.text().await()
-                val release = jsonParser.decodeFromString<GitHubRelease>(text)
-                latestTag = release.tagName
-                release.assets.firstOrNull()?.let { downloadUrl = it.browserDownloadUrl }
+                val release = jsonParser.decodeFromString<HoloMarketLatest>(text)
+                release.versionName.takeIf { it.isNotBlank() }?.let { latestVersion = it }
+                if (release.fileUrl.isNotBlank()) downloadUrl = release.fileUrl
+            } else if (response.status.toInt() == 429) {
+                val retryAfterSeconds = response.headers.get("Retry-After")?.toIntOrNull() ?: 60
+                errorMessage = "Sorry, try again in $retryAfterSeconds seconds"
+            } else {
+                errorMessage = "Sorry, try again in 60 seconds"
             }
         } catch (e: Throwable) {
             console.error("Failed to fetch latest release: ${e.message}")
+            errorMessage = "Sorry, try again in 60 seconds"
         }
     }
 
@@ -111,24 +134,130 @@ fun HoloMarketLandingPage() {
 
     Column(
         modifier = Modifier
-            .backgroundColor(NeoColor.backgroundPrimary)
+            .background {
+                color(NeoColor.backgroundPrimary)
+                image(StarfieldStars)
+            }
             .fillMaxSize()
             .padding(leftRight = 2.cssRem, topBottom = 1.cssRem)
             .overflow(Overflow.Auto)
-            .gap(1.5.cssRem),
+            .gap(1.5.cssRem)
+            .fontFamily("VT323", "monospace"),
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
+        ErrorBanner(
+            message = errorMessage,
+            onDismiss = { errorMessage = null },
+            onRetry = { fetchAttempt++ }
+        )
+
         HeroSection()
+
+        RainbowDivider()
 
         DescriptionSection()
 
+        RainbowDivider()
+
         FeatureSection()
+
+        RainbowDivider()
 
         RequirementsSection()
 
+        RainbowDivider()
+
         ScreenshotsSection()
 
-        DownloadSection(latestTag, downloadUrl)
+        RainbowDivider()
+
+        if (latestVersion.isNotBlank() && downloadUrl.isNotBlank()) {
+            DownloadSection(latestVersion, downloadUrl)
+        } else if (errorMessage == null) {
+            Box(
+                modifier = Modifier
+                    .padding(bottom = 2.cssRem)
+                    .fillMaxWidth()
+                    .maxWidth(700.px)
+            ) {
+                SpanText(
+                    text = "Checking for the latest version...",
+                    modifier = Modifier
+                        .fontSize(0.9.cssRem)
+                        .color(RetroColor.skyBlue)
+                        .textAlign(TextAlign.Center)
+                        .fillMaxWidth()
+                )
+            }
+        }
+    }
+}
+
+@Composable
+private fun ErrorBanner(message: String?, onDismiss: () -> Unit, onRetry: () -> Unit) {
+    if (message == null) return
+
+    LaunchedEffect(message) {
+        delay(5000.milliseconds)
+        onDismiss()
+    }
+
+    Column(
+        modifier = Modifier
+            .fillMaxWidth()
+            .backgroundColor(RetroColor.royalBlue)
+            .border(2.px, LineStyle.Solid, RetroColor.navy)
+            .borderRadius(4.px)
+            .padding(leftRight = 1.cssRem, topBottom = 0.8.cssRem)
+            .gap(0.5.cssRem)
+            .boxShadow(3.px, 3.px, color = Color.rgb(0, 0, 0).copy(alpha = 127))
+    ) {
+        Row(
+            modifier = Modifier.fillMaxWidth(),
+            verticalAlignment = Alignment.CenterVertically
+        ) {
+            SpanText(
+                text = message,
+                modifier = Modifier
+                    .fontSize(1.cssRem)
+                    .color(RetroColor.cream)
+                    .fontWeight(FontWeight.Bold)
+                    .weight(1)
+            )
+            Box(
+                modifier = Modifier
+                    .cursor(Cursor.Pointer)
+                    .onClick { onDismiss() }
+                    .padding(leftRight = 0.5.cssRem)
+            ) {
+                SpanText(
+                    text = "\u00D7",
+                    modifier = Modifier
+                        .fontSize(1.3.cssRem)
+                        .fontWeight(FontWeight.Bold)
+                        .color(RetroColor.cream)
+                )
+            }
+        }
+
+        Box(
+            modifier = Modifier
+                .cursor(Cursor.Pointer)
+                .borderRadius(4.px)
+                .padding(leftRight = 0.8.cssRem, topBottom = 0.3.cssRem)
+                .onClick { onRetry() }
+                .backgroundColor(RetroColor.babyBlue)
+                .border(2.px, LineStyle.Solid, RetroColor.navy)
+                .boxShadow(2.px, 2.px, color = Color.rgb(0, 0, 0).copy(alpha = 127))
+        ) {
+            SpanText(
+                text = "TRY AGAIN",
+                modifier = Modifier
+                    .fontSize(0.9.cssRem)
+                    .fontWeight(FontWeight.Bold)
+                    .color(RetroColor.navy)
+            )
+        }
     }
 }
 
@@ -141,10 +270,11 @@ private fun HeroSection() {
         Box(
             modifier = Modifier
                 .size(260.px)
-                .border(1.px, LineStyle.Solid, NeoColor.colorPrimary.copy(alpha = 25))
-                .backgroundColor(NeoColor.white)
-                .borderRadius(8.px)
-                .padding(16.px)
+//                .border(3.px, LineStyle.Solid, RetroColor.steelBlue)
+//                .backgroundColor(NeoColor.white.copy(alpha = 37))
+//                .borderRadius(4.px)
+//                .padding(16.px)
+//                .boxShadow(4.px, 4.px, color = Color.rgb(0, 0, 0).copy(alpha = 127))
         ) {
             Image(
                 src = NeoResources.HOLOMARKET_ICON,
@@ -152,19 +282,21 @@ private fun HeroSection() {
             )
         }
 
-        NeoText(
-            text = "HoloMarket",
+        SpanText(
+            text = "\u2726  HoloMarket  \u2726",
             modifier = Modifier
                 .fontSize(3.cssRem)
                 .fontWeight(FontWeight.Bold)
+                .color(RetroColor.babyBlue)
                 .margin(top = 0.5.cssRem)
+                .textShadow(3.px, 3.px, color = RetroColor.navy.copy(alpha = 200))
         )
 
-        NeoText(
+        SpanText(
             text = "Discover great apps for your Android device",
             modifier = Modifier
                 .fontSize(1.2.cssRem)
-                .color(NeoColor.colorPrimary)
+                .color(RetroColor.cream)
                 .textAlign(TextAlign.Center)
         )
 
@@ -186,7 +318,7 @@ private fun DescriptionSection() {
         modifier = Modifier.fillMaxWidth().gap(1.cssRem).maxWidth(700.px),
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
-        SectionHeading("Introducing HoloMarket")
+        SectionHeading("Introducing HoloMarket", accent = RetroColor.skyBlue)
 
         NeoText(
             text = "There are millions of Android devices out there, and every one of them deserves access to great software. Neotica presents to you HoloMarket. It is a brand new app store that brings you a hand-picked selection of the finest applications the Android ecosystem has to offer.",
@@ -206,7 +338,7 @@ private fun FeatureSection() {
         modifier = Modifier.fillMaxWidth().gap(1.cssRem).maxWidth(700.px),
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
-        SectionHeading("Features")
+        SectionHeading("Features", accent = RetroColor.babyBlue)
 
         Column(modifier = Modifier.fillMaxWidth().gap(1.cssRem)) {
             FeatureCard(
@@ -248,9 +380,12 @@ private fun FeatureCard(title: String, description: String) {
         verticalAlignment = Alignment.Top
     ) {
         Column(modifier = Modifier.gap(0.3.cssRem)) {
-            NeoText(
+            SpanText(
                 text = title,
-                modifier = Modifier.fontSize(1.1.cssRem).fontWeight(FontWeight.Bold)
+                modifier = Modifier
+                    .fontSize(1.1.cssRem)
+                    .fontWeight(FontWeight.Bold)
+                    .color(RetroColor.babyBlue)
             )
             NeoText(
                 text = description,
@@ -266,38 +401,43 @@ private fun RequirementsSection() {
         modifier = Modifier.fillMaxWidth().gap(1.cssRem).maxWidth(700.px),
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
-        SectionHeading("Compatibility")
+        SectionHeading("Compatibility", accent = RetroColor.royalBlue)
 
         Box(
             modifier = Modifier
                 .fillMaxWidth()
                 .backgroundColor(NeoColor.backgroundPrimaryTransparent)
-                .border(1.px, LineStyle.Solid, NeoColor.colorPrimary.copy(alpha = 25))
-                .borderRadius(8.px)
+                .border(2.px, LineStyle.Solid, RetroColor.steelBlue.copy(alpha = 80))
+                .borderRadius(4.px)
                 .padding(1.2.cssRem)
+                .boxShadow(2.px, 2.px, color = Color.rgb(0, 0, 0).copy(alpha = 115))
         ) {
             Column(modifier = Modifier.gap(0.5.cssRem).fillMaxWidth()) {
-                RequirementRow("Android Version", "1.5 (Cupcake) and up")
-                RequirementRow("Minimum SDK", "3")
-                RequirementRow("Target SDK", "21+")
-                RequirementRow("Network", "HTTP connection (no TLS required)")
-                RequirementRow("Storage", "Less than 5 MB for the app")
+                RequirementRow("Android Version", "1.5 (Cupcake) and up", 0)
+                RequirementRow("Minimum SDK", "3", 1)
+                RequirementRow("Target SDK", "21+", 2)
+                RequirementRow("Network", "HTTP connection (no TLS required)", 3)
+                RequirementRow("Storage", "Less than 5 MB for the app", 4)
             }
         }
     }
 }
 
 @Composable
-private fun RequirementRow(label: String, value: String) {
+private fun RequirementRow(label: String, value: String, index: Int) {
+    val stripe = if (index % 2 == 0) RetroColor.steelBlue.copy(alpha = 22) else RetroColor.navy.copy(alpha = 22)
     Row(
-        modifier = Modifier.fillMaxWidth(),
+        modifier = Modifier
+            .fillMaxWidth()
+            .backgroundColor(stripe)
+            .padding(leftRight = 0.5.cssRem, topBottom = 0.2.cssRem),
         horizontalArrangement = Arrangement.SpaceBetween
     ) {
-        NeoText(
+        SpanText(
             text = label,
             modifier = Modifier
                 .fontSize(0.9.cssRem)
-                .color(NeoColor.colorPrimary)
+                .color(RetroColor.skyBlue)
                 .weight(1)
         )
         NeoText(
@@ -313,11 +453,11 @@ private fun ScreenshotsSection() {
         modifier = Modifier.fillMaxWidth().gap(1.cssRem).maxWidth(700.px),
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
-        SectionHeading("Screenshots")
+        SectionHeading("Screenshots", accent = RetroColor.steelBlue)
 
-        NeoText(
+        SpanText(
             text = "HoloMarket running on Android 4.1 (Jelly Bean)",
-            modifier = Modifier.fontSize(0.8.cssRem).color(NeoColor.colorPrimary)
+            modifier = Modifier.fontSize(0.8.cssRem).color(RetroColor.skyBlue)
         )
 
         Row(
@@ -357,7 +497,7 @@ private fun DownloadSection(tag: String, apkUrl: String) {
             .padding(bottom = 2.cssRem),
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
-        SectionHeading("Get HoloMarket")
+        SectionHeading("Get HoloMarket", accent = RetroColor.skyBlue)
 
         NeoText(
             text = "Download the APK and sideload it onto your Android device. It is free, always will be.",
@@ -366,18 +506,25 @@ private fun DownloadSection(tag: String, apkUrl: String) {
 
         Box(
             modifier = Modifier
-                .backgroundColor(NeoColor.colorPrimary)
-                .borderRadius(6.px)
+                .backgroundColor(RetroColor.babyBlue)
+                .border(2.px, LineStyle.Solid, RetroColor.navy)
+                .borderRadius(4.px)
                 .padding(leftRight = 2.cssRem, topBottom = 0.8.cssRem)
                 .margin(top = 0.5.cssRem)
                 .cursor(Cursor.Pointer)
+                .boxShadow(
+                    BoxShadow.of(0.px, 1.px, 0.px, 1.px, NeoColor.white.copy(alpha = 200), inset = true),
+                    BoxShadow.of(0.px, (-1).px, 0.px, 1.px, Color.rgb(0, 0, 0).copy(alpha = 120), inset = true),
+                    BoxShadow.of(3.px, 3.px, 0.px, 0.px, Color.rgb(0, 0, 0).copy(alpha = 127)),
+                )
                 .onClick { window.open(apkUrl, "_blank") }
         ) {
-            NeoText(
+            SpanText(
                 text = "DOWNLOAD HOLOMARKET $tag",
                 modifier = Modifier
-                    .fontSize(1.2.cssRem)
+                    .fontSize(1.3.cssRem)
                     .fontWeight(FontWeight.Bold)
+                    .color(NeoColor.backgroundPrimary)
             )
         }
 
@@ -419,35 +566,57 @@ private fun DownloadSection(tag: String, apkUrl: String) {
             }
         }
 
-        Box(
+        Column(
             modifier = Modifier
+                .fillMaxWidth()
                 .margin(top = 0.5.cssRem)
                 .padding(1.cssRem)
+                .gap(0.6.cssRem),
+            horizontalAlignment = Alignment.CenterHorizontally
         ) {
-            Row {
-                NeoText(
-                    text = "HoloMarket is open source. Source code available on ",
-                    modifier = Modifier.fontSize(0.8.cssRem).color(NeoColor.colorPrimary).textAlign(TextAlign.Center)
-                )
+            Span(
+                attrs = {
+                    style {
+                        fontSize(0.8.cssRem)
+                        color(NeoColor.white)
+                        textAlign("center")
+                        width(100.percent)
+                    }
+                }
+            ) {
+                Text("HoloMarket is open source. Source code available on ")
                 Link(
-                    text = "GitHub.", path = "https://github.com/laetuz/HoloMarket",
+                    text = "GitHub.",
+                    path = "https://github.com/laetuz/HoloMarket",
                     modifier = Modifier
-                        .fontSize(0.8.cssRem).color(NeoColor.colorPrimary).textAlign(TextAlign.Center)
+                        .fontSize(0.8.cssRem)
+                        .color(RetroColor.skyBlue)
                 )
             }
 
+            Link(
+                text = "\u2726  Submit an app for review  \u2726",
+                path = "/holomarket/upload",
+                modifier = Modifier
+                    .fontSize(0.85.cssRem)
+                    .color(RetroColor.babyBlue)
+                    .textAlign(TextAlign.Center)
+                    .fillMaxWidth()
+            )
         }
     }
 }
 
 @Composable
-private fun SectionHeading(text: String) {
-    NeoText(
-        text = text,
+private fun SectionHeading(text: String, accent: Color = RetroColor.skyBlue) {
+    SpanText(
+        text = "\u2726  $text  \u2726",
         modifier = Modifier
-            .fontSize(1.5.cssRem)
+            .fontSize(1.6.cssRem)
             .fontWeight(FontWeight.Bold)
+            .color(accent)
             .textAlign(TextAlign.Center)
             .fillMaxWidth()
+            .textShadow(2.px, 2.px, color = Color.rgb(0, 0, 0).copy(alpha = 153))
     )
 }
