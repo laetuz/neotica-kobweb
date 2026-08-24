@@ -10,12 +10,18 @@ import com.varabyte.kobweb.compose.css.Cursor
 import com.varabyte.kobweb.compose.css.FontWeight
 import com.varabyte.kobweb.compose.css.Overflow
 import com.varabyte.kobweb.compose.css.TextAlign
+import com.varabyte.kobweb.compose.css.BoxShadow
 import com.varabyte.kobweb.compose.foundation.layout.Arrangement
 import com.varabyte.kobweb.compose.foundation.layout.Box
 import com.varabyte.kobweb.compose.foundation.layout.Column
 import com.varabyte.kobweb.compose.foundation.layout.Row
+import com.varabyte.kobweb.compose.css.functions.LinearGradient
+import com.varabyte.kobweb.compose.css.functions.RadialGradient
+import com.varabyte.kobweb.compose.css.functions.linearGradient
+import com.varabyte.kobweb.compose.css.functions.repeatingRadialGradient
 import com.varabyte.kobweb.compose.ui.Alignment
 import com.varabyte.kobweb.compose.ui.Modifier
+import com.varabyte.kobweb.compose.ui.graphics.Color
 import com.varabyte.kobweb.compose.ui.modifiers.*
 import com.varabyte.kobweb.core.Page
 import com.varabyte.kobweb.core.data.add
@@ -24,6 +30,7 @@ import com.varabyte.kobweb.core.init.InitRouteContext
 import com.varabyte.kobweb.core.layout.Layout
 import com.varabyte.kobweb.silk.components.graphics.Image
 import com.varabyte.kobweb.silk.components.navigation.Link
+import com.varabyte.kobweb.silk.components.text.SpanText
 import com.varabyte.kobweb.silk.style.CssStyle
 import com.varabyte.kobweb.silk.style.base
 import com.varabyte.kobweb.silk.style.toModifier
@@ -54,13 +61,46 @@ private data class HoloMarketLatest(
     @SerialName("created_at") val createdAt: Long = 0,
 )
 
+object RetroColor {
+    val hotPink = Color.rgb(0xFF, 0x69, 0xB4)
+    val cyan = Color.rgb(0x00, 0xFF, 0xFF)
+    val yellow = Color.rgb(0xFF, 0xFF, 0x00)
+    val lime = Color.rgb(0x7F, 0xFF, 0x00)
+    val magenta = Color.rgb(0xFF, 0x00, 0xFF)
+
+    val babyBlue = Color.rgb(0xAD, 0xD8, 0xE6)
+    val skyBlue = Color.rgb(0x87, 0xCE, 0xEB)
+    val royalBlue = Color.rgb(0x41, 0x69, 0xE1)
+    val navy = Color.rgb(0x00, 0x00, 0x80)
+    val steelBlue = Color.rgb(0x46, 0x82, 0xB4)
+    val teal = Color.rgb(0x00, 0x80, 0x80)
+
+    val beige = Color.rgb(0xF5, 0xF5, 0xDC)
+    val cream = Color.rgb(0xFF, 0xFD, 0xD0)
+    val tan = Color.rgb(0xD2, 0xB4, 0x8C)
+}
+
+private val RainbowStrip = linearGradient(LinearGradient.Direction.ToRight) {
+    add(RetroColor.navy)
+    add(RetroColor.steelBlue)
+    add(RetroColor.skyBlue)
+    add(RetroColor.babyBlue)
+    add(RetroColor.cream)
+}
+
+private val StarfieldStars = repeatingRadialGradient(RadialGradient.Shape.Circle) {
+    add(NeoColor.white.copy(alpha = 40), 1.px)
+    add(NeoColor.transparent, 24.px)
+}
+
 val FeatureCardStyle = CssStyle.base {
     Modifier
         .backgroundColor(NeoColor.backgroundPrimaryTransparent)
-        .border(1.px, LineStyle.Solid, NeoColor.colorPrimary.copy(alpha = 25))
-        .borderRadius(8.px)
+        .border(2.px, LineStyle.Solid, RetroColor.steelBlue.copy(alpha = 90))
+        .borderRadius(4.px)
         .padding(1.2.cssRem)
         .gap(0.8.cssRem)
+        .boxShadow(2.px, 2.px, color = Color.rgb(0, 0, 0).copy(alpha = 115))
 }
 
 @InitRoute
@@ -123,11 +163,15 @@ fun HoloMarketLandingPage() {
 
     Column(
         modifier = Modifier
-            .backgroundColor(NeoColor.backgroundPrimary)
+            .background {
+                color(NeoColor.backgroundPrimary)
+                image(StarfieldStars)
+            }
             .fillMaxSize()
             .padding(leftRight = 2.cssRem, topBottom = 1.cssRem)
             .overflow(Overflow.Auto)
-            .gap(1.5.cssRem),
+            .gap(1.5.cssRem)
+            .fontFamily("VT323", "monospace"),
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
         ErrorBanner(
@@ -138,13 +182,23 @@ fun HoloMarketLandingPage() {
 
         HeroSection()
 
+        RainbowDivider()
+
         DescriptionSection()
+
+        RainbowDivider()
 
         FeatureSection()
 
+        RainbowDivider()
+
         RequirementsSection()
 
+        RainbowDivider()
+
         ScreenshotsSection()
+
+        RainbowDivider()
 
         if (latestVersion.isNotBlank() && downloadUrl.isNotBlank()) {
             DownloadSection(latestVersion, downloadUrl)
@@ -155,17 +209,27 @@ fun HoloMarketLandingPage() {
                     .fillMaxWidth()
                     .maxWidth(700.px)
             ) {
-                NeoText(
+                SpanText(
                     text = "Checking for the latest version...",
                     modifier = Modifier
                         .fontSize(0.9.cssRem)
-                        .color(NeoColor.colorPrimary)
+                        .color(RetroColor.skyBlue)
                         .textAlign(TextAlign.Center)
                         .fillMaxWidth()
                 )
             }
         }
     }
+}
+
+@Composable
+private fun RainbowDivider() {
+    Box(
+        modifier = Modifier
+            .fillMaxWidth()
+            .height(4.px)
+            .backgroundImage(RainbowStrip)
+    )
 }
 
 @Composable
@@ -180,20 +244,23 @@ private fun ErrorBanner(message: String?, onDismiss: () -> Unit, onRetry: () -> 
     Column(
         modifier = Modifier
             .fillMaxWidth()
-            .backgroundColor(NeoColor.colorPrimary.copy(alpha = 25))
-            .border(1.px, LineStyle.Solid, NeoColor.colorPrimary.copy(alpha = 60))
-            .borderRadius(8.px)
+            .backgroundColor(RetroColor.royalBlue)
+            .border(2.px, LineStyle.Solid, RetroColor.navy)
+            .borderRadius(4.px)
             .padding(leftRight = 1.cssRem, topBottom = 0.8.cssRem)
             .gap(0.5.cssRem)
+            .boxShadow(3.px, 3.px, color = Color.rgb(0, 0, 0).copy(alpha = 127))
     ) {
         Row(
             modifier = Modifier.fillMaxWidth(),
             verticalAlignment = Alignment.CenterVertically
         ) {
-            NeoText(
+            SpanText(
                 text = message,
                 modifier = Modifier
-                    .fontSize(0.95.cssRem)
+                    .fontSize(1.cssRem)
+                    .color(RetroColor.cream)
+                    .fontWeight(FontWeight.Bold)
                     .weight(1)
             )
             Box(
@@ -202,9 +269,12 @@ private fun ErrorBanner(message: String?, onDismiss: () -> Unit, onRetry: () -> 
                     .onClick { onDismiss() }
                     .padding(leftRight = 0.5.cssRem)
             ) {
-                NeoText(
+                SpanText(
                     text = "\u00D7",
-                    modifier = Modifier.fontSize(1.2.cssRem).fontWeight(FontWeight.Bold)
+                    modifier = Modifier
+                        .fontSize(1.3.cssRem)
+                        .fontWeight(FontWeight.Bold)
+                        .color(RetroColor.cream)
                 )
             }
         }
@@ -215,13 +285,16 @@ private fun ErrorBanner(message: String?, onDismiss: () -> Unit, onRetry: () -> 
                 .borderRadius(4.px)
                 .padding(leftRight = 0.8.cssRem, topBottom = 0.3.cssRem)
                 .onClick { onRetry() }
-                .backgroundColor(NeoColor.colorPrimary)
+                .backgroundColor(RetroColor.babyBlue)
+                .border(2.px, LineStyle.Solid, RetroColor.navy)
+                .boxShadow(2.px, 2.px, color = Color.rgb(0, 0, 0).copy(alpha = 127))
         ) {
-            NeoText(
+            SpanText(
                 text = "TRY AGAIN",
                 modifier = Modifier
-                    .fontSize(0.8.cssRem)
+                    .fontSize(0.9.cssRem)
                     .fontWeight(FontWeight.Bold)
+                    .color(RetroColor.navy)
             )
         }
     }
@@ -236,10 +309,11 @@ private fun HeroSection() {
         Box(
             modifier = Modifier
                 .size(260.px)
-                .border(1.px, LineStyle.Solid, NeoColor.colorPrimary.copy(alpha = 25))
+                .border(3.px, LineStyle.Solid, RetroColor.steelBlue)
                 .backgroundColor(NeoColor.white)
-                .borderRadius(8.px)
+                .borderRadius(4.px)
                 .padding(16.px)
+                .boxShadow(4.px, 4.px, color = Color.rgb(0, 0, 0).copy(alpha = 127))
         ) {
             Image(
                 src = NeoResources.HOLOMARKET_ICON,
@@ -247,19 +321,21 @@ private fun HeroSection() {
             )
         }
 
-        NeoText(
-            text = "HoloMarket",
+        SpanText(
+            text = "\u2726  HoloMarket  \u2726",
             modifier = Modifier
                 .fontSize(3.cssRem)
                 .fontWeight(FontWeight.Bold)
+                .color(RetroColor.babyBlue)
                 .margin(top = 0.5.cssRem)
+                .textShadow(3.px, 3.px, color = RetroColor.navy.copy(alpha = 200))
         )
 
-        NeoText(
+        SpanText(
             text = "Discover great apps for your Android device",
             modifier = Modifier
                 .fontSize(1.2.cssRem)
-                .color(NeoColor.colorPrimary)
+                .color(RetroColor.cream)
                 .textAlign(TextAlign.Center)
         )
 
@@ -281,7 +357,7 @@ private fun DescriptionSection() {
         modifier = Modifier.fillMaxWidth().gap(1.cssRem).maxWidth(700.px),
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
-        SectionHeading("Introducing HoloMarket")
+        SectionHeading("Introducing HoloMarket", accent = RetroColor.skyBlue)
 
         NeoText(
             text = "There are millions of Android devices out there, and every one of them deserves access to great software. Neotica presents to you HoloMarket. It is a brand new app store that brings you a hand-picked selection of the finest applications the Android ecosystem has to offer.",
@@ -301,7 +377,7 @@ private fun FeatureSection() {
         modifier = Modifier.fillMaxWidth().gap(1.cssRem).maxWidth(700.px),
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
-        SectionHeading("Features")
+        SectionHeading("Features", accent = RetroColor.babyBlue)
 
         Column(modifier = Modifier.fillMaxWidth().gap(1.cssRem)) {
             FeatureCard(
@@ -343,9 +419,12 @@ private fun FeatureCard(title: String, description: String) {
         verticalAlignment = Alignment.Top
     ) {
         Column(modifier = Modifier.gap(0.3.cssRem)) {
-            NeoText(
+            SpanText(
                 text = title,
-                modifier = Modifier.fontSize(1.1.cssRem).fontWeight(FontWeight.Bold)
+                modifier = Modifier
+                    .fontSize(1.1.cssRem)
+                    .fontWeight(FontWeight.Bold)
+                    .color(RetroColor.babyBlue)
             )
             NeoText(
                 text = description,
@@ -361,38 +440,43 @@ private fun RequirementsSection() {
         modifier = Modifier.fillMaxWidth().gap(1.cssRem).maxWidth(700.px),
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
-        SectionHeading("Compatibility")
+        SectionHeading("Compatibility", accent = RetroColor.royalBlue)
 
         Box(
             modifier = Modifier
                 .fillMaxWidth()
                 .backgroundColor(NeoColor.backgroundPrimaryTransparent)
-                .border(1.px, LineStyle.Solid, NeoColor.colorPrimary.copy(alpha = 25))
-                .borderRadius(8.px)
+                .border(2.px, LineStyle.Solid, RetroColor.steelBlue.copy(alpha = 80))
+                .borderRadius(4.px)
                 .padding(1.2.cssRem)
+                .boxShadow(2.px, 2.px, color = Color.rgb(0, 0, 0).copy(alpha = 115))
         ) {
             Column(modifier = Modifier.gap(0.5.cssRem).fillMaxWidth()) {
-                RequirementRow("Android Version", "1.5 (Cupcake) and up")
-                RequirementRow("Minimum SDK", "3")
-                RequirementRow("Target SDK", "21+")
-                RequirementRow("Network", "HTTP connection (no TLS required)")
-                RequirementRow("Storage", "Less than 5 MB for the app")
+                RequirementRow("Android Version", "1.5 (Cupcake) and up", 0)
+                RequirementRow("Minimum SDK", "3", 1)
+                RequirementRow("Target SDK", "21+", 2)
+                RequirementRow("Network", "HTTP connection (no TLS required)", 3)
+                RequirementRow("Storage", "Less than 5 MB for the app", 4)
             }
         }
     }
 }
 
 @Composable
-private fun RequirementRow(label: String, value: String) {
+private fun RequirementRow(label: String, value: String, index: Int) {
+    val stripe = if (index % 2 == 0) RetroColor.steelBlue.copy(alpha = 22) else RetroColor.navy.copy(alpha = 22)
     Row(
-        modifier = Modifier.fillMaxWidth(),
+        modifier = Modifier
+            .fillMaxWidth()
+            .backgroundColor(stripe)
+            .padding(leftRight = 0.5.cssRem, topBottom = 0.2.cssRem),
         horizontalArrangement = Arrangement.SpaceBetween
     ) {
-        NeoText(
+        SpanText(
             text = label,
             modifier = Modifier
                 .fontSize(0.9.cssRem)
-                .color(NeoColor.colorPrimary)
+                .color(RetroColor.skyBlue)
                 .weight(1)
         )
         NeoText(
@@ -408,11 +492,11 @@ private fun ScreenshotsSection() {
         modifier = Modifier.fillMaxWidth().gap(1.cssRem).maxWidth(700.px),
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
-        SectionHeading("Screenshots")
+        SectionHeading("Screenshots", accent = RetroColor.steelBlue)
 
-        NeoText(
+        SpanText(
             text = "HoloMarket running on Android 4.1 (Jelly Bean)",
-            modifier = Modifier.fontSize(0.8.cssRem).color(NeoColor.colorPrimary)
+            modifier = Modifier.fontSize(0.8.cssRem).color(RetroColor.skyBlue)
         )
 
         Row(
@@ -452,7 +536,7 @@ private fun DownloadSection(tag: String, apkUrl: String) {
             .padding(bottom = 2.cssRem),
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
-        SectionHeading("Get HoloMarket")
+        SectionHeading("Get HoloMarket", accent = RetroColor.skyBlue)
 
         NeoText(
             text = "Download the APK and sideload it onto your Android device. It is free, always will be.",
@@ -461,18 +545,25 @@ private fun DownloadSection(tag: String, apkUrl: String) {
 
         Box(
             modifier = Modifier
-                .backgroundColor(NeoColor.colorPrimary)
-                .borderRadius(6.px)
+                .backgroundColor(RetroColor.babyBlue)
+                .border(2.px, LineStyle.Solid, RetroColor.navy)
+                .borderRadius(4.px)
                 .padding(leftRight = 2.cssRem, topBottom = 0.8.cssRem)
                 .margin(top = 0.5.cssRem)
                 .cursor(Cursor.Pointer)
+                .boxShadow(
+                    BoxShadow.of(0.px, 1.px, 0.px, 1.px, NeoColor.white.copy(alpha = 200), inset = true),
+                    BoxShadow.of(0.px, (-1).px, 0.px, 1.px, Color.rgb(0, 0, 0).copy(alpha = 120), inset = true),
+                    BoxShadow.of(3.px, 3.px, 0.px, 0.px, Color.rgb(0, 0, 0).copy(alpha = 127)),
+                )
                 .onClick { window.open(apkUrl, "_blank") }
         ) {
-            NeoText(
+            SpanText(
                 text = "DOWNLOAD HOLOMARKET $tag",
                 modifier = Modifier
-                    .fontSize(1.2.cssRem)
+                    .fontSize(1.3.cssRem)
                     .fontWeight(FontWeight.Bold)
+                    .color(NeoColor.backgroundPrimary)
             )
         }
 
@@ -522,12 +613,12 @@ private fun DownloadSection(tag: String, apkUrl: String) {
             Row {
                 NeoText(
                     text = "HoloMarket is open source. Source code available on ",
-                    modifier = Modifier.fontSize(0.8.cssRem).color(NeoColor.colorPrimary).textAlign(TextAlign.Center)
+                    modifier = Modifier.fontSize(0.8.cssRem).color(RetroColor.skyBlue).textAlign(TextAlign.Center)
                 )
                 Link(
                     text = "GitHub.", path = "https://github.com/laetuz/HoloMarket",
                     modifier = Modifier
-                        .fontSize(0.8.cssRem).color(NeoColor.colorPrimary).textAlign(TextAlign.Center)
+                        .fontSize(0.8.cssRem).color(RetroColor.skyBlue).textAlign(TextAlign.Center)
                 )
             }
 
@@ -536,13 +627,15 @@ private fun DownloadSection(tag: String, apkUrl: String) {
 }
 
 @Composable
-private fun SectionHeading(text: String) {
-    NeoText(
-        text = text,
+private fun SectionHeading(text: String, accent: Color = RetroColor.skyBlue) {
+    SpanText(
+        text = "\u2726  $text  \u2726",
         modifier = Modifier
-            .fontSize(1.5.cssRem)
+            .fontSize(1.6.cssRem)
             .fontWeight(FontWeight.Bold)
+            .color(accent)
             .textAlign(TextAlign.Center)
             .fillMaxWidth()
+            .textShadow(2.px, 2.px, color = Color.rgb(0, 0, 0).copy(alpha = 153))
     )
 }
