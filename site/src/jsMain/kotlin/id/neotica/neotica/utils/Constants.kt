@@ -14,9 +14,8 @@ object Constants {
             "\n" +
             "For business inquiries or consultations on your Android project, please contact us via email."
 
+    const val PUBLIC_API_URL = "https://public.neotica.id"
     const val DEV_URL = "https://admin-dev.neotica.id"
-    const val DEV_URL_UNSECURED = "http://admin-dev.neotica.id"
-//    const val KOBWEB_DEV_URL = "http://dev.neotica.id"
     const val KOBWEB_DEV_URL = "http://localhost:8080"
 
     const val ORPHEUM_DEV_URL = "https://dev.neotica.id"

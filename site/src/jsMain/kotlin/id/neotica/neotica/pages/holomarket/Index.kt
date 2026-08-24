@@ -31,24 +31,27 @@ import id.neotica.neotica.components.NeoColor
 import id.neotica.neotica.components.layouts.NeoLayoutData
 import id.neotica.neotica.components.others.NeoText
 import id.neotica.neotica.components.resources.NeoResources
+import id.neotica.neotica.utils.Constants
 import kotlinx.browser.window
 import kotlinx.coroutines.await
+import kotlinx.coroutines.delay
 import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
 import kotlinx.serialization.json.Json
 import org.jetbrains.compose.web.css.LineStyle
 import org.jetbrains.compose.web.css.cssRem
 import org.jetbrains.compose.web.css.px
+import kotlin.time.Duration.Companion.milliseconds
 
 @Serializable
-private data class GitHubRelease(
-    @SerialName("tag_name") val tagName: String,
-    val assets: List<GitHubAsset>,
-)
-
-@Serializable
-private data class GitHubAsset(
-    @SerialName("browser_download_url") val browserDownloadUrl: String,
+private data class HoloMarketLatest(
+    @SerialName("version_name") val versionName: String = "",
+    @SerialName("version_code") val versionCode: Int = 0,
+    @SerialName("file_url") val fileUrl: String = "",
+    @SerialName("changelog") val changelog: String = "",
+    @SerialName("min_sdk") val minSdk: Int = 0,
+    @SerialName("max_sdk") val maxSdk: Int = 0,
+    @SerialName("created_at") val createdAt: Long = 0,
 )
 
 val FeatureCardStyle = CssStyle.base {
@@ -69,21 +72,30 @@ fun initHoloMarketLanding(ctx: InitRouteContext) {
 @Layout(".components.layouts.NeoPageLayout")
 @Composable
 fun HoloMarketLandingPage() {
-    var latestTag by remember { mutableStateOf(NeoResources.HOLOMARKET_LATEST_TAG) }
-    var downloadUrl by remember { mutableStateOf(NeoResources.HOLOMARKET_DL_URL) }
+    var latestVersion by remember { mutableStateOf("") }
+    var downloadUrl by remember { mutableStateOf("") }
+    var errorMessage by remember { mutableStateOf<String?>(null) }
+    var fetchAttempt by remember { mutableStateOf(0) }
     val jsonParser = remember { Json { ignoreUnknownKeys = true } }
 
-    LaunchedEffect(Unit) {
+    LaunchedEffect(fetchAttempt) {
+        errorMessage = null
         try {
-            val response = window.fetch("https://api.github.com/repos/laetuz/HoloMarket/releases/latest").await()
+            val response = window.fetch("${Constants.PUBLIC_API_URL}/holomarket/latest").await()
             if (response.ok) {
                 val text = response.text().await()
-                val release = jsonParser.decodeFromString<GitHubRelease>(text)
-                latestTag = release.tagName
-                release.assets.firstOrNull()?.let { downloadUrl = it.browserDownloadUrl }
+                val release = jsonParser.decodeFromString<HoloMarketLatest>(text)
+                release.versionName.takeIf { it.isNotBlank() }?.let { latestVersion = it }
+                if (release.fileUrl.isNotBlank()) downloadUrl = release.fileUrl
+            } else if (response.status.toInt() == 429) {
+                val retryAfterSeconds = response.headers.get("Retry-After")?.toIntOrNull() ?: 60
+                errorMessage = "Sorry, try again in $retryAfterSeconds seconds"
+            } else {
+                errorMessage = "Sorry, try again in 60 seconds"
             }
         } catch (e: Throwable) {
             console.error("Failed to fetch latest release: ${e.message}")
+            errorMessage = "Sorry, try again in 60 seconds"
         }
     }
 
@@ -118,6 +130,12 @@ fun HoloMarketLandingPage() {
             .gap(1.5.cssRem),
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
+        ErrorBanner(
+            message = errorMessage,
+            onDismiss = { errorMessage = null },
+            onRetry = { fetchAttempt++ }
+        )
+
         HeroSection()
 
         DescriptionSection()
@@ -128,7 +146,84 @@ fun HoloMarketLandingPage() {
 
         ScreenshotsSection()
 
-        DownloadSection(latestTag, downloadUrl)
+        if (latestVersion.isNotBlank() && downloadUrl.isNotBlank()) {
+            DownloadSection(latestVersion, downloadUrl)
+        } else if (errorMessage == null) {
+            Box(
+                modifier = Modifier
+                    .padding(bottom = 2.cssRem)
+                    .fillMaxWidth()
+                    .maxWidth(700.px)
+            ) {
+                NeoText(
+                    text = "Checking for the latest version...",
+                    modifier = Modifier
+                        .fontSize(0.9.cssRem)
+                        .color(NeoColor.colorPrimary)
+                        .textAlign(TextAlign.Center)
+                        .fillMaxWidth()
+                )
+            }
+        }
+    }
+}
+
+@Composable
+private fun ErrorBanner(message: String?, onDismiss: () -> Unit, onRetry: () -> Unit) {
+    if (message == null) return
+
+    LaunchedEffect(message) {
+        delay(5000.milliseconds)
+        onDismiss()
+    }
+
+    Column(
+        modifier = Modifier
+            .fillMaxWidth()
+            .backgroundColor(NeoColor.colorPrimary.copy(alpha = 25))
+            .border(1.px, LineStyle.Solid, NeoColor.colorPrimary.copy(alpha = 60))
+            .borderRadius(8.px)
+            .padding(leftRight = 1.cssRem, topBottom = 0.8.cssRem)
+            .gap(0.5.cssRem)
+    ) {
+        Row(
+            modifier = Modifier.fillMaxWidth(),
+            verticalAlignment = Alignment.CenterVertically
+        ) {
+            NeoText(
+                text = message,
+                modifier = Modifier
+                    .fontSize(0.95.cssRem)
+                    .weight(1)
+            )
+            Box(
+                modifier = Modifier
+                    .cursor(Cursor.Pointer)
+                    .onClick { onDismiss() }
+                    .padding(leftRight = 0.5.cssRem)
+            ) {
+                NeoText(
+                    text = "\u00D7",
+                    modifier = Modifier.fontSize(1.2.cssRem).fontWeight(FontWeight.Bold)
+                )
+            }
+        }
+
+        Box(
+            modifier = Modifier
+                .cursor(Cursor.Pointer)
+                .borderRadius(4.px)
+                .padding(leftRight = 0.8.cssRem, topBottom = 0.3.cssRem)
+                .onClick { onRetry() }
+                .backgroundColor(NeoColor.colorPrimary)
+        ) {
+            NeoText(
+                text = "TRY AGAIN",
+                modifier = Modifier
+                    .fontSize(0.8.cssRem)
+                    .fontWeight(FontWeight.Bold)
+            )
+        }
     }
 }
 
