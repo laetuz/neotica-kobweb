@@ -34,6 +34,9 @@ import id.neotica.neotica.components.NeoColor
 import id.neotica.neotica.components.layouts.NeoLayoutData
 import id.neotica.neotica.components.others.NeoText
 import id.neotica.neotica.components.resources.NeoResources
+import id.neotica.neotica.components.retro.RainbowDivider
+import id.neotica.neotica.components.retro.RetroColor
+import id.neotica.neotica.components.retro.StarfieldStars
 import id.neotica.neotica.utils.Constants
 import kotlinx.browser.window
 import kotlinx.coroutines.await

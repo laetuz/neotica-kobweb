@@ -18,7 +18,7 @@ import id.neotica.neotica.components.widgets.IconButton
 import org.jetbrains.compose.web.css.*
 
 @Composable
-fun NeoSideMenu(menuState: SideMenuState, close: () -> Unit, onAnimationEnd: () -> Unit) {
+fun NeoSideMenu(menuState: SideMenuState, retro: Boolean = false, close: () -> Unit, onAnimationEnd: () -> Unit) {
     Overlay(
         Modifier
             .setVariable(OverlayVars.BackgroundColor, Colors.Transparent)
@@ -49,8 +49,9 @@ fun NeoSideMenu(menuState: SideMenuState, close: () -> Unit, onAnimationEnd: () 
                 horizontalAlignment = Alignment.End
             ) {
                 CloseButton(onClick = { close() })
-                Column(Modifier.padding(right = 0.75.cssRem).gap(1.5.cssRem).fontSize(1.4.cssRem), horizontalAlignment = Alignment.End) {
-                    NeoMenuItems()
+                Column(Modifier.padding(right = 0.75.cssRem).gap(1.5.cssRem).fontSize(1.4.cssRem)
+                    .then(if (retro) Modifier.fontFamily("VT323", "monospace") else Modifier), horizontalAlignment = Alignment.End) {
+                    NeoMenuItems(retro)
                 }
             }
         }

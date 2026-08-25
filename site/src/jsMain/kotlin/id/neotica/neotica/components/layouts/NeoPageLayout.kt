@@ -13,6 +13,8 @@ import com.varabyte.kobweb.core.layout.Layout
 import com.varabyte.kobweb.silk.style.CssStyle
 import com.varabyte.kobweb.silk.style.toAttrs
 import id.neotica.neotica.components.NeoColor
+import id.neotica.neotica.components.retro.RainbowDivider
+import id.neotica.neotica.components.retro.isRetroRoute
 import id.neotica.neotica.components.sections.NeoFooter
 import id.neotica.neotica.components.sections.header.NeoNavHeader
 import kotlinx.browser.document
@@ -26,6 +28,7 @@ class NeoLayoutData(val title: String, val route: String? = "")
 @Composable
 fun NeoPageLayout(ctx: PageContext, content: @Composable () -> Unit) {
     val data = ctx.data.getValue<NeoLayoutData>()
+    val retro = isRetroRoute()
     LaunchedEffect(data.title) {
         document.title = data.title
     }
@@ -46,10 +49,12 @@ fun NeoPageLayout(ctx: PageContext, content: @Composable () -> Unit) {
         ) {
             Box(
                 modifier = Modifier.fillMaxSize().padding(leftRight = 2.cssRem)
-            ) { NeoNavHeader(data.route) }
+            ) { NeoNavHeader(data.route, retro) }
+            if (retro) RainbowDivider()
             Div(PageContentStyle.toAttrs()) { content() }
+            if (retro) RainbowDivider()
         }
-        NeoFooter(Modifier.fillMaxWidth().gridRow(2))
+        NeoFooter(Modifier.fillMaxWidth().gridRow(2), retro)
 
     }
 }
