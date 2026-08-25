@@ -1,4 +1,4 @@
-package id.neotica.neotica.pages.holomarket
+package id.neotica.neotica.components.retro
 
 import androidx.compose.runtime.Composable
 import com.varabyte.kobweb.compose.css.functions.LinearGradient
@@ -8,8 +8,11 @@ import com.varabyte.kobweb.compose.css.functions.repeatingRadialGradient
 import com.varabyte.kobweb.compose.foundation.layout.Box
 import com.varabyte.kobweb.compose.ui.Modifier
 import com.varabyte.kobweb.compose.ui.graphics.Color
-import com.varabyte.kobweb.compose.ui.modifiers.*
+import com.varabyte.kobweb.compose.ui.modifiers.backgroundImage
+import com.varabyte.kobweb.compose.ui.modifiers.fillMaxWidth
+import com.varabyte.kobweb.compose.ui.modifiers.height
 import id.neotica.neotica.components.NeoColor
+import kotlinx.browser.window
 import org.jetbrains.compose.web.css.px
 
 object RetroColor {
@@ -43,6 +46,9 @@ val StarfieldStars = repeatingRadialGradient(RadialGradient.Shape.Circle) {
     add(NeoColor.white.copy(alpha = 40), 1.px)
     add(NeoColor.transparent, 24.px)
 }
+
+fun isRetroRoute(path: String = window.location.pathname): Boolean =
+    path == "/" || path.isEmpty() || path.startsWith("/holomarket") || path == "/contact"
 
 @Composable
 fun RainbowDivider() {

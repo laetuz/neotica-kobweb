@@ -14,11 +14,13 @@ import com.varabyte.kobweb.silk.components.icons.HamburgerIcon
 import com.varabyte.kobweb.silk.components.navigation.Link
 import com.varabyte.kobweb.silk.components.navigation.UncoloredLinkVariant
 import com.varabyte.kobweb.silk.components.navigation.UndecoratedLinkVariant
+import com.varabyte.kobweb.silk.components.text.SpanText
 import com.varabyte.kobweb.silk.style.breakpoint.Breakpoint
 import com.varabyte.kobweb.silk.style.breakpoint.displayIfAtLeast
 import com.varabyte.kobweb.silk.style.breakpoint.displayUntil
 import id.neotica.neotica.components.NeoColor
 import id.neotica.neotica.components.others.NeoText
+import id.neotica.neotica.components.retro.RetroColor
 import id.neotica.neotica.components.widgets.IconButton
 import org.jetbrains.compose.web.css.DisplayStyle
 import org.jetbrains.compose.web.css.cssRem
@@ -26,7 +28,7 @@ import org.jetbrains.compose.web.css.em
 import org.jetbrains.compose.web.css.px
 
 @Composable
-fun NeoNavHeader(currentRoute: String? = "") {
+fun NeoNavHeader(currentRoute: String? = "", retro: Boolean = false) {
     Row(
         modifier = Modifier
             .padding(topBottom = 1.cssRem)
@@ -52,19 +54,32 @@ fun NeoNavHeader(currentRoute: String? = "") {
                         .display(DisplayStyle.Block)
                 )
             }
-            NeoText(
-                "Neotica.id$currentRoute",
-                Modifier
-                    .overflowWrap(OverflowWrap.BreakWord)
-                    .fontSize(1.5.em)
-                    .fontStyle(FontStyle.Italic)
-                    .fontWeight(FontWeight.Bold)
-            )
+            if (retro) {
+                SpanText(
+                    "Neotica.id$currentRoute",
+                    Modifier
+                        .overflowWrap(OverflowWrap.BreakWord)
+                        .fontSize(1.5.em)
+                        .fontStyle(FontStyle.Italic)
+                        .fontWeight(FontWeight.Bold)
+                        .color(RetroColor.babyBlue)
+                        .fontFamily("VT323", "monospace")
+                )
+            } else {
+                NeoText(
+                    "Neotica.id$currentRoute",
+                    Modifier
+                        .overflowWrap(OverflowWrap.BreakWord)
+                        .fontSize(1.5.em)
+                        .fontStyle(FontStyle.Italic)
+                        .fontWeight(FontWeight.Bold)
+                )
+            }
 
         }
 
         Row(Modifier.gap(1.5.cssRem).displayIfAtLeast(Breakpoint.MD), verticalAlignment = Alignment.CenterVertically) {
-            NeoMenuItems()
+            NeoMenuItems(retro)
         }
 
         Row(
@@ -81,6 +96,7 @@ fun NeoNavHeader(currentRoute: String? = "") {
             if (menuState != SideMenuState.CLOSED) {
                 NeoSideMenu(
                     menuState,
+                    retro,
                     close = { menuState = menuState.close() },
                     onAnimationEnd = { if (menuState == SideMenuState.CLOSING) menuState = SideMenuState.CLOSED }
                 )
@@ -104,18 +120,20 @@ enum class SideMenuState {
 }
 
 @Composable
-fun NeoMenuItems() {
-    NavLink("/", "Home")
+fun NeoMenuItems(retro: Boolean = false) {
+    NavLink("/", "Home", retro)
 //    NavLink("/about", "About")
-    NavLink("/contact", "Contact")
+    NavLink("/contact", "Contact", retro)
 }
 
 @Composable
-private fun NavLink(path: String, text: String) {
+private fun NavLink(path: String, text: String, retro: Boolean = false) {
     Link(
         path = path,
         text = text,
-        modifier = Modifier.color(NeoColor.white),
+        modifier = Modifier
+            .color(if (retro) RetroColor.skyBlue else NeoColor.white)
+            .then(if (retro) Modifier.fontFamily("VT323", "monospace") else Modifier),
         variant = UndecoratedLinkVariant.then(UncoloredLinkVariant)
     )
 }

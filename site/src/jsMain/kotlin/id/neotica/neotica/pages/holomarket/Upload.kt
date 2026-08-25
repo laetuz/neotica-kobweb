@@ -29,6 +29,9 @@ import com.varabyte.kobweb.silk.style.base
 import com.varabyte.kobweb.silk.style.toModifier
 import id.neotica.neotica.components.NeoColor
 import id.neotica.neotica.components.layouts.NeoLayoutData
+import id.neotica.neotica.components.retro.RainbowDivider
+import id.neotica.neotica.components.retro.RetroColor
+import id.neotica.neotica.components.retro.StarfieldStars
 import id.neotica.neotica.utils.Constants
 import kotlin.math.roundToInt
 import kotlinx.browser.window
@@ -89,6 +92,7 @@ fun HoloMarketUploadPage() {
     var title by remember { mutableStateOf("") }
     var developer by remember { mutableStateOf("") }
     var description by remember { mutableStateOf("") }
+    var changelog by remember { mutableStateOf("") }
     var categories by remember { mutableStateOf("") }
     var apkFile by remember { mutableStateOf<File?>(null) }
     var screenshots by remember { mutableStateOf<List<File>>(emptyList()) }
@@ -104,6 +108,7 @@ fun HoloMarketUploadPage() {
             form.append("title", title)
             form.append("developer", developer)
             form.append("description", description)
+            form.append("changelog", changelog)
             form.append("categories", categories)
             apkFile?.let { form.append("file", it, it.name) }
             screenshots.forEach { form.append("screenshots", it, it.name) }
@@ -207,6 +212,16 @@ fun HoloMarketUploadPage() {
                     placeholder("What does the app do?")
                     onInput { description = it.value }
                     style { retroFieldStyle(); height(6.cssRem) }
+                }
+            )
+
+            FieldLabel("Changelog (optional)")
+            TextArea(
+                value = changelog,
+                attrs = {
+                    placeholder("What's new in this version?")
+                    onInput { changelog = it.value }
+                    style { retroFieldStyle(); height(4.cssRem) }
                 }
             )
 
