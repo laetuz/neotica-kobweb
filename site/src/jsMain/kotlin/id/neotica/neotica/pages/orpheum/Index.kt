@@ -260,6 +260,13 @@ fun OrpheumPage() {
                 ) {
                     SpinningDisc(coverUrl = "${Constants.ORPHEUM_DEV_URL}/orpheum/${fullScreenTrack.coverUrl}", size = 260, playing = isPlaying)
 
+                    RetroProgressBar(
+                        currentTime = currentTime,
+                        trackDuration = trackDuration,
+                        onSeek = { time -> audioPlayer.currentTime = time },
+                        modifier = Modifier.maxWidth(360.px)
+                    )
+
                     SpanText(
                         text = fullScreenTrack.title,
                         modifier = Modifier
@@ -306,6 +313,27 @@ fun OrpheumPage() {
                         ) {
                             SpanText(
                                 text = "\u2715  Close",
+                                modifier = Modifier.fontSize(1.2.cssRem).fontWeight(FontWeight.Bold).color(NeoColor.backgroundPrimary)
+                            )
+                        }
+                        Box(
+                            modifier = Modifier
+                                .retroBevel(Color.rgb(0xB0, 0x3A, 0x3A))
+                                .padding(leftRight = 1.2.cssRem, topBottom = 0.5.cssRem)
+                                .cursor(Cursor.Pointer)
+                                .onClick {
+                                    audioPlayer.pause()
+                                    audioPlayer.currentTime = 0.0
+                                    audioPlayer.src = ""
+                                    isPlaying = false
+                                    currentlyPlayingId = null
+                                    currentTime = 0.0
+                                    trackDuration = 0.0
+                                    cdFullscreen = false
+                                }
+                        ) {
+                            SpanText(
+                                text = "\u25A0  Stop",
                                 modifier = Modifier.fontSize(1.2.cssRem).fontWeight(FontWeight.Bold).color(NeoColor.backgroundPrimary)
                             )
                         }
@@ -375,52 +403,62 @@ private fun RetroTrackCard(
         }
 
         if (isActive) {
-            val progress = if (trackDuration > 0) (currentTime / trackDuration).coerceIn(0.0, 1.0) else 0.0
-            val currentLabel = formatDuration(currentTime.toInt())
-            val totalLabel = formatDuration(trackDuration.toInt())
-
-            Row(
-                modifier = Modifier.fillMaxWidth().gap(0.5.cssRem),
-                verticalAlignment = Alignment.CenterVertically
-            ) {
-                SpanText(
-                    text = currentLabel,
-                    modifier = Modifier.fontSize(0.8.cssRem).color(RetroColor.cyan)
-                )
-
-                Div(
-                    attrs = Modifier
-                        .fillMaxWidth()
-                        .height(8.px)
-                        .border(1.px, LineStyle.Solid, RetroColor.navy)
-                        .backgroundColor(NeoColor.backgroundPrimary)
-                        .borderRadius(4.px)
-                        .cursor(Cursor.Pointer)
-                        .onClick { e ->
-                            val rect = (e.currentTarget.asDynamic() as org.w3c.dom.Element)
-                            val width = rect.getBoundingClientRect().width
-                            if (width > 0) {
-                                val offsetX = (e.asDynamic().offsetX as Double).coerceIn(0.0, width)
-                                onSeek((offsetX / width) * trackDuration)
-                            }
-                        }
-                        .toAttrs()
-                ) {
-                    Div(
-                        attrs = Modifier
-                            .height(8.px)
-                            .backgroundColor(RetroColor.babyBlue)
-                            .borderRadius(4.px)
-                            .toAttrs { style { property("width", "${(progress * 100).toInt()}%") } }
-                    )
-                }
-
-                SpanText(
-                    text = totalLabel,
-                    modifier = Modifier.fontSize(0.8.cssRem).color(RetroColor.cyan)
-                )
-            }
+            RetroProgressBar(currentTime = currentTime, trackDuration = trackDuration, onSeek = onSeek)
         }
+    }
+}
+
+@Composable
+private fun RetroProgressBar(
+    currentTime: Double,
+    trackDuration: Double,
+    onSeek: (Double) -> Unit,
+    modifier: Modifier = Modifier
+) {
+    val progress = if (trackDuration > 0) (currentTime / trackDuration).coerceIn(0.0, 1.0) else 0.0
+    val currentLabel = formatDuration(currentTime.toInt())
+    val totalLabel = formatDuration(trackDuration.toInt())
+
+    Row(
+        modifier = modifier.fillMaxWidth().gap(0.5.cssRem),
+        verticalAlignment = Alignment.CenterVertically
+    ) {
+        SpanText(
+            text = currentLabel,
+            modifier = Modifier.fontSize(0.8.cssRem).color(RetroColor.cyan)
+        )
+
+        Div(
+            attrs = Modifier
+                .fillMaxWidth()
+                .height(8.px)
+                .border(1.px, LineStyle.Solid, RetroColor.navy)
+                .backgroundColor(NeoColor.backgroundPrimary)
+                .borderRadius(4.px)
+                .cursor(Cursor.Pointer)
+                .onClick { e ->
+                    val rect = (e.currentTarget.asDynamic() as org.w3c.dom.Element)
+                    val width = rect.getBoundingClientRect().width
+                    if (width > 0) {
+                        val offsetX = (e.asDynamic().offsetX as Double).coerceIn(0.0, width)
+                        onSeek((offsetX / width) * trackDuration)
+                    }
+                }
+                .toAttrs()
+        ) {
+            Div(
+                attrs = Modifier
+                    .height(8.px)
+                    .backgroundColor(RetroColor.babyBlue)
+                    .borderRadius(4.px)
+                    .toAttrs { style { property("width", "${(progress * 100).toInt()}%") } }
+            )
+        }
+
+        SpanText(
+            text = totalLabel,
+            modifier = Modifier.fontSize(0.8.cssRem).color(RetroColor.cyan)
+        )
     }
 }
 
