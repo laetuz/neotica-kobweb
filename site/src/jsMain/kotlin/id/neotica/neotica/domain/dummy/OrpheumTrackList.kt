@@ -1,7 +1,7 @@
 package id.neotica.neotica.domain.dummy
 
-import id.neotica.neotica.pages.orpheum.TrackFeedResponse
-import id.neotica.neotica.pages.orpheum.TrackRemoteModel
+import id.neotica.neotica.domain.model.orpheum.TrackFeedResponse
+import id.neotica.neotica.domain.model.orpheum.TrackRemoteModel
 
 object OrpheumTrackList {
     private val allTracks = listOf(
@@ -9,7 +9,15 @@ object OrpheumTrackList {
         TrackRemoteModel("t-002", "a-001", "Midnight Pulse", 198, "https://example.com/audio/midnight-pulse.mp3", 2, "Ryo Martin"),
         TrackRemoteModel("t-003", "a-002", "Velvet Sky", 312, "https://example.com/audio/velvet-sky.mp3", 1, "Galih Putro Aji"),
         TrackRemoteModel("t-004", "a-002", "Crimson Wave", 177, "https://example.com/audio/crimson-wave.mp3", 2, "Galih Putro Aji"),
-        TrackRemoteModel("t-005", "a-003", "Empty Promises", 290, "https://example.com/audio/empty-promises.mp3", 1, "Ayu Krisna"),
+        TrackRemoteModel(
+            "t-005",
+            "a-003",
+            "Empty Promises",
+            290,
+            "https://example.com/audio/empty-promises.mp3",
+            1,
+            "Ayu Krisna"
+        ),
         TrackRemoteModel("t-006", "a-003", "Fading Echo", 223, "https://example.com/audio/fading-echo.mp3", 2, "Ayu Krisna"),
         TrackRemoteModel("t-007", "a-004", "Static Dreams", 267, "https://example.com/audio/static-dreams.mp3", 1, "Marshella Vindriani"),
         TrackRemoteModel("t-008", "a-004", "Glass Horizon", 184, "https://example.com/audio/glass-horizon.mp3", 2, "Marshella Vindriani"),
