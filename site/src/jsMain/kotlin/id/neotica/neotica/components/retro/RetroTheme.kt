@@ -47,8 +47,11 @@ val StarfieldStars = repeatingRadialGradient(RadialGradient.Shape.Circle) {
     add(NeoColor.transparent, 24.px)
 }
 
-fun isRetroRoute(path: String = window.location.pathname): Boolean =
-    path == "/" || path.isEmpty() || path.startsWith("/holomarket") || path == "/contact"
+fun isRetroRoute(path: String = window.location.pathname): Boolean {
+    val normalized = path.removeSuffix("/").ifEmpty { "/" }
+    return normalized == "/" || normalized.startsWith("/holomarket") ||
+            normalized == "/contact" || normalized == "/orpheum"
+}
 
 @Composable
 fun RainbowDivider() {
