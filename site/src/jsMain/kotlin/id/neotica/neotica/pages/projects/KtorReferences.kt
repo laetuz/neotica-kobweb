@@ -33,7 +33,7 @@ fun initKtorReferencesPage(ctx: InitRouteContext) {
     ctx.data.add(NeoLayoutData("Ktor Resources - Ryo Martin", "/ktorreferences")) 
 }
 
-@Page
+@Page(routeOverride = "/projects/ktorreferences")
 @Composable
 @Layout(".components.layouts.NeoPageLayout")
 fun KtorReferencesPage() {
