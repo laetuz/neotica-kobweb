@@ -33,7 +33,7 @@ fun initKtorReferencesPage(ctx: InitRouteContext) {
     ctx.data.add(NeoLayoutData("Ktor Resources - Ryo Martin", "/ktorreferences")) 
 }
 
-@Page(routeOverride = "ktor-resources") // Accessible via neotica.id/ktor-resources
+@Page
 @Composable
 @Layout(".components.layouts.NeoPageLayout")
 fun KtorReferencesPage() {
@@ -56,21 +56,21 @@ fun KtorReferencesPage() {
                     attrs = Modifier
                         .margin(0.px)
                         .fontSize(2.cssRem)
-                        .color(Colors.Black)
+                        .color(Colors.White) // Flipped to White
                         .toAttrs()
                 ) {
                     Text("References & Resources")
                 }
                 SpanText(
                     text = "Links and materials from the Ktor Backend presentation by Ryo Martin.",
-                    modifier = Modifier.color(Colors.DarkGray).fontSize(1.2.cssRem)
+                    modifier = Modifier.color(Colors.LightGray).fontSize(1.2.cssRem) // Flipped to LightGray
                 )
             }
 
             Hr(
                 attrs = Modifier
                     .width(100.percent)
-                    .border(1.px, LineStyle.Solid, Colors.LightGray)
+                    .border(1.px, LineStyle.Solid, Colors.Gray) // Dimmed the line
                     .toAttrs()
             )
 
@@ -129,6 +129,9 @@ fun KtorReferencesPage() {
                     url = "https://www.techempower.com/benchmarks"
                 )
             }
+            
+            // Adding a little padding at the bottom so it doesn't hug the screen edge
+            Box(Modifier.height(3.cssRem))
         }
     }
 }
@@ -142,7 +145,7 @@ fun ResourceSection(title: String, content: @Composable () -> Unit) {
             attrs = Modifier
                 .margin(0.px)
                 .fontSize(1.4.cssRem)
-                .color(Colors.Black)
+                .color(Colors.White) // Flipped to White
                 .toAttrs()
         ) {
             Text(title)
@@ -159,7 +162,7 @@ fun ResourceItem(title: String, author: String? = null, url: String) {
         A(
             href = url,
             attrs = Modifier
-                .color(Colors.Black)
+                .color(Colors.White) // Flipped to White
                 .textDecorationLine(TextDecorationLine.Underline)
                 .fontWeight(FontWeight.Bold)
                 .fontSize(1.1.cssRem)
@@ -171,14 +174,14 @@ fun ResourceItem(title: String, author: String? = null, url: String) {
         if (author != null) {
             SpanText(
                 text = author,
-                modifier = Modifier.color(Colors.DarkGray).fontSize(0.9.cssRem)
+                modifier = Modifier.color(Colors.LightGray).fontSize(0.9.cssRem) // Flipped to LightGray
             )
         }
         
         A(
             href = url,
             attrs = Modifier
-                .color(Colors.Gray)
+                .color(Colors.Silver) // Silver for the raw URL so it sits nicely in the background
                 .fontSize(0.85.cssRem)
                 .textDecorationLine(TextDecorationLine.None)
                 .toAttrs()
