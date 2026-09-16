@@ -9,6 +9,7 @@ import com.varabyte.kobweb.compose.foundation.layout.Column
 import com.varabyte.kobweb.compose.ui.Modifier
 import com.varabyte.kobweb.compose.ui.graphics.Colors
 import com.varabyte.kobweb.compose.ui.modifiers.*
+import com.varabyte.kobweb.compose.ui.toAttrs
 import com.varabyte.kobweb.core.Page
 import com.varabyte.kobweb.core.data.add
 import com.varabyte.kobweb.core.init.InitRoute
@@ -51,13 +52,13 @@ fun KtorReferencesPage() {
         ) {
             // Header
             Column(modifier = Modifier.gap(0.5.cssRem)) {
-                H1(attrs = {
-                    style {
-                        margin(0.px)
-                        fontSize(2.cssRem)
-                        color(Colors.Black)
-                    }
-                }) {
+                H1(
+                    attrs = Modifier
+                        .margin(0.px)
+                        .fontSize(2.cssRem)
+                        .color(Colors.Black)
+                        .toAttrs()
+                ) {
                     Text("References & Resources")
                 }
                 SpanText(
@@ -66,7 +67,12 @@ fun KtorReferencesPage() {
                 )
             }
 
-            Hr(attrs = { style { width(100.percent); border(1.px, LineStyle.Solid, Colors.LightGray) } })
+            Hr(
+                attrs = Modifier
+                    .width(100.percent)
+                    .border(1.px, LineStyle.Solid, Colors.LightGray)
+                    .toAttrs()
+            )
 
             // 1. Articles & Guides
             ResourceSection("Articles & Guides") {
@@ -132,13 +138,13 @@ fun KtorReferencesPage() {
 @Composable
 fun ResourceSection(title: String, content: @Composable () -> Unit) {
     Column(modifier = Modifier.gap(1.cssRem).fillMaxWidth()) {
-        H2(attrs = {
-            style {
-                margin(0.px)
-                fontSize(1.4.cssRem)
-                color(Colors.Black)
-            }
-        }) {
+        H2(
+            attrs = Modifier
+                .margin(0.px)
+                .fontSize(1.4.cssRem)
+                .color(Colors.Black)
+                .toAttrs()
+        ) {
             Text(title)
         }
         Column(modifier = Modifier.gap(1.2.cssRem).fillMaxWidth()) {
@@ -152,14 +158,12 @@ fun ResourceItem(title: String, author: String? = null, url: String) {
     Column(modifier = Modifier.gap(0.2.cssRem)) {
         A(
             href = url,
-            attrs = {
-                style {
-                    color(Colors.Black)
-                    textDecoration("underline")
-                    fontWeight("bold")
-                    fontSize(1.1.cssRem)
-                }
-            }
+            attrs = Modifier
+                .color(Colors.Black)
+                .textDecorationLine(TextDecorationLine.Underline)
+                .fontWeight(FontWeight.Bold)
+                .fontSize(1.1.cssRem)
+                .toAttrs()
         ) {
             Text(title)
         }
@@ -173,13 +177,11 @@ fun ResourceItem(title: String, author: String? = null, url: String) {
         
         A(
             href = url,
-            attrs = {
-                style {
-                    color(Colors.Gray)
-                    fontSize(0.85.cssRem)
-                    textDecoration("none")
-                }
-            }
+            attrs = Modifier
+                .color(Colors.Gray)
+                .fontSize(0.85.cssRem)
+                .textDecorationLine(TextDecorationLine.None)
+                .toAttrs()
         ) {
             Text(url)
         }
