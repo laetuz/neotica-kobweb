@@ -133,6 +133,15 @@ fun HoloMarketLandingPage() {
         injectMeta("og:type", "website")
         injectMeta("og:url", "https://neotica.id/holomarket")
         injectMeta("og:image", "https://neotica.id/projects/holomarket/ss-holomarket-1.png")
+
+        val existingCanonical = head.querySelector("link[rel='canonical']")
+        existingCanonical?.let { head.removeChild(it) }
+        head.appendChild(
+            window.document.createElement("link").apply {
+                setAttribute("rel", "canonical")
+                setAttribute("href", "https://neotica.id/holomarket")
+            }
+        )
     }
 
     Column(
