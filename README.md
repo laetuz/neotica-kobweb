@@ -8,12 +8,19 @@ For business inquiries or consultations on your Android and iOS project, please 
 
 This website is built using [Kotlin](https://kotlinlang.org/), [Kobweb](https://github.com/varabyte/kobweb), and [Compose for Web](https://compose-web.ui.jetbrains.org/).
 
+## Documentation
+
+- `docs/DESIGN.md` — the retro design system
+- `docs/public-endpoints.md` — public API guide
+- `docs/knowledge.md` — project journal / working notes
+- `AGENTS.md` — commands, routes, and conventions
+
 ## Running the Project
 
 This project uses [Gradle](https://gradle.org/) as its build tool. To run the development server, use the following command:
 
 ```bash
-./gradlew site:jsRun
+./gradlew :site:jsBrowserDevelopmentRun
 ```
 
 This will start a local server, and you can view the website in your browser, typically at `http://localhost:8080`.
@@ -32,7 +39,7 @@ This will start a local server, and you can view the website in your browser, ty
 To deploy the website, you need to generate the static files. You can do this using the following Gradle command:
 
 ```bash
-./gradlew site:jsExport
+./gradlew :site:kobwebExport
 ```
 
-This command will build the project and output the static files to the `site/build/kobweb/export` directory. You can then deploy these files to any static web hosting service.
+This command will build the project and output the static files to the `site/.kobweb/site/` directory (`pages/`, `resources/`, `system/`). You can then deploy these files to any static web hosting service.
