@@ -10,6 +10,7 @@ import com.varabyte.kobweb.compose.css.Cursor
 import com.varabyte.kobweb.compose.css.FontWeight
 import com.varabyte.kobweb.compose.css.Overflow
 import com.varabyte.kobweb.compose.css.TextAlign
+import com.varabyte.kobweb.compose.css.TextDecorationLine
 import com.varabyte.kobweb.compose.css.BoxShadow
 import com.varabyte.kobweb.compose.foundation.layout.Arrangement
 import com.varabyte.kobweb.compose.foundation.layout.Box
@@ -37,6 +38,7 @@ import id.neotica.neotica.components.resources.NeoResources
 import id.neotica.neotica.components.retro.RainbowDivider
 import id.neotica.neotica.components.retro.RetroColor
 import id.neotica.neotica.components.retro.StarfieldStars
+import id.neotica.neotica.components.retro.retroBevel
 import id.neotica.neotica.utils.Constants
 import kotlinx.browser.window
 import kotlinx.coroutines.await
@@ -544,6 +546,24 @@ private fun DownloadSection(tag: String, apkUrl: String) {
             text = "$tag \u00B7 Requires Android 1.5+",
             modifier = Modifier.fontSize(0.8.cssRem).color(NeoColor.white.copy(alpha = 153))
         )
+
+        Link(
+            path = "/holomarket/apps",
+            modifier = Modifier
+                .retroBevel(RetroColor.steelBlue)
+                .padding(leftRight = 2.cssRem, topBottom = 0.6.cssRem)
+                .margin(top = 0.8.cssRem)
+                .cursor(Cursor.Pointer)
+        ) {
+            SpanText(
+                text = "\uD83D\uDCE6  Browse all apps",
+                modifier = Modifier
+                    .fontSize(1.1.cssRem)
+                    .fontWeight(FontWeight.Bold)
+                    .color(NeoColor.backgroundPrimary)
+                    .textDecorationLine(TextDecorationLine.None)
+            )
+        }
 
         Box(
             modifier = Modifier
