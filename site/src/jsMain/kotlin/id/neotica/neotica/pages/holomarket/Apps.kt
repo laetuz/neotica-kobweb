@@ -39,6 +39,7 @@ import kotlinx.coroutines.await
 import kotlinx.serialization.json.Json
 import org.jetbrains.compose.web.attributes.placeholder
 import org.jetbrains.compose.web.css.LineStyle
+import org.jetbrains.compose.web.css.FlexWrap
 import org.jetbrains.compose.web.css.StyleScope
 import org.jetbrains.compose.web.css.backgroundColor
 import org.jetbrains.compose.web.css.border
@@ -166,6 +167,45 @@ fun HoloMarketAppsPage() {
         }
 
         RainbowDivider()
+
+        Row(
+            modifier = Modifier.fillMaxWidth().maxWidth(760.px).gap(0.8.cssRem).flexWrap(FlexWrap.Wrap),
+            horizontalArrangement = Arrangement.Center,
+            verticalAlignment = Alignment.CenterVertically
+        ) {
+            Link(
+                path = "/holomarket",
+                modifier = Modifier
+                    .retroBevel(RetroColor.steelBlue)
+                    .padding(leftRight = 1.2.cssRem, topBottom = 0.5.cssRem)
+                    .cursor(Cursor.Pointer)
+            ) {
+                SpanText(
+                    text = "\uD83C\uDFE0  HoloMarket home",
+                    modifier = Modifier
+                        .fontSize(1.1.cssRem)
+                        .fontWeight(FontWeight.Bold)
+                        .color(NeoColor.backgroundPrimary)
+                        .textDecorationLine(TextDecorationLine.None)
+                )
+            }
+            Link(
+                path = "/holomarket/upload",
+                modifier = Modifier
+                    .retroBevel(RetroColor.babyBlue)
+                    .padding(leftRight = 1.2.cssRem, topBottom = 0.5.cssRem)
+                    .cursor(Cursor.Pointer)
+            ) {
+                SpanText(
+                    text = "\u2B06  Submit an app for review",
+                    modifier = Modifier
+                        .fontSize(1.1.cssRem)
+                        .fontWeight(FontWeight.Bold)
+                        .color(NeoColor.backgroundPrimary)
+                        .textDecorationLine(TextDecorationLine.None)
+                )
+            }
+        }
 
         Row(
             modifier = Modifier.fillMaxWidth().maxWidth(760.px).gap(0.6.cssRem),

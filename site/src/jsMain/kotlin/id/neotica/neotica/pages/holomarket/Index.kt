@@ -169,22 +169,6 @@ fun HoloMarketLandingPage() {
 
         RainbowDivider()
 
-        DescriptionSection()
-
-        RainbowDivider()
-
-        FeatureSection()
-
-        RainbowDivider()
-
-        RequirementsSection()
-
-        RainbowDivider()
-
-        ScreenshotsSection()
-
-        RainbowDivider()
-
         if (latestVersion.isNotBlank() && downloadUrl.isNotBlank()) {
             DownloadSection(latestVersion, downloadUrl)
         } else if (errorMessage == null) {
@@ -204,6 +188,23 @@ fun HoloMarketLandingPage() {
                 )
             }
         }
+
+        RainbowDivider()
+
+        ScreenshotsSection()
+
+        RainbowDivider()
+
+        DescriptionSection()
+
+        RainbowDivider()
+
+        FeatureSection()
+
+        RainbowDivider()
+
+        RequirementsSection()
+
     }
 }
 
@@ -470,7 +471,7 @@ private fun ScreenshotsSection() {
         SectionHeading("Screenshots", accent = RetroColor.steelBlue)
 
         SpanText(
-            text = "HoloMarket running on Android 4.1 (Jelly Bean)",
+            text = "HoloMarket running on Android 2.2 (GingerBread)",
             modifier = Modifier.fontSize(0.8.cssRem).color(RetroColor.skyBlue)
         )
 
@@ -485,7 +486,7 @@ private fun ScreenshotsSection() {
             ).forEach { url ->
                 Box(
                     modifier = Modifier
-                        .width(160.px)
+                        .width(200.px)
                         .backgroundColor(NeoColor.backgroundPrimaryTransparent)
                         .border(1.px, LineStyle.Solid, NeoColor.colorPrimary.copy(alpha = 25))
                         .borderRadius(8.px)
@@ -507,8 +508,7 @@ private fun DownloadSection(tag: String, apkUrl: String) {
         modifier = Modifier
             .fillMaxWidth()
             .gap(1.cssRem)
-            .maxWidth(700.px)
-            .padding(bottom = 2.cssRem),
+            .maxWidth(700.px),
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
         SectionHeading("Get HoloMarket", accent = RetroColor.skyBlue)
@@ -602,7 +602,6 @@ private fun DownloadSection(tag: String, apkUrl: String) {
             modifier = Modifier
                 .fillMaxWidth()
                 .margin(top = 0.5.cssRem)
-                .padding(1.cssRem)
                 .gap(0.6.cssRem),
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
