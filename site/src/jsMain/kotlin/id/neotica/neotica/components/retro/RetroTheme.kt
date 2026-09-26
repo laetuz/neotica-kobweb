@@ -1,6 +1,7 @@
 package id.neotica.neotica.components.retro
 
 import androidx.compose.runtime.Composable
+import com.varabyte.kobweb.compose.css.BoxShadow
 import com.varabyte.kobweb.compose.css.functions.LinearGradient
 import com.varabyte.kobweb.compose.css.functions.RadialGradient
 import com.varabyte.kobweb.compose.css.functions.linearGradient
@@ -8,11 +9,10 @@ import com.varabyte.kobweb.compose.css.functions.repeatingRadialGradient
 import com.varabyte.kobweb.compose.foundation.layout.Box
 import com.varabyte.kobweb.compose.ui.Modifier
 import com.varabyte.kobweb.compose.ui.graphics.Color
-import com.varabyte.kobweb.compose.ui.modifiers.backgroundImage
-import com.varabyte.kobweb.compose.ui.modifiers.fillMaxWidth
-import com.varabyte.kobweb.compose.ui.modifiers.height
+import com.varabyte.kobweb.compose.ui.modifiers.*
 import id.neotica.neotica.components.NeoColor
 import kotlinx.browser.window
+import org.jetbrains.compose.web.css.LineStyle
 import org.jetbrains.compose.web.css.px
 
 object RetroColor {
@@ -62,3 +62,14 @@ fun RainbowDivider() {
             .backgroundImage(RainbowStrip)
     )
 }
+
+/** Chunky retro 3D button surface: beveled highlight/shade + hard drop shadow. */
+fun Modifier.retroBevel(background: Color = RetroColor.babyBlue): Modifier = this
+    .backgroundColor(background)
+    .border(2.px, LineStyle.Solid, RetroColor.navy)
+    .borderRadius(4.px)
+    .boxShadow(
+        BoxShadow.of(0.px, 1.px, 0.px, 1.px, NeoColor.white.copy(alpha = 200), inset = true),
+        BoxShadow.of(0.px, (-1).px, 0.px, 1.px, Color.rgb(0, 0, 0).copy(alpha = 120), inset = true),
+        BoxShadow.of(3.px, 3.px, 0.px, 0.px, Color.rgb(0, 0, 0).copy(alpha = 127)),
+    )
