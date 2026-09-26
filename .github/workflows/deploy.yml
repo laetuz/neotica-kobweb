@@ -27,16 +27,6 @@ jobs:
       - name: Build & Export
         run: ./gradlew :site:kobwebExport --no-daemon
 
-      - name: Flatten holomarket route
-        run: |
-          PAGES_DIR="site/.kobweb/site/pages"
-          SRC="$PAGES_DIR/holomarket/index.html"
-          DST="$PAGES_DIR/holomarket.html"
-          test -f "$SRC" || { echo "::error::$SRC not found"; exit 1; }
-          cp "$SRC" "$DST"
-          rm "$SRC"
-          echo "Wrote $DST and removed $SRC"
-
       - name: Merge export output
         run: |
           mkdir -p dist

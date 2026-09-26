@@ -82,7 +82,7 @@ fun initHoloMarketLanding(ctx: InitRouteContext) {
     ctx.data.add(NeoLayoutData("HoloMarket \u00B7 Android App Store"))
 }
 
-@Page
+@Page(routeOverride = "/holomarket")
 @Layout(".components.layouts.NeoPageLayout")
 @Composable
 fun HoloMarketLandingPage() {
