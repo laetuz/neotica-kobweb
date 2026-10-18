@@ -12,5 +12,5 @@ data class TrackRemoteModel(
     @SerialName("file_url") val fileUrl: String,
     @SerialName("track_number") val trackNumber: Int,
     @SerialName("artist_name") val artistName: String,
-    @SerialName("album_cover") val coverUrl: String? = null
+    @SerialName("album_cover") val albumCover: String? = null
 )

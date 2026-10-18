@@ -34,6 +34,7 @@ import id.neotica.neotica.components.retro.RetroColor
 import id.neotica.neotica.components.retro.StarfieldStars
 import id.neotica.neotica.components.retro.retroBevel
 import id.neotica.neotica.utils.Constants
+import id.neotica.neotica.utils.encodeQueryComponent
 import kotlinx.browser.window
 import kotlinx.coroutines.await
 import kotlinx.serialization.json.Json

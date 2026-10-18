@@ -29,6 +29,7 @@ import id.neotica.neotica.components.retro.RetroColor
 import id.neotica.neotica.components.retro.StarfieldStars
 import id.neotica.neotica.components.retro.retroBevel
 import id.neotica.neotica.utils.Constants
+import id.neotica.neotica.utils.encodeQueryComponent
 import kotlin.math.roundToInt
 import kotlinx.browser.window
 import kotlinx.coroutines.await
@@ -145,7 +146,7 @@ private fun AppDetailContent(app: PublicAppDetail) {
                     )
                 }
                 if (app.averageRating != null) {
-                    val rating = (app.averageRating!! * 10).roundToInt() / 10.0
+                    val rating = (app.averageRating * 10).roundToInt() / 10.0
                     SpanText(
                         text = "\u2605 $rating  \u00B7  ${app.totalReviews} review(s)",
                         modifier = Modifier.fontSize(1.cssRem).color(RetroColor.cream)
