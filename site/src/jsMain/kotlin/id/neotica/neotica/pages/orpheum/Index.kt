@@ -18,125 +18,156 @@ import com.varabyte.kobweb.core.init.InitRouteContext
 import com.varabyte.kobweb.core.layout.Layout
 import com.varabyte.kobweb.core.rememberPageContext
 import com.varabyte.kobweb.silk.components.graphics.Image
-import com.varabyte.kobweb.silk.components.overlay.Overlay
-import com.varabyte.kobweb.silk.components.overlay.OverlayVars
+import com.varabyte.kobweb.silk.components.layout.SimpleGrid
+import com.varabyte.kobweb.silk.components.layout.numColumns
+import com.varabyte.kobweb.silk.components.navigation.Link
 import com.varabyte.kobweb.silk.components.text.SpanText
-import com.varabyte.kobweb.silk.style.animation.Keyframes
-import com.varabyte.kobweb.silk.style.animation.toAnimation
+import com.varabyte.kobweb.silk.style.breakpoint.Breakpoint
+import com.varabyte.kobweb.silk.theme.breakpoint.rememberBreakpoint
 import id.neotica.neotica.components.NeoColor
 import id.neotica.neotica.components.layouts.NeoLayoutData
 import id.neotica.neotica.components.retro.RainbowDivider
 import id.neotica.neotica.components.retro.RetroColor
 import id.neotica.neotica.components.retro.StarfieldStars
 import id.neotica.neotica.domain.dummy.OrpheumTrackList
+import id.neotica.neotica.domain.model.orpheum.AlbumRemoteModel
+import id.neotica.neotica.domain.model.orpheum.HomeFeedResponse
 import id.neotica.neotica.domain.model.orpheum.TrackFeedResponse
 import id.neotica.neotica.domain.model.orpheum.TrackRemoteModel
 import id.neotica.neotica.utils.Constants
+import id.neotica.neotica.utils.encodeQueryComponent
+import id.neotica.neotica.utils.queryParam
 import kotlinx.browser.window
 import kotlinx.coroutines.await
 import kotlinx.serialization.json.Json
+import org.jetbrains.compose.web.attributes.placeholder
 import org.jetbrains.compose.web.css.*
 import org.jetbrains.compose.web.dom.Button
-import org.jetbrains.compose.web.dom.Div
-import org.w3c.dom.HTMLAudioElement
-import org.w3c.dom.events.Event
-
+import org.jetbrains.compose.web.dom.TextInput
 
 private const val USE_DUMMY_DATA = false
+private const val ITEM_LIMIT = 20
 
-private fun formatDuration(totalSeconds: Int): String {
-    val min = totalSeconds / 60
-    val sec = totalSeconds % 60
-    return "${min}:${sec.toString().padStart(2, '0')}"
-}
-
-val CdSpinKeyframes = Keyframes {
-    from { Modifier.rotate(0.deg) }
-    to { Modifier.rotate(360.deg) }
-}
+private fun searchPath(query: String, page: Int): String =
+    "/orpheum?q=${encodeQueryComponent(query)}&page=$page"
 
 @InitRoute()
 fun initOrpheumPage(ctx: InitRouteContext) {
-    ctx.data.add(NeoLayoutData("Orpheum - Neotica.id", "/orpheum"))
+    ctx.data.add(NeoLayoutData("Orpheum \u2014 Stream Music | Neotica.id", "/orpheum"))
 }
 
-@Page
+@Page(routeOverride = "/orpheum")
 @Composable
 @Layout(".components.layouts.NeoPageLayout")
 fun OrpheumPage() {
     val ctx = rememberPageContext()
-
-    var errorMessage by remember { mutableStateOf<String?>(null) }
-    var trackList by remember { mutableStateOf<List<TrackRemoteModel>>(emptyList()) }
-    var isLoading by remember { mutableStateOf(true) }
-
-    val currentPageParam = ctx.route.queryParams["page"]?.toIntOrNull() ?: 1
-    var currentPage by remember { mutableStateOf(currentPageParam) }
-    var totalPages by remember { mutableStateOf(1) }
-
-    val audioPlayer = remember { window.document.createElement("audio") as HTMLAudioElement }
-    var currentlyPlayingId by remember { mutableStateOf<String?>(null) }
-    var isPlaying by remember { mutableStateOf(false) }
-    var currentTime by remember { mutableStateOf(0.0) }
-    var trackDuration by remember { mutableStateOf(0.0) }
-    var cdFullscreen by remember { mutableStateOf(false) }
-
+    val breakpoint = rememberBreakpoint()
     val jsonParser = remember { Json { ignoreUnknownKeys = true } }
 
-    DisposableEffect(Unit) {
-        val onEnded = { _: Event -> isPlaying = false }
-        val onTimeUpdate = { _: Event ->
-            currentTime = audioPlayer.currentTime
-            trackDuration = audioPlayer.duration
-        }
-        audioPlayer.addEventListener("ended", onEnded)
-        audioPlayer.addEventListener("timeupdate", onTimeUpdate)
+    val initialQuery = ctx.route.queryParams["q"].orEmpty()
+    val initialPage = ctx.route.queryParams["page"]?.toIntOrNull()?.coerceAtLeast(1) ?: 1
 
-        onDispose {
-            audioPlayer.removeEventListener("ended", onEnded)
-            audioPlayer.removeEventListener("timeupdate", onTimeUpdate)
-            audioPlayer.pause()
-            audioPlayer.src = ""
+    var searchInput by remember { mutableStateOf(initialQuery) }
+    var appliedQuery by remember { mutableStateOf(initialQuery) }
+    var searchPage by remember { mutableStateOf(initialPage) }
+    var retryTick by remember { mutableStateOf(0) }
+
+    var recentAlbums by remember { mutableStateOf<List<AlbumRemoteModel>>(emptyList()) }
+    var trackList by remember { mutableStateOf<List<TrackRemoteModel>>(emptyList()) }
+    var totalPages by remember { mutableStateOf(1) }
+    var isLoading by remember { mutableStateOf(true) }
+    var errorMessage by remember { mutableStateOf<String?>(null) }
+
+    val isSearchMode = appliedQuery.isNotBlank()
+
+    LaunchedEffect(Unit) {
+        val head = window.document.head ?: return@LaunchedEffect
+        val existing = head.querySelectorAll("meta[property^='og:']")
+        for (i in 0 until existing.length) existing.item(i)?.let { head.removeChild(it) }
+
+        fun injectMeta(property: String, content: String) {
+            head.appendChild(window.document.createElement("meta").apply {
+                setAttribute("property", property)
+                setAttribute("content", content)
+            })
         }
+        injectMeta("og:title", "Orpheum \u2014 Stream Music | Neotica.id")
+        injectMeta("og:description", "Stream the Neotica music catalog on Orpheum — recent albums, new tracks, and search.")
+        injectMeta("og:type", "website")
+        injectMeta("og:url", "https://neotica.id/orpheum")
+        injectMeta("og:image", "https://neotica.id/projects/orpheum/orpheum_banner.png")
+
+        head.querySelector("link[rel='canonical']")?.let { head.removeChild(it) }
+        head.appendChild(window.document.createElement("link").apply {
+            setAttribute("rel", "canonical")
+            setAttribute("href", "https://neotica.id/orpheum")
+        })
     }
 
-    LaunchedEffect(currentPage) {
+    // Keep browser Back/Forward in sync with the search state.
+    DisposableEffect(Unit) {
+        val onPopState = { _: org.w3c.dom.events.Event ->
+            val q = queryParam(window.location.search, "q").orEmpty()
+            val p = queryParam(window.location.search, "page")?.toIntOrNull()?.coerceAtLeast(1) ?: 1
+            searchInput = q
+            appliedQuery = q
+            searchPage = p
+        }
+        window.addEventListener("popstate", onPopState)
+        onDispose { window.removeEventListener("popstate", onPopState) }
+    }
+
+    LaunchedEffect(appliedQuery, searchPage, retryTick) {
         isLoading = true
         errorMessage = null
-
-        val newPath = "/orpheum?page=$currentPage"
-        if (window.location.search != "?page=$currentPage") {
-            window.history.pushState(null, "", newPath)
-        }
-
-        if (USE_DUMMY_DATA) {
-            val feedResponse = OrpheumTrackList.getPage(currentPage)
-            trackList = feedResponse.data
-            totalPages = feedResponse.totalPages
-        } else {
-            try {
-                val url = "${Constants.ORPHEUM_DEV_URL}/orpheum/catalog/tracks/new?page=$currentPage&limit=10"
-                val response = window.fetch(url).await()
-
-                if (!response.ok) {
-                    throw Exception("HTTP Error: ${response.status} ${response.statusText}")
+        try {
+            if (USE_DUMMY_DATA) {
+                if (appliedQuery.isBlank()) {
+                    trackList = OrpheumTrackList.getHome(ITEM_LIMIT)
+                    recentAlbums = emptyList()
+                    totalPages = 1
+                } else {
+                    val result = OrpheumTrackList.search(appliedQuery, searchPage, ITEM_LIMIT)
+                    trackList = result.data
+                    totalPages = result.totalPages
                 }
-
-                val text = response.text().await()
-                val feedResponse = jsonParser.decodeFromString(TrackFeedResponse.serializer(), text)
-
-                trackList = feedResponse.data
-                totalPages = feedResponse.totalPages
-            } catch (e: Throwable) {
-                console.error("Failed to load tracks: ", e)
-                errorMessage = e.message ?: "An unknown network error occurred (Likely CORS)."
+            } else if (appliedQuery.isBlank()) {
+                val url = "${Constants.ORPHEUM_DEV_URL}/orpheum/home?limit=$ITEM_LIMIT"
+                val response = window.fetch(url).await()
+                if (!response.ok) throw Exception("HTTP Error: ${response.status} ${response.statusText}")
+                val feed = jsonParser.decodeFromString<HomeFeedResponse>(response.text().await())
+                recentAlbums = feed.recentAlbums
+                trackList = feed.recentTracks
+                totalPages = 1
+            } else {
+                val url = "${Constants.ORPHEUM_DEV_URL}/orpheum/catalog/search" +
+                        "?q=${encodeQueryComponent(appliedQuery)}&page=$searchPage&limit=$ITEM_LIMIT"
+                val response = window.fetch(url).await()
+                if (!response.ok) throw Exception("HTTP Error: ${response.status} ${response.statusText}")
+                val result = jsonParser.decodeFromString<TrackFeedResponse>(response.text().await())
+                trackList = result.data
+                totalPages = result.totalPages
             }
+        } catch (e: Throwable) {
+            console.error("Failed to load Orpheum: ", e)
+            errorMessage = e.message ?: "An unknown network error occurred (Likely CORS)."
         }
-
         isLoading = false
     }
 
-    val activeTrack = trackList.firstOrNull { it.id == currentlyPlayingId }
+    fun applySearch() {
+        val query = searchInput.trim()
+        appliedQuery = query
+        searchPage = 1
+        window.history.pushState(null, "", if (query.isBlank()) "/orpheum" else searchPath(query, 1))
+    }
+
+    fun clearSearch() {
+        searchInput = ""
+        appliedQuery = ""
+        searchPage = 1
+        window.history.pushState(null, "", "/orpheum")
+    }
 
     Column(
         modifier = Modifier
@@ -165,7 +196,7 @@ fun OrpheumPage() {
                     .textShadow(3.px, 3.px, color = RetroColor.navy.copy(alpha = 200))
             )
             SpanText(
-                text = "Fresh tracks, served with a side of nostalgia.",
+                text = "Hit those tracks right now.",
                 modifier = Modifier
                     .fontSize(1.05.cssRem)
                     .color(RetroColor.cream)
@@ -175,168 +206,89 @@ fun OrpheumPage() {
 
         RainbowDivider()
 
-        if (isLoading) {
-            SpanText(
+        Row(
+            modifier = Modifier.fillMaxWidth().maxWidth(760.px).gap(0.6.cssRem),
+            verticalAlignment = Alignment.CenterVertically
+        ) {
+            Box(modifier = Modifier.weight(1f)) {
+                TextInput(
+                    value = searchInput,
+                    attrs = {
+                        placeholder("Search tracks or artists...")
+                        onInput { searchInput = it.value }
+                        style { retroFieldStyle() }
+                    }
+                )
+            }
+            BevelButton("Search", RetroColor.babyBlue) { applySearch() }
+            if (isSearchMode || searchInput.isNotBlank()) {
+                BevelButton("Clear", RetroColor.steelBlue) { clearSearch() }
+            }
+        }
+
+        when {
+            isLoading -> SpanText(
                 text = "Loading audio tracks...",
                 modifier = Modifier.fontSize(1.4.cssRem).color(RetroColor.cyan)
             )
-        } else if (errorMessage != null) {
-            SpanText(
-                text = "Failed to load: $errorMessage",
-                modifier = Modifier.fontSize(1.4.cssRem).color(NeoColor.negativePrimary)
-            )
-        }
-
-        Column(
-            modifier = Modifier.fillMaxWidth().maxWidth(760.px).gap(0.8.cssRem)
-        ) {
-            trackList.forEach { track ->
-                RetroTrackCard(
-                    track = track,
-                    isActive = track.id == currentlyPlayingId,
-                    isPlaying = isPlaying,
-                    currentTime = currentTime,
-                    trackDuration = trackDuration,
-                    onTogglePlay = {
-                        if (track.id == currentlyPlayingId && isPlaying) {
-                            audioPlayer.pause()
-                            isPlaying = false
-                        } else if (track.id == currentlyPlayingId && !isPlaying) {
-                            audioPlayer.play()
-                            isPlaying = true
-                        } else {
-                            audioPlayer.src = "${Constants.ORPHEUM_DEV_URL}/orpheum/stream/${track.id}"
-                            audioPlayer.play()
-                            currentlyPlayingId = track.id
-                            isPlaying = true
-                            cdFullscreen = false
-                        }
-                    },
-                    onSeek = { time -> audioPlayer.currentTime = time }
-                )
-            }
-        }
-
-        if (!isLoading && trackList.isNotEmpty()) {
-            PaginationFooter(currentPage, totalPages) { newPage ->
-                audioPlayer.pause()
-                isPlaying = false
-                currentlyPlayingId = null
-                cdFullscreen = false
-                currentPage = newPage
-            }
-        }
-    }
-
-    // Sticky "now playing" CD — click to enlarge to fullscreen
-    val playingTrack = activeTrack
-    if (playingTrack != null) {
-        Box(
-            modifier = Modifier
-                .position(Position.Fixed)
-                .right(1.5.cssRem)
-                .bottom(1.5.cssRem)
-                .cursor(Cursor.Pointer)
-                .onClick { cdFullscreen = true }
-        ) {
-            SpinningDisc(coverUrl = "${Constants.ORPHEUM_DEV_URL}/orpheum/${playingTrack.coverUrl}", size = 64, playing = isPlaying)
-        }
-    }
-
-    val fullScreenTrack = if (cdFullscreen) activeTrack else null
-    if (fullScreenTrack != null) {
-        Overlay(
-            Modifier
-                .setVariable(OverlayVars.BackgroundColor, NeoColor.backgroundPrimary.copy(alpha = 250))
-                .onClick { cdFullscreen = false }
-        ) {
-            Box(
-                modifier = Modifier.fillMaxSize().onClick { it.stopPropagation() },
-                contentAlignment = Alignment.Center
+            errorMessage != null -> Column(
+                horizontalAlignment = Alignment.CenterHorizontally,
+                modifier = Modifier.gap(0.6.cssRem)
             ) {
-                Column(
-                    horizontalAlignment = Alignment.CenterHorizontally,
-                    modifier = Modifier.gap(1.cssRem)
-                ) {
-                    SpinningDisc(coverUrl = "${Constants.ORPHEUM_DEV_URL}/orpheum/${fullScreenTrack.coverUrl}", size = 260, playing = isPlaying)
+                SpanText(
+                    text = "Failed to load: $errorMessage",
+                    modifier = Modifier.fontSize(1.3.cssRem).color(NeoColor.negativePrimary).textAlign(TextAlign.Center)
+                )
+                BevelButton("Try again", RetroColor.babyBlue) { retryTick++ }
+            }
+            else -> Column(
+                modifier = Modifier.fillMaxWidth().gap(1.2.cssRem),
+                horizontalAlignment = Alignment.CenterHorizontally
+            ) {
+                if (!isSearchMode && recentAlbums.isNotEmpty()) {
+                    SectionTitle("Recent Albums")
+                    if (breakpoint < Breakpoint.MD) {
+                        Row(
+                            modifier = Modifier
+                                .fillMaxWidth()
+                                .maxWidth(900.px)
+                                .overflow(Overflow.Auto)
+                                .gap(0.9.cssRem)
+                                .padding(bottom = 0.3.cssRem)
+                        ) {
+                            recentAlbums.forEach {
+                                AlbumCard(it, Modifier.width(160.px).flexShrink(0f))
+                            }
+                        }
+                    } else {
+                        SimpleGrid(
+                            numColumns = numColumns(base = 2, md = 3, lg = 4),
+                            modifier = Modifier.fillMaxWidth().maxWidth(900.px).gap(0.9.cssRem)
+                        ) {
+                            recentAlbums.forEach { AlbumCard(it, Modifier.fillMaxWidth()) }
+                        }
+                    }
+                    RainbowDivider()
+                }
 
-                    RetroProgressBar(
-                        currentTime = currentTime,
-                        trackDuration = trackDuration,
-                        onSeek = { time -> audioPlayer.currentTime = time },
-                        modifier = Modifier.maxWidth(360.px)
-                    )
+                SectionTitle(if (isSearchMode) "Results for \u201C$appliedQuery\u201D" else "Recent Tracks")
 
+                if (trackList.isEmpty()) {
                     SpanText(
-                        text = fullScreenTrack.title,
-                        modifier = Modifier
-                            .fontSize(1.8.cssRem)
-                            .fontWeight(FontWeight.Bold)
-                            .color(RetroColor.cream)
-                            .textAlign(TextAlign.Center)
+                        text = if (isSearchMode) "No tracks matched your search." else "No tracks available.",
+                        modifier = Modifier.fontSize(1.3.cssRem).color(RetroColor.cream).textAlign(TextAlign.Center)
                     )
-                    SpanText(
-                        text = fullScreenTrack.artistName,
-                        modifier = Modifier.fontSize(1.1.cssRem).color(RetroColor.cyan).textAlign(TextAlign.Center)
+                } else {
+                    OrpheumTrackListPlayer(
+                        tracks = trackList,
+                        modifier = Modifier.maxWidth(760.px)
                     )
+                }
 
-                    Row(
-                        horizontalArrangement = Arrangement.spacedBy(1.cssRem),
-                        verticalAlignment = Alignment.CenterVertically
-                    ) {
-                        Box(
-                            modifier = Modifier
-                                .retroBevel(RetroColor.babyBlue)
-                                .padding(leftRight = 1.2.cssRem, topBottom = 0.5.cssRem)
-                                .cursor(Cursor.Pointer)
-                                .onClick {
-                                    if (isPlaying) {
-                                        audioPlayer.pause()
-                                        isPlaying = false
-                                    } else {
-                                        audioPlayer.play()
-                                        isPlaying = true
-                                    }
-                                }
-                        ) {
-                            SpanText(
-                                text = if (isPlaying) "\u23F8  Pause" else "\u25B6  Play",
-                                modifier = Modifier.fontSize(1.2.cssRem).fontWeight(FontWeight.Bold).color(NeoColor.backgroundPrimary)
-                            )
-                        }
-                        Box(
-                            modifier = Modifier
-                                .retroBevel(RetroColor.steelBlue)
-                                .padding(leftRight = 1.2.cssRem, topBottom = 0.5.cssRem)
-                                .cursor(Cursor.Pointer)
-                                .onClick { cdFullscreen = false }
-                        ) {
-                            SpanText(
-                                text = "\u2715  Close",
-                                modifier = Modifier.fontSize(1.2.cssRem).fontWeight(FontWeight.Bold).color(NeoColor.backgroundPrimary)
-                            )
-                        }
-                        Box(
-                            modifier = Modifier
-                                .retroBevel(Color.rgb(0xB0, 0x3A, 0x3A))
-                                .padding(leftRight = 1.2.cssRem, topBottom = 0.5.cssRem)
-                                .cursor(Cursor.Pointer)
-                                .onClick {
-                                    audioPlayer.pause()
-                                    audioPlayer.currentTime = 0.0
-                                    audioPlayer.src = ""
-                                    isPlaying = false
-                                    currentlyPlayingId = null
-                                    currentTime = 0.0
-                                    trackDuration = 0.0
-                                    cdFullscreen = false
-                                }
-                        ) {
-                            SpanText(
-                                text = "\u25A0  Stop",
-                                modifier = Modifier.fontSize(1.2.cssRem).fontWeight(FontWeight.Bold).color(NeoColor.backgroundPrimary)
-                            )
-                        }
+                if (isSearchMode && trackList.isNotEmpty() && totalPages > 1) {
+                    PaginationFooter(searchPage, totalPages) { newPage ->
+                        searchPage = newPage
+                        window.history.pushState(null, "", searchPath(appliedQuery, newPage))
                     }
                 }
             }
@@ -345,212 +297,69 @@ fun OrpheumPage() {
 }
 
 @Composable
-private fun RetroTrackCard(
-    track: TrackRemoteModel,
-    isActive: Boolean,
-    isPlaying: Boolean,
-    currentTime: Double,
-    trackDuration: Double,
-    onTogglePlay: () -> Unit,
-    onSeek: (Double) -> Unit
-) {
-    Column(
+private fun SectionTitle(text: String) {
+    SpanText(
+        text = "\u2726  $text  \u2726",
         modifier = Modifier
             .fillMaxWidth()
-            .border(
-                2.px,
-                LineStyle.Solid,
-                if (isActive) RetroColor.skyBlue.copy(alpha = 170) else RetroColor.steelBlue.copy(alpha = 90)
-            )
-            .backgroundColor(if (isActive) RetroColor.steelBlue.copy(alpha = 30) else NeoColor.backgroundPrimaryTransparent)
-            .borderRadius(4.px)
-            .padding(1.cssRem)
-            .gap(0.6.cssRem)
-            .boxShadow(2.px, 2.px, color = Color.rgb(0, 0, 0).copy(alpha = 115))
+            .fontSize(1.5.cssRem)
+            .fontWeight(FontWeight.Bold)
+            .color(RetroColor.skyBlue)
+            .textAlign(TextAlign.Center)
+            .textShadow(2.px, 2.px, color = Color.rgb(0, 0, 0).copy(alpha = 153))
+    )
+}
+
+@Composable
+private fun AlbumCard(album: AlbumRemoteModel, modifier: Modifier = Modifier) {
+    Link(
+        path = "/orpheum/album/${album.id}",
+        modifier = modifier.textDecorationLine(TextDecorationLine.None)
     ) {
-        Row(
-            modifier = Modifier.fillMaxWidth().gap(1.cssRem),
-            verticalAlignment = Alignment.CenterVertically
-        ) {
-            TrackCover(coverUrl = "${Constants.ORPHEUM_DEV_URL}/orpheum/${track.coverUrl}", size = 58)
-
-            Column(modifier = Modifier.fillMaxWidth().gap(0.1.cssRem)) {
-                SpanText(
-                    text = track.title,
-                    modifier = Modifier
-                        .fontSize(1.2.cssRem)
-                        .fontWeight(FontWeight.Bold)
-                        .color(RetroColor.cream)
-                )
-                SpanText(
-                    text = track.artistName,
-                    modifier = Modifier.fontSize(0.9.cssRem).color(RetroColor.cyan)
-                )
-            }
-
+        Column(modifier = Modifier.fillMaxWidth().gap(0.25.cssRem)) {
             Box(
                 modifier = Modifier
-                    .retroBevel(RetroColor.babyBlue)
-                    .padding(leftRight = 0.9.cssRem, topBottom = 0.4.cssRem)
-                    .cursor(Cursor.Pointer)
-                    .onClick { onTogglePlay() }
-            ) {
-                SpanText(
-                    text = if (isActive && isPlaying) "\u23F8  Pause" else "\u25B6  Play",
-                    modifier = Modifier.fontSize(1.05.cssRem).fontWeight(FontWeight.Bold).color(NeoColor.backgroundPrimary)
-                )
-            }
-        }
-
-        if (isActive) {
-            RetroProgressBar(currentTime = currentTime, trackDuration = trackDuration, onSeek = onSeek)
-        }
-    }
-}
-
-@Composable
-private fun RetroProgressBar(
-    currentTime: Double,
-    trackDuration: Double,
-    onSeek: (Double) -> Unit,
-    modifier: Modifier = Modifier
-) {
-    val progress = if (trackDuration > 0) (currentTime / trackDuration).coerceIn(0.0, 1.0) else 0.0
-    val currentLabel = formatDuration(currentTime.toInt())
-    val totalLabel = formatDuration(trackDuration.toInt())
-
-    Row(
-        modifier = modifier.fillMaxWidth().gap(0.5.cssRem),
-        verticalAlignment = Alignment.CenterVertically
-    ) {
-        SpanText(
-            text = currentLabel,
-            modifier = Modifier.fontSize(0.8.cssRem).color(RetroColor.cyan)
-        )
-
-        Div(
-            attrs = Modifier
-                .fillMaxWidth()
-                .height(8.px)
-                .border(1.px, LineStyle.Solid, RetroColor.navy)
-                .backgroundColor(NeoColor.backgroundPrimary)
-                .borderRadius(4.px)
-                .cursor(Cursor.Pointer)
-                .onClick { e ->
-                    val rect = (e.currentTarget.asDynamic() as org.w3c.dom.Element)
-                    val width = rect.getBoundingClientRect().width
-                    if (width > 0) {
-                        val offsetX = (e.asDynamic().offsetX as Double).coerceIn(0.0, width)
-                        onSeek((offsetX / width) * trackDuration)
-                    }
-                }
-                .toAttrs()
-        ) {
-            Div(
-                attrs = Modifier
-                    .height(8.px)
-                    .backgroundColor(RetroColor.babyBlue)
+                    .fillMaxWidth()
+                    .height(140.px)
+                    .border(2.px, LineStyle.Solid, RetroColor.steelBlue.copy(alpha = 120))
+                    .backgroundColor(RetroColor.navy.copy(alpha = 200))
                     .borderRadius(4.px)
-                    .toAttrs { style { property("width", "${(progress * 100).toInt()}%") } }
-            )
-        }
-
-        SpanText(
-            text = totalLabel,
-            modifier = Modifier.fontSize(0.8.cssRem).color(RetroColor.cyan)
-        )
-    }
-}
-
-@Composable
-private fun TrackCover(coverUrl: String?, size: Int) {
-    Box(
-        modifier = Modifier
-            .size(size.px)
-            .border(2.px, LineStyle.Solid, RetroColor.navy)
-            .backgroundColor(RetroColor.navy.copy(alpha = 200))
-            .borderRadius(6.px)
-            .overflow(Overflow.Hidden),
-        contentAlignment = Alignment.Center
-    ) {
-        if (!coverUrl.isNullOrBlank()) {
-            Image(
-                src = coverUrl,
-                modifier = Modifier.fillMaxSize().objectFit(ObjectFit.Cover)
-            )
-        } else {
+                    .overflow(Overflow.Hidden),
+                contentAlignment = Alignment.Center
+            ) {
+                val cover = resolveOrpheumMedia(album.coverUrl)
+                if (cover != null) {
+                    Image(
+                        src = cover,
+                        modifier = Modifier.fillMaxSize().objectFit(ObjectFit.Cover)
+                    )
+                } else {
+                    SpanText(
+                        text = "\u266A",
+                        modifier = Modifier.fontSize(1.6.cssRem).color(RetroColor.skyBlue)
+                    )
+                }
+            }
             SpanText(
-                text = "\u266A",
-                modifier = Modifier
-                    .fontSize(1.6.cssRem)
-                    .color(RetroColor.babyBlue)
+                text = album.title,
+                modifier = Modifier.fontSize(1.05.cssRem).fontWeight(FontWeight.Bold).color(RetroColor.cream)
             )
-        }
-    }
-}
-
-@Composable
-private fun SpinningDisc(coverUrl: String?, size: Int, playing: Boolean, modifier: Modifier = Modifier) {
-    Box(
-        modifier = modifier
-            .size(size.px)
-            .border(3.px, LineStyle.Solid, RetroColor.steelBlue)
-            .borderRadius(50.percent)
-            .padding(8.px)
-            .backgroundColor(RetroColor.navy)
-            .boxShadow(3.px, 3.px, color = Color.rgb(0, 0, 0).copy(alpha = 127))
-            .animation(
-                CdSpinKeyframes.toAnimation(
-                    duration = 8.s,
-                    timingFunction = AnimationTimingFunction.Linear,
-                    iterationCount = AnimationIterationCount.Infinite,
-                    playState = if (playing) AnimationPlayState.Running else AnimationPlayState.Paused
-                )
-            ),
-        contentAlignment = Alignment.Center
-    ) {
-        Box(
-            modifier = Modifier
-                .fillMaxSize()
-                .border(1.px, LineStyle.Solid, RetroColor.navy.copy(alpha = 180))
-                .borderRadius(50.percent)
-                .overflow(Overflow.Hidden),
-            contentAlignment = Alignment.Center
-        ) {
-            if (!coverUrl.isNullOrBlank()) {
-                Image(
-                    src = coverUrl,
-                    modifier = Modifier.fillMaxSize().objectFit(ObjectFit.Cover)
-                )
-            } else {
+            val subtitle = buildString {
+                append(album.artistName)
+                if (album.releaseYear > 0) {
+                    if (isNotEmpty()) append("  \u00B7  ")
+                    append(album.releaseYear)
+                }
+            }
+            if (subtitle.isNotBlank()) {
                 SpanText(
-                    text = "\u266A",
-                    modifier = Modifier
-                        .fontSize((size / 4).px)
-                        .color(RetroColor.skyBlue)
+                    text = subtitle,
+                    modifier = Modifier.fontSize(0.85.cssRem).color(RetroColor.cyan)
                 )
             }
         }
-
-        Box(
-            modifier = Modifier
-                .size((size / 8).px)
-                .border(1.px, LineStyle.Solid, RetroColor.navy)
-                .borderRadius(50.percent)
-                .backgroundColor(RetroColor.cream)
-        )
     }
 }
-
-private fun Modifier.retroBevel(background: Color = RetroColor.babyBlue): Modifier = this
-    .backgroundColor(background)
-    .border(2.px, LineStyle.Solid, RetroColor.navy)
-    .borderRadius(4.px)
-    .boxShadow(
-        BoxShadow.of(0.px, 1.px, 0.px, 1.px, NeoColor.white.copy(alpha = 200), inset = true),
-        BoxShadow.of(0.px, (-1).px, 0.px, 1.px, Color.rgb(0, 0, 0).copy(alpha = 120), inset = true),
-        BoxShadow.of(3.px, 3.px, 0.px, 0.px, Color.rgb(0, 0, 0).copy(alpha = 127)),
-    )
 
 @Composable
 private fun PaginationFooter(
@@ -559,7 +368,7 @@ private fun PaginationFooter(
     onPageChange: (Int) -> Unit
 ) {
     Row(
-        modifier = Modifier.fillMaxWidth().padding(topBottom = 2.cssRem).gap(0.5.cssRem),
+        modifier = Modifier.fillMaxWidth().padding(topBottom = 1.5.cssRem).gap(0.5.cssRem),
         horizontalArrangement = Arrangement.Center,
         verticalAlignment = Alignment.CenterVertically
     ) {
@@ -644,4 +453,15 @@ private fun RetroPageButton(text: String, enabled: Boolean, active: Boolean, onC
                 )
         )
     }
+}
+
+private fun StyleScope.retroFieldStyle() {
+    padding(10.px)
+    width(100.percent)
+    fontFamily("VT323", "monospace")
+    fontSize(1.1.cssRem)
+    backgroundColor(RetroColor.cream)
+    color(RetroColor.navy)
+    border(2.px, LineStyle.Solid, RetroColor.navy)
+    borderRadius(3.px)
 }

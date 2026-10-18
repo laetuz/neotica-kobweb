@@ -42,6 +42,27 @@ object OrpheumTrackList {
 
     private const val PAGE_SIZE = 10
 
+    fun getHome(limit: Int): List<TrackRemoteModel> = allTracks.take(limit.coerceAtLeast(1))
+
+    fun search(query: String, page: Int, limit: Int): TrackFeedResponse {
+        val clampedPage = page.coerceAtLeast(1)
+        val clampedLimit = limit.coerceAtLeast(1)
+        val filtered = allTracks.filter {
+            it.title.contains(query, ignoreCase = true) || it.artistName.contains(query, ignoreCase = true)
+        }
+        val start = (clampedPage - 1) * clampedLimit
+        val end = (start + clampedLimit).coerceAtMost(filtered.size)
+        val data = if (start >= filtered.size) emptyList() else filtered.subList(start, end)
+        val totalPages = ((filtered.size + clampedLimit - 1) / clampedLimit).coerceAtLeast(1)
+        return TrackFeedResponse(
+            data = data,
+            page = clampedPage,
+            limit = clampedLimit,
+            totalItems = filtered.size,
+            totalPages = totalPages
+        )
+    }
+
     fun getPage(page: Int): TrackFeedResponse {
         val clampedPage = page.coerceAtLeast(1)
         val start = (clampedPage - 1) * PAGE_SIZE

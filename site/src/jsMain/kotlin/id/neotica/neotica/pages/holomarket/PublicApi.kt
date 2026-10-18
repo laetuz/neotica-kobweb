@@ -71,10 +71,3 @@ fun resolvePublicUrl(url: String?): String? {
         else -> url
     }
 }
-
-/** URL-encode a path segment / query value using the browser's `encodeURIComponent`. */
-@Suppress("UnsafeCastFromDynamic")
-fun encodeQueryComponent(value: String): String {
-    val encoder: dynamic = js("encodeURIComponent")
-    return encoder(value) as String
-}
