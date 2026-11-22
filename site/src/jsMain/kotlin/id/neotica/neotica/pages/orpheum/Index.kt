@@ -2,7 +2,6 @@ package id.neotica.neotica.pages.orpheum
 
 import androidx.compose.runtime.*
 import com.varabyte.kobweb.compose.css.*
-import com.varabyte.kobweb.compose.foundation.layout.Arrangement
 import com.varabyte.kobweb.compose.foundation.layout.Box
 import com.varabyte.kobweb.compose.foundation.layout.Column
 import com.varabyte.kobweb.compose.foundation.layout.Row
@@ -10,12 +9,12 @@ import com.varabyte.kobweb.compose.ui.Alignment
 import com.varabyte.kobweb.compose.ui.Modifier
 import com.varabyte.kobweb.compose.ui.graphics.Color
 import com.varabyte.kobweb.compose.ui.modifiers.*
-import com.varabyte.kobweb.compose.ui.toAttrs
 import com.varabyte.kobweb.core.Page
 import com.varabyte.kobweb.core.data.add
 import com.varabyte.kobweb.core.init.InitRoute
 import com.varabyte.kobweb.core.init.InitRouteContext
 import com.varabyte.kobweb.core.layout.Layout
+import com.varabyte.kobweb.framework.annotations.DelicateApi
 import com.varabyte.kobweb.core.rememberPageContext
 import com.varabyte.kobweb.silk.components.graphics.Image
 import com.varabyte.kobweb.silk.components.layout.SimpleGrid
@@ -42,7 +41,6 @@ import kotlinx.coroutines.await
 import kotlinx.serialization.json.Json
 import org.jetbrains.compose.web.attributes.placeholder
 import org.jetbrains.compose.web.css.*
-import org.jetbrains.compose.web.dom.Button
 import org.jetbrains.compose.web.dom.TextInput
 
 private const val USE_DUMMY_DATA = false
@@ -56,6 +54,7 @@ fun initOrpheumPage(ctx: InitRouteContext) {
     ctx.data.add(NeoLayoutData("Orpheum \u2014 Stream Music | Neotica.id", "/orpheum"))
 }
 
+@OptIn(DelicateApi::class)
 @Page(routeOverride = "/orpheum")
 @Composable
 @Layout(".components.layouts.NeoPageLayout")
@@ -271,7 +270,11 @@ fun OrpheumPage() {
                     RainbowDivider()
                 }
 
-                SectionTitle(if (isSearchMode) "Results for \u201C$appliedQuery\u201D" else "Recent Tracks")
+                if (isSearchMode) {
+                    SectionTitle("Results for \u201C$appliedQuery\u201D")
+                } else {
+                    SectionTitle("Daily Tracks", path = "/orpheum/tracks")
+                }
 
                 if (trackList.isEmpty()) {
                     SpanText(
@@ -286,7 +289,7 @@ fun OrpheumPage() {
                 }
 
                 if (isSearchMode && trackList.isNotEmpty() && totalPages > 1) {
-                    PaginationFooter(searchPage, totalPages) { newPage ->
+                    OrpheumPagination(searchPage, totalPages) { newPage ->
                         searchPage = newPage
                         window.history.pushState(null, "", searchPath(appliedQuery, newPage))
                     }
@@ -297,17 +300,31 @@ fun OrpheumPage() {
 }
 
 @Composable
-private fun SectionTitle(text: String) {
-    SpanText(
-        text = "\u2726  $text  \u2726",
-        modifier = Modifier
-            .fillMaxWidth()
-            .fontSize(1.5.cssRem)
-            .fontWeight(FontWeight.Bold)
-            .color(RetroColor.skyBlue)
-            .textAlign(TextAlign.Center)
-            .textShadow(2.px, 2.px, color = Color.rgb(0, 0, 0).copy(alpha = 153))
-    )
+private fun SectionTitle(text: String, path: String? = null) {
+    val content: @Composable () -> Unit = {
+        SpanText(
+            text = "\u2726  $text  \u2726",
+            modifier = Modifier
+                .fillMaxWidth()
+                .fontSize(1.5.cssRem)
+                .fontWeight(FontWeight.Bold)
+                .color(RetroColor.skyBlue)
+                .textAlign(TextAlign.Center)
+                .textShadow(2.px, 2.px, color = Color.rgb(0, 0, 0).copy(alpha = 153))
+        )
+    }
+    if (path != null) {
+        Link(
+            path = path,
+            modifier = Modifier
+                .fillMaxWidth()
+                .cursor(Cursor.Pointer)
+                .textAlign(TextAlign.Center)
+                .textDecorationLine(TextDecorationLine.None)
+        ) { content() }
+    } else {
+        content()
+    }
 }
 
 @Composable
@@ -358,100 +375,6 @@ private fun AlbumCard(album: AlbumRemoteModel, modifier: Modifier = Modifier) {
                 )
             }
         }
-    }
-}
-
-@Composable
-private fun PaginationFooter(
-    currentPage: Int,
-    totalPages: Int,
-    onPageChange: (Int) -> Unit
-) {
-    Row(
-        modifier = Modifier.fillMaxWidth().padding(topBottom = 1.5.cssRem).gap(0.5.cssRem),
-        horizontalArrangement = Arrangement.Center,
-        verticalAlignment = Alignment.CenterVertically
-    ) {
-        RetroPageButton(
-            text = "\u00AB Prev",
-            enabled = currentPage > 1,
-            active = false,
-            onClick = { if (currentPage > 1) onPageChange(currentPage - 1) }
-        )
-
-        val visiblePages = buildList {
-            val rangeStart = (currentPage - 2).coerceAtLeast(1)
-            val rangeEnd = (currentPage + 2).coerceAtMost(totalPages)
-            if (rangeStart > 1) {
-                add(1)
-                if (rangeStart > 2) add(-1)
-            }
-            for (i in rangeStart..rangeEnd) add(i)
-            if (rangeEnd < totalPages) {
-                if (rangeEnd < totalPages - 1) add(-1)
-                add(totalPages)
-            }
-        }
-
-        visiblePages.forEach { page ->
-            if (page == -1) {
-                SpanText(
-                    text = "\u2026",
-                    modifier = Modifier
-                        .color(RetroColor.cream)
-                        .margin(leftRight = 0.4.cssRem)
-                        .fontSize(1.2.cssRem)
-                )
-            } else {
-                RetroPageButton(
-                    text = page.toString(),
-                    enabled = true,
-                    active = page == currentPage,
-                    onClick = { onPageChange(page) }
-                )
-            }
-        }
-
-        RetroPageButton(
-            text = "Next \u00BB",
-            enabled = currentPage < totalPages,
-            active = false,
-            onClick = { if (currentPage < totalPages) onPageChange(currentPage + 1) }
-        )
-    }
-}
-
-@Composable
-private fun RetroPageButton(text: String, enabled: Boolean, active: Boolean, onClick: () -> Unit) {
-    Button(
-        attrs = Modifier
-            .backgroundColor(
-                when {
-                    active -> RetroColor.babyBlue
-                    enabled -> NeoColor.backgroundPrimaryTransparent
-                    else -> NeoColor.backgroundPrimaryTransparent.copy(alpha = 60)
-                }
-            )
-            .border(2.px, LineStyle.Solid, if (active) RetroColor.navy else RetroColor.steelBlue.copy(alpha = 90))
-            .borderRadius(4.px)
-            .padding(10.px)
-            .cursor(if (enabled) Cursor.Pointer else Cursor.NotAllowed)
-            .onClick { if (enabled) onClick() }
-            .toAttrs { if (!enabled) attr("disabled", "true") }
-    ) {
-        SpanText(
-            text = text,
-            modifier = Modifier
-                .fontSize(1.1.cssRem)
-                .fontWeight(FontWeight.Bold)
-                .color(
-                    when {
-                        active -> NeoColor.backgroundPrimary
-                        enabled -> RetroColor.cream
-                        else -> NeoColor.white.copy(alpha = 120)
-                    }
-                )
-        )
     }
 }
 
