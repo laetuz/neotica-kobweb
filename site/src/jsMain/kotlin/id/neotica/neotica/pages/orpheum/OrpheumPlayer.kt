@@ -26,6 +26,7 @@ import id.neotica.neotica.components.NeoColor
 import id.neotica.neotica.components.retro.RetroColor
 import id.neotica.neotica.components.retro.retroBevel
 import id.neotica.neotica.domain.model.orpheum.TrackRemoteModel
+import id.neotica.neotica.utils.Censor
 import id.neotica.neotica.utils.Constants
 import kotlinx.browser.window
 import org.jetbrains.compose.web.css.*
@@ -188,7 +189,7 @@ fun OrpheumTrackListPlayer(tracks: List<TrackRemoteModel>, modifier: Modifier = 
                     )
 
                     SpanText(
-                        text = fullScreenTrack.title,
+                        text = Censor.apply(fullScreenTrack.title),
                         modifier = Modifier
                             .fontSize(1.8.cssRem)
                             .fontWeight(FontWeight.Bold)
@@ -196,7 +197,7 @@ fun OrpheumTrackListPlayer(tracks: List<TrackRemoteModel>, modifier: Modifier = 
                             .textAlign(TextAlign.Center)
                     )
                     SpanText(
-                        text = fullScreenTrack.artistName,
+                        text = Censor.apply(fullScreenTrack.artistName),
                         modifier = Modifier.fontSize(1.1.cssRem).color(RetroColor.cyan).textAlign(TextAlign.Center)
                     )
 
@@ -279,14 +280,14 @@ private fun RetroTrackCard(
 
             Column(modifier = Modifier.fillMaxWidth().gap(0.1.cssRem)) {
                 SpanText(
-                    text = track.title,
+                    text = Censor.apply(track.title),
                     modifier = Modifier
                         .fontSize(1.2.cssRem)
                         .fontWeight(FontWeight.Bold)
                         .color(RetroColor.cream)
                 )
                 SpanText(
-                    text = track.artistName,
+                    text = Censor.apply(track.artistName),
                     modifier = Modifier.fontSize(0.9.cssRem).color(RetroColor.cyan)
                 )
             }

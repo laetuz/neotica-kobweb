@@ -33,6 +33,7 @@ import id.neotica.neotica.domain.model.orpheum.AlbumRemoteModel
 import id.neotica.neotica.domain.model.orpheum.HomeFeedResponse
 import id.neotica.neotica.domain.model.orpheum.TrackFeedResponse
 import id.neotica.neotica.domain.model.orpheum.TrackRemoteModel
+import id.neotica.neotica.utils.Censor
 import id.neotica.neotica.utils.Constants
 import id.neotica.neotica.utils.encodeQueryComponent
 import id.neotica.neotica.utils.queryParam
@@ -358,11 +359,11 @@ private fun AlbumCard(album: AlbumRemoteModel, modifier: Modifier = Modifier) {
                 }
             }
             SpanText(
-                text = album.title,
+                text = Censor.apply(album.title),
                 modifier = Modifier.fontSize(1.05.cssRem).fontWeight(FontWeight.Bold).color(RetroColor.cream)
             )
             val subtitle = buildString {
-                append(album.artistName)
+                append(Censor.apply(album.artistName))
                 if (album.releaseYear > 0) {
                     if (isNotEmpty()) append("  \u00B7  ")
                     append(album.releaseYear)
