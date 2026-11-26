@@ -172,21 +172,23 @@ private fun AppDetailContent(app: PublicAppDetail) {
             )
         }
 
-        Link(
-            path = app.downloadUrl,
-            modifier = Modifier
-                .retroBevel(RetroColor.babyBlue)
-                .padding(leftRight = 1.6.cssRem, topBottom = 0.6.cssRem)
-                .cursor(Cursor.Pointer)
-        ) {
-            SpanText(
-                text = "\u2B07  Download" + (if (app.versionName.isNotBlank()) "  (v${app.versionName})" else ""),
+        resolvePublicUrl(app.downloadUrl)?.let { downloadUrl ->
+            Link(
+                path = downloadUrl,
                 modifier = Modifier
-                    .fontSize(1.3.cssRem)
-                    .fontWeight(FontWeight.Bold)
-                    .color(NeoColor.backgroundPrimary)
-                    .textDecorationLine(TextDecorationLine.None)
-            )
+                    .retroBevel(RetroColor.babyBlue)
+                    .padding(leftRight = 1.6.cssRem, topBottom = 0.6.cssRem)
+                    .cursor(Cursor.Pointer)
+            ) {
+                SpanText(
+                    text = "\u2B07  Download" + (if (app.versionName.isNotBlank()) "  (v${app.versionName})" else ""),
+                    modifier = Modifier
+                        .fontSize(1.3.cssRem)
+                        .fontWeight(FontWeight.Bold)
+                        .color(NeoColor.backgroundPrimary)
+                        .textDecorationLine(TextDecorationLine.None)
+                )
+            }
         }
 
         if (app.screenshots.isNotEmpty()) {
@@ -275,9 +277,9 @@ private fun VersionRow(version: PublicAppVersion) {
                 text = "v${version.versionName} (${version.versionCode})",
                 modifier = Modifier.fontSize(1.05.cssRem).fontWeight(FontWeight.Bold).color(RetroColor.cream)
             )
-            if (version.downloadUrl.isNotBlank()) {
+            resolvePublicUrl(version.downloadUrl)?.let { downloadUrl ->
                 Link(
-                    path = version.downloadUrl,
+                    path = downloadUrl,
                     modifier = Modifier
                         .retroBevel(RetroColor.steelBlue)
                         .padding(leftRight = 0.8.cssRem, topBottom = 0.2.cssRem)

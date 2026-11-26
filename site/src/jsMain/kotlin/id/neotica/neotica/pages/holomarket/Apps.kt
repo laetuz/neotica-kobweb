@@ -324,21 +324,23 @@ private fun AppCard(item: PublicFeedItem) {
             )
         }
 
-        Link(
-            path = item.downloadUrl,
-            modifier = Modifier
-                .retroBevel(RetroColor.babyBlue)
-                .padding(leftRight = 1.cssRem, topBottom = 0.4.cssRem)
-                .cursor(Cursor.Pointer)
-        ) {
-            SpanText(
-                text = "\u2B07  Download",
+        resolvePublicUrl(item.downloadUrl)?.let { downloadUrl ->
+            Link(
+                path = downloadUrl,
                 modifier = Modifier
-                    .fontSize(1.05.cssRem)
-                    .fontWeight(FontWeight.Bold)
-                    .color(NeoColor.backgroundPrimary)
-                    .textDecorationLine(TextDecorationLine.None)
-            )
+                    .retroBevel(RetroColor.babyBlue)
+                    .padding(leftRight = 1.cssRem, topBottom = 0.4.cssRem)
+                    .cursor(Cursor.Pointer)
+            ) {
+                SpanText(
+                    text = "\u2B07  Download",
+                    modifier = Modifier
+                        .fontSize(1.05.cssRem)
+                        .fontWeight(FontWeight.Bold)
+                        .color(NeoColor.backgroundPrimary)
+                        .textDecorationLine(TextDecorationLine.None)
+                )
+            }
         }
     }
 }
