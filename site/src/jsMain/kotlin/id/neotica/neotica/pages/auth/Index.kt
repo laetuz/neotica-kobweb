@@ -127,7 +127,7 @@ fun AuthPage() {
 
                             val requestInit = RequestInit("GET", headers = headers)
 
-                            val response = window.fetch("${Constants.DEV_URL}/auth", requestInit).await()
+                            val response = window.fetch("${Constants.DEV_URL}/auth/login", requestInit).await()
 
                             if (response.ok) {
                                 val text = response.text().await()
