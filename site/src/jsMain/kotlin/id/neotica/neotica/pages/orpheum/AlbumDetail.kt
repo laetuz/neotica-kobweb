@@ -23,6 +23,7 @@ import id.neotica.neotica.components.retro.RainbowDivider
 import id.neotica.neotica.components.retro.RetroColor
 import id.neotica.neotica.components.retro.StarfieldStars
 import id.neotica.neotica.domain.model.orpheum.AlbumWithTracks
+import id.neotica.neotica.utils.Censor
 import id.neotica.neotica.utils.Constants
 import id.neotica.neotica.utils.encodeQueryComponent
 import kotlinx.browser.window
@@ -133,7 +134,7 @@ private fun AlbumContent(detail: AlbumWithTracks) {
             TrackCover(coverUrl = resolveOrpheumMedia(album.coverUrl), size = 180)
             Column(modifier = Modifier.fillMaxWidth().gap(0.25.cssRem)) {
                 SpanText(
-                    text = album.title,
+                    text = Censor.apply(album.title),
                     modifier = Modifier
                         .fontSize(2.2.cssRem)
                         .fontWeight(FontWeight.Bold)
@@ -141,7 +142,7 @@ private fun AlbumContent(detail: AlbumWithTracks) {
                         .textShadow(2.px, 2.px, color = RetroColor.navy.copy(alpha = 200))
                 )
                 SpanText(
-                    text = album.artistName,
+                    text = Censor.apply(album.artistName),
                     modifier = Modifier.fontSize(1.15.cssRem).color(RetroColor.cyan)
                 )
                 val meta = buildString {

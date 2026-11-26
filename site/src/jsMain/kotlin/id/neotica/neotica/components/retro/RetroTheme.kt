@@ -50,7 +50,8 @@ val StarfieldStars = repeatingRadialGradient(RadialGradient.Shape.Circle) {
 fun isRetroRoute(path: String = window.location.pathname): Boolean {
     val normalized = path.removeSuffix("/").ifEmpty { "/" }
     return normalized == "/" || normalized.startsWith("/holomarket") ||
-            normalized == "/contact" || normalized.startsWith("/orpheum")
+            normalized == "/contact" || normalized.startsWith("/orpheum") ||
+            normalized == "/auth/reset-password"
 }
 
 @Composable
