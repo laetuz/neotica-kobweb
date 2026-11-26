@@ -58,9 +58,10 @@ data class PublicAppDetail(
 )
 
 /**
- * Resolve a public feed/detail **media** URL (icon/screenshots). Relative paths are prefixed
- * with the public API host, and `http://` is upgraded to `https://` because the API emits plain
- * http which browsers block as mixed content inside `<img>` on an https page.
+ * Resolve a public API URL (media such as icons/screenshots, or APK download links). Relative
+ * paths are prefixed with the public API host, and `http://` is upgraded to `https://` without
+ * altering query parameters (e.g. `?token=...`) so browsers do not block mixed content or serve
+ * downloads over plain HTTP on an HTTPS page.
  */
 fun resolvePublicUrl(url: String?): String? {
     if (url.isNullOrBlank()) return null

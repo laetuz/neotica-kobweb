@@ -102,7 +102,7 @@ fun HoloMarketLandingPage() {
                 val text = response.text().await()
                 val release = jsonParser.decodeFromString<HoloMarketLatest>(text)
                 release.versionName.takeIf { it.isNotBlank() }?.let { latestVersion = it }
-                if (release.fileUrl.isNotBlank()) downloadUrl = release.fileUrl
+                resolvePublicUrl(release.fileUrl)?.let { downloadUrl = it }
             } else if (response.status.toInt() == 429) {
                 val retryAfterSeconds = response.headers.get("Retry-After")?.toIntOrNull() ?: 60
                 errorMessage = "Sorry, try again in $retryAfterSeconds seconds"
